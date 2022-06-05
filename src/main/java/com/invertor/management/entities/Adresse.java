@@ -7,12 +7,13 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-public class Adresse {
+public class Adresse implements Serializable {
 
     @Column(name = "adresse1")
     private String adress1;
@@ -24,7 +25,7 @@ public class Adresse {
     private String city;
 
     @Column(name = "codePostal")
-    private String postalCode;
+    private String codePostal;
 
     @Column(name = "pays")
     private String country;

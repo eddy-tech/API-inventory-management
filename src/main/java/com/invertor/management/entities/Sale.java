@@ -5,8 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -15,4 +17,13 @@ import javax.persistence.Table;
 @Table(name = "ventes")
 @EqualsAndHashCode(callSuper = true)
 public class Sale extends AbstractEntity{
+
+    @Column(name = "codeVente")
+    private String codeSale;
+
+    @Column(name = "dateVente")
+    private Instant dateSale;
+
+    @Column(name = "commentaires")
+    private String comment;
 }

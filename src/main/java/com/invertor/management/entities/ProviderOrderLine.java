@@ -5,10 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -17,6 +15,12 @@ import javax.persistence.Table;
 @Table(name = "ligneCommandeFournisseurs")
 @EqualsAndHashCode(callSuper = true)
 public class ProviderOrderLine extends AbstractEntity {
+
+    @Column(name = "quantite")
+    private BigDecimal quantity;
+
+    @Column(name = "prixUnitaire") // Prix d'achat d'un article
+    private BigDecimal unitPrice;
 
     @ManyToOne
     @JoinColumn(name = "idCommandeFournisseur")

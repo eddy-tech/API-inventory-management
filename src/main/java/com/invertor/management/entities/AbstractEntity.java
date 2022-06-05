@@ -12,7 +12,7 @@ import java.time.Instant;
 
 @Data
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class) // Ecouter les changement et assigner une valeur à creationDate et lastModifiedDate dans la BD
+@EntityListeners(AuditingEntityListener.class) // Ecouter les changements et assigner une valeur à creationDate et lastModifiedDate dans la BD
 public class AbstractEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
