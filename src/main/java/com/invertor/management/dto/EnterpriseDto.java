@@ -20,7 +20,6 @@ public class EnterpriseDto {
 
     private AddressDto addressDto;
 
-    @JsonIgnore
     private String codeFiscal;
 
     private String picture;
