@@ -1,11 +1,11 @@
 package com.invertor.management.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import java.util.List;
 
 @Data
-@Builder
 public class ProviderDto {
 
     private Long id;
@@ -22,6 +22,7 @@ public class ProviderDto {
 
     private String numTel;
 
+    @JsonIgnore
     private List<ProviderOrderDto> providerOrdersDto;
 
 

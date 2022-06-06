@@ -1,5 +1,6 @@
 package com.invertor.management.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.invertor.management.entities.Address;
 import com.invertor.management.entities.Category;
 import com.invertor.management.entities.Customer;
@@ -11,7 +12,6 @@ import javax.persistence.Embedded;
 import java.util.List;
 
 @Data
-@Builder
 public class CustomerDto {
 
     private Long id;
@@ -28,6 +28,7 @@ public class CustomerDto {
 
     private String numTel;
 
+    @JsonIgnore
     private List<CustomerOrderDto> customerOrderDto;
 
 

@@ -7,7 +7,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-@Builder
 public class ArticleDto {
 
     private Long id;
@@ -26,6 +25,7 @@ public class ArticleDto {
 
     private CategoryDto categoryDto;
 
+    /*
     public static ArticleDto fromArticle (Article article){
         if(article == null){
             return null;
@@ -54,4 +54,5 @@ public class ArticleDto {
 
         return article;
     }
+    */
 }

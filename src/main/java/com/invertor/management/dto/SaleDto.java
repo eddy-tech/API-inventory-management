@@ -6,7 +6,6 @@ import lombok.Data;
 import java.time.Instant;
 
 @Data
-@Builder
 public class SaleDto {
 
     private Long id;

@@ -1,5 +1,6 @@
 package com.invertor.management.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.invertor.management.entities.Provider;
 import com.invertor.management.entities.ProviderOrderLine;
 import lombok.Builder;
@@ -9,7 +10,6 @@ import java.time.Instant;
 import java.util.List;
 
 @Data
-@Builder
 public class ProviderOrderDto {
 
     private Long id;
@@ -20,6 +20,7 @@ public class ProviderOrderDto {
 
     private ProviderDto providerDto;
 
+    @JsonIgnore
     private List<ProviderOrderLineDto> providerOrderLinesDto;
 
 }

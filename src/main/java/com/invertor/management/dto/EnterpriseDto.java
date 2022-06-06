@@ -1,5 +1,6 @@
 package com.invertor.management.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.invertor.management.entities.Address;
 import com.invertor.management.entities.User;
 import lombok.Builder;
@@ -9,7 +10,6 @@ import javax.persistence.Embedded;
 import java.util.List;
 
 @Data
-@Builder
 public class EnterpriseDto {
 
     private Long id;
@@ -20,6 +20,7 @@ public class EnterpriseDto {
 
     private AddressDto addressDto;
 
+    @JsonIgnore
     private String codeFiscal;
 
     private String picture;
@@ -30,6 +31,7 @@ public class EnterpriseDto {
 
     private String siteWeb;
 
+    @JsonIgnore
     private List<UserDto> usersDto;
 
 }

@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Data
-@Builder
 public class StockMovementDto {
 
     private Long id;

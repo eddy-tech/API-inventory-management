@@ -8,7 +8,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@Builder
 public class CategoryDto {
 
     private Long id;
@@ -20,6 +19,7 @@ public class CategoryDto {
     @JsonIgnore
     private List<ArticleDto> articlesDto;
 
+    /*
     public CategoryDto fromCategory (Category category){
         if(category == null) {
             return null;
@@ -43,5 +43,5 @@ public class CategoryDto {
 
         return category;
     }
-
+*/
 }

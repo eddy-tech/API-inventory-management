@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
 public class AddressDto {
 
     private String address1;
@@ -18,6 +17,7 @@ public class AddressDto {
 
     private String country;
 
+    /*
     public static AddressDto fromAddress (Address address){
         if(address == null){
             return null;
@@ -44,4 +44,5 @@ public class AddressDto {
 
         return address;
     }
+    */
 }
