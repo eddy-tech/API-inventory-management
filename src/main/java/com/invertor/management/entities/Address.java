@@ -1,25 +1,24 @@
 package com.invertor.management.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import java.io.Serializable;
 
 @Data
 @AllArgsConstructor @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-public class Adresse implements Serializable {
+@Entity
+public class Address implements Serializable {
 
     @Column(name = "adresse1")
-    private String adress1;
+    private String address1;
 
     @Column(name = "adresse2")
-    private String adress2;
+    private String address2;
 
     @Column(name = "ville")
     private String city;

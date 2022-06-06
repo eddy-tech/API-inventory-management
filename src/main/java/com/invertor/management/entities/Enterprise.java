@@ -1,9 +1,6 @@
 package com.invertor.management.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -22,7 +19,7 @@ public class Enterprise extends AbstractEntity{
     private String description;
 
     @Embedded
-    private Adresse address;
+    private Address address;
 
     @Column(name = "codeFiscal")
     private String codeFiscal;

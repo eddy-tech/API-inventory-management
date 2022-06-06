@@ -1,10 +1,7 @@
 package com.invertor.management.entities;
 
 import com.invertor.management.enums.TypeMoveStock;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

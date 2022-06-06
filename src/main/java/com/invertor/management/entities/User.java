@@ -1,9 +1,6 @@
 package com.invertor.management.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -33,7 +30,7 @@ public class User extends AbstractEntity{
     private String password;
 
     @Embedded
-    private Adresse address;
+    private Address address;
 
     @Column(name = "photo")
     private String picture;
