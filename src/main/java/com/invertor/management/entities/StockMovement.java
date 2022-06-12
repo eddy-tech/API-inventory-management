@@ -15,6 +15,9 @@ import java.time.Instant;
 @EqualsAndHashCode(callSuper = true)
 public class StockMovement extends AbstractEntity {
 
+    @Column(name = "idEnterprise")
+    private Long enterprise;
+
     @Column(name = "dateMouvement")
     private Instant dateMovement;
 

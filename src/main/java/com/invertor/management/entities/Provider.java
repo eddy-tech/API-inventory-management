@@ -13,6 +13,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Provider extends AbstractEntity {
 
+    @Column(name = "idEnterprise")
+    private Long enterprise;
+
     @Column(name = "nom")
     private String name;
 

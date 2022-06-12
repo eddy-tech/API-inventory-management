@@ -15,6 +15,9 @@ import java.time.Instant;
 @EqualsAndHashCode(callSuper = true)
 public class Sale extends AbstractEntity{
 
+    @Column(name = "idEnterprise")
+    private Long enterprise;
+
     @Column(name = "codeVente")
     private String codeSale;
 

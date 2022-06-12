@@ -14,6 +14,9 @@ import java.io.Serializable;
 @Entity
 public class Address implements Serializable {
 
+    @Column(name = "idEnterprise")
+    private Long enterprise;
+
     @Column(name = "adresse1")
     private String address1;
 
@@ -28,4 +31,5 @@ public class Address implements Serializable {
 
     @Column(name = "pays")
     private String country;
+
 }

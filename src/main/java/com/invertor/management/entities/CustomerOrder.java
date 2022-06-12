@@ -14,6 +14,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class CustomerOrder extends AbstractEntity {
 
+    @Column(name = "idEnterprise")
+    private Long enterprise;
+
     @Column(name = "codeCommandeClient")
     private String codeOrderCustomer;
 
