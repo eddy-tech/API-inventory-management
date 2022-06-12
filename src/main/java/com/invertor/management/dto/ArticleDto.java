@@ -1,7 +1,5 @@
 package com.invertor.management.dto;
 
-import com.invertor.management.entities.Article;
-import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;

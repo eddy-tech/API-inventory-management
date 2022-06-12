@@ -12,6 +12,9 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 public class Roles extends AbstractEntity{
 
+    @Column(name = "idEnterprise")
+    private Long enterprise;
+
     @Column(name = "roleName")
     private String roleName;
 

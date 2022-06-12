@@ -16,6 +16,9 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Category extends AbstractEntity{
 
+    @Column(name = "idEnterprise")
+    private Long enterprise;
+
     @Column(name = "codeCategorie")
     private String codeCategory;
 

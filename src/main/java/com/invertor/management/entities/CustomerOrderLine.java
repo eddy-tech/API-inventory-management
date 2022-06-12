@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class CustomerOrderLine extends AbstractEntity{
 
+    @Column(name = "idEnterprise")
+    private Long enterprise;
+
     @Column(name = "quantite")
     private BigDecimal quantity;
 
