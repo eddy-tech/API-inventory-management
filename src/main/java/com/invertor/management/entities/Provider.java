@@ -22,7 +22,7 @@ public class Provider extends AbstractEntity {
     @Column(name = "prenom")
     private String surname;
 
-    @Embedded // Champs composé capable d'être utiliser dans les autres entités
+    @Embedded // Champs composé capable d'être utilisé dans les autres entités
     private Address adresse;
 
     @Column(name = "photo")

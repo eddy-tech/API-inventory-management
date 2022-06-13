@@ -55,9 +55,7 @@ public class UserValidator {
         if(!StringUtils.hasLength(userDto.getNameUser())) {
             errors.add("Can you please enter your username");
         }
-        if(!StringUtils.hasLength(userDto.getNameUser())) {
-            errors.add("Can you please enter your username");
-        }
+
         return errors;
     }
 }

@@ -16,6 +16,7 @@ public class CustomerValidator {
             errors.add("Can you enter your surname");
             errors.add("Can you enter your e-mail");
             errors.add("Can you enter your phone number");
+
             return errors;
         }
 

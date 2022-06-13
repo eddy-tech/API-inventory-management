@@ -12,6 +12,9 @@ public class SaleValidator {
         List<String> errors = new ArrayList<>();
 
         if(saleDto == null) {
+            errors.add("Can you enter your code sale");
+            errors.add("Can you enter your date sale");
+
             return errors;
         }
 

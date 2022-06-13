@@ -14,8 +14,7 @@ public class ArticleValidator {
         if(articleDto == null){
             errors.add("Can you enter your article code");
             errors.add("Can you enter your designation article");
-            errors.add("Can you enter your unit price duty free of article");
-            errors.add("Can you enter your unit price duty free of article");
+            errors.add("Can you enter your unit price out free of article");
             errors.add("Can you enter your rate TVA article");
             errors.add("Can you enter your unit price all taxes includes");
             errors.add("Can you select at least one category");
@@ -30,7 +29,7 @@ public class ArticleValidator {
             errors.add("Can you enter your designation article");
         }
         if(articleDto.getUnitPriceHt() == null){
-            errors.add("Can you enter your unit price duty free of article");
+            errors.add("Can you enter your unit price out free of article");
         }
         if(articleDto.getRateTax() == null){
             errors.add("Can you enter your rate TVA article");

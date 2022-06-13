@@ -4,7 +4,7 @@ import lombok.Getter;
 
 import java.util.List;
 
-// TO RECORD IN DB AND WE WANT TO KNOW IF THIS ENTITY HASN'T VALID (REFERENCE VALIDATOR)
+// TO RECORD IN DB AND WE WANT TO KNOW IF THIS ENTITY WASN'T VALID (REFERENCE VALIDATOR)
 public class InvalidEntityException extends RuntimeException {
 
     @Getter
