@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface ArticleService {
     ArticleDto saveArticle (ArticleDto articleDto);
+    ArticleDto updateArticle (ArticleDto articleDto);
     ArticleDto findById (Long id);
     ArticleDto findByCodeArticle (String codeArticle);
     List<ArticleDto> listArticle ();
