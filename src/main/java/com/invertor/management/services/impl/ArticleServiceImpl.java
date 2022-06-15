@@ -32,7 +32,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDto saveArticle(ArticleDto articleDto) {
         List<String> errors = ArticleValidator.validate(articleDto);
         if(!errors.isEmpty()){
-            log.error("Article isn't valid {}",articleDto);
+            log.error("Article isn't valid",articleDto);
             throw new InvalidEntityException("Article isn't valid", ErrorCodes.ARTICLE_NOT_VALID,errors);
         }
 
@@ -58,7 +58,7 @@ public class ArticleServiceImpl implements ArticleService {
             return null;
         }
       Article article = articleRepository.findById(id).orElseThrow(()->
-              new EntityNotFoundException("Nothing article with ID ="+id+"has been found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND));
+              new EntityNotFoundException("Nothing article with ID ="+id+"was found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND));
 
       return dtoMapper.fromArticle(article);
     }
@@ -75,7 +75,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<ArticleDto> listArticle() {
         List<Article> articleList = articleRepository.findAll();
-        List<ArticleDto> articleDtoList =articleList.stream().map(article -> dtoMapper.fromArticle(article)).collect(Collectors.toList());
+        List<ArticleDto> articleDtoList =articleList.stream()
+                .map(article -> dtoMapper.fromArticle(article)).collect(Collectors.toList());
 
         return articleDtoList;
     }
