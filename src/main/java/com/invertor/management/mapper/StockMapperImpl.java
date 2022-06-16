@@ -157,7 +157,7 @@ public class StockMapperImpl {
          return saleLineDto;
      }
 
-    public SaleLine fromSaleLineDto (SaleLineDto saleLineDto) {
+    public SaleLine fromSaleLineDto (SaleLine saleLineDto) {
          SaleLine saleLine = new SaleLine();
          BeanUtils.copyProperties(saleLineDto,saleLine);
          return saleLine;

@@ -17,10 +17,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -60,8 +62,11 @@ public class SaleServiceImpl implements SaleService {
         Sale savedSale = saleRepository.save(sale);
 
         saleDto.getSaleLines().forEach(saleLine -> {
-            SaleLine saleLine1 = dtoMapper.fromSaleLineDto(saleLine)
+            SaleLine saleLines = dtoMapper.fromSaleLineDto(saleLine);
+            saleLines.setSale(savedSale);
+            saleLineRepository.save(saleLines);
         });
+
         return dtoMapper.fromSale(savedSale);
     }
 
@@ -72,21 +77,43 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public SaleDto getSale(Long id) {
-        return null;
+        if(id == null){
+            log.error("Id Sale is NULL");
+            return null;
+        }
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Nothing Sale was found with ID ="+id+"in database",ErrorCodes.SALE_NOT_FOUND));
+
+        return dtoMapper.fromSale(sale);
     }
 
     @Override
     public SaleDto getCodeSale(String codeSale) {
-        return null;
+        if(!StringUtils.hasLength(codeSale)){
+            log.error("code Sale is invalid");
+            throw new EntityNotFoundException("Nothing code sale with ID ="+codeSale+"was found in database",ErrorCodes.SALE_NOT_FOUND);
+        }
+
+        Sale sale = saleRepository.findSaleByCodeSale(codeSale);
+        return dtoMapper.fromSale(sale);
     }
 
     @Override
     public List<SaleDto> listSale() {
-        return null;
+        List<Sale> saleList = saleRepository.findAll();
+        List<SaleDto> saleDtoList = saleList.stream()
+                .map(sale -> dtoMapper.fromSale(sale)).collect(Collectors.toList());
+
+        return saleDtoList;
     }
 
     @Override
     public void deleteSale(Long id) {
+        if(id == null){
+            log.error("Sale ID is NULL");
+            return;
+        }
 
+        saleRepository.deleteById(id);
     }
 }
