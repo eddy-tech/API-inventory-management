@@ -1,9 +1,11 @@
 package com.invertor.management.dto;
 
+import com.invertor.management.entities.SaleLine;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class SaleDto {
@@ -16,5 +18,7 @@ public class SaleDto {
 
     private Instant dateSale;
 
-    private String comment;
+    private String comments;
+
+    private List<SaleLine> saleLines;
 }
