@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class Address implements Serializable {
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "adresse1")
     private String address1;

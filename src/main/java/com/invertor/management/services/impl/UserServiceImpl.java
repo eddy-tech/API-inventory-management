@@ -33,8 +33,8 @@ public class UserServiceImpl implements UserService {
     public UserDto saveUser(UserDto userDto) {
         List<String> errors = UserValidator.validate(userDto);
         if(!errors.isEmpty()){
-            log.error("User isn't valid",userDto);
-            throw new InvalidEntityException("User isn't valid", ErrorCodes.USER_NOT_VALID,errors);
+            log.error("User is invalid",userDto);
+            throw new InvalidEntityException("User is invalid", ErrorCodes.USER_NOT_VALID,errors);
         }
 
         User user = dtoMapper.fromUserDto(userDto);
@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto) {
         List<String> errors = UserValidator.validate(userDto);
         if(!errors.isEmpty()){
-            log.error("User isn't valid",userDto);
-            throw new InvalidEntityException("User isn't valid", ErrorCodes.USER_NOT_VALID,errors);
+            log.error("User is invalid",userDto);
+            throw new InvalidEntityException("User isn invalid", ErrorCodes.USER_NOT_VALID,errors);
         }
 
         User user = dtoMapper.fromUserDto(userDto);
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         if(id == null){
-            log.error("id isn't valid");
+            log.error("id is invalid");
             return;
         }
 

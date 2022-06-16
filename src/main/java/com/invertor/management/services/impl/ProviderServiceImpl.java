@@ -33,8 +33,8 @@ public class ProviderServiceImpl implements ProviderService {
     public ProviderDto saveProvider(ProviderDto providerDto) {
         List<String> errors = ProviderValidator.validate(providerDto);
         if(!errors.isEmpty()){
-            log.error("Provider isn't valid",providerDto);
-            throw new InvalidEntityException("Provider isn't valid", ErrorCodes.PROVIDER_NOT_VALID,errors);
+            log.error("Provider is invalid",providerDto);
+            throw new InvalidEntityException("Provider is invalid", ErrorCodes.PROVIDER_NOT_VALID,errors);
         }
 
         Provider provider = dtoMapper.fromProviderDto(providerDto);
@@ -46,8 +46,8 @@ public class ProviderServiceImpl implements ProviderService {
     public ProviderDto updateProvider(ProviderDto providerDto) {
         List<String> errors = ProviderValidator.validate(providerDto);
         if(!errors.isEmpty()){
-            log.error("Enterprise isn't valid",providerDto);
-            throw new InvalidEntityException("Enterprise isn't valid", ErrorCodes.PROVIDER_NOT_VALID,errors);
+            log.error("Enterprise is invalid",providerDto);
+            throw new InvalidEntityException("Enterprise is invalid", ErrorCodes.PROVIDER_NOT_VALID,errors);
         }
 
         Provider provider = dtoMapper.fromProviderDto(providerDto);
@@ -79,7 +79,7 @@ public class ProviderServiceImpl implements ProviderService {
     @Override
     public void deleteProvider(Long id) {
         if(id == null){
-            log.error("id isn't valid");
+            log.error("id is invalid");
             return;
         }
 

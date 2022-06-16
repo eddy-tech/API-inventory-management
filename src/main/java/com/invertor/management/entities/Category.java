@@ -17,7 +17,7 @@ import java.util.List;
 public class Category extends AbstractEntity{
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "codeCategorie")
     private String codeCategory;

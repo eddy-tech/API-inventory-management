@@ -29,7 +29,7 @@ public class Article extends AbstractEntity {
     private BigDecimal unitPriceTtc;
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "photo")
     private String picture;

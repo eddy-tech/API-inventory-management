@@ -14,7 +14,7 @@ import java.util.List;
 public class Provider extends AbstractEntity {
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "nom")
     private String name;

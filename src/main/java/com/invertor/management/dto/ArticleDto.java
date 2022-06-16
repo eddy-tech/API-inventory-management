@@ -11,6 +11,8 @@ public class ArticleDto {
 
     private String codeArticle;
 
+    private Long idEnterprise;
+
     private String designation;
 
     private BigDecimal unitPriceHt;

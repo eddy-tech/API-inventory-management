@@ -16,7 +16,7 @@ import java.time.Instant;
 public class StockMovement extends AbstractEntity {
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "dateMouvement")
     private Instant dateMovement;

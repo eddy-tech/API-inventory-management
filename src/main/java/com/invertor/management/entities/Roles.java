@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Roles extends AbstractEntity{
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "roleName")
     private String roleName;

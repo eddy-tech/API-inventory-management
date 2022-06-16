@@ -15,7 +15,7 @@ import java.util.List;
 public class ProviderOrder extends AbstractEntity {
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "codeCommandeFournisseur")
     private String codeProviderOrder;

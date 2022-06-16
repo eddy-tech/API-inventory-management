@@ -10,6 +10,8 @@ public class ProviderOrderLineDto {
 
     private Long id;
 
+    private Long idEnterprise;
+
     private BigDecimal quantity;
 
     private BigDecimal unitPrice;

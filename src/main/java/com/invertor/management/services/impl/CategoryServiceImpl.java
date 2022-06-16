@@ -31,8 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto saveCategory(CategoryDto categoryDto) {
         List<String> errors = CategoryValidator.validate(categoryDto);
         if(!errors.isEmpty()){
-            log.error("Category isn't valid",categoryDto);
-            throw new InvalidEntityException("Category isn't valid", ErrorCodes.CATEGORY_NOT_VALID,errors);
+            log.error("Category is invalid",categoryDto);
+            throw new InvalidEntityException("Category is invalid", ErrorCodes.CATEGORY_NOT_VALID,errors);
         }
 
         Category category = dtoMapper.fromCategoryDto(categoryDto);
@@ -44,8 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto updateCategory(CategoryDto categoryDto) {
         List<String> errors = CategoryValidator.validate(categoryDto);
         if(!errors.isEmpty()){
-            log.error("Category isn't valid",categoryDto);
-            throw new InvalidEntityException("Category isn't valid", ErrorCodes.CATEGORY_NOT_VALID,errors);
+            log.error("Category is invalid",categoryDto);
+            throw new InvalidEntityException("Category is invalid", ErrorCodes.CATEGORY_NOT_VALID,errors);
         }
 
         Category category = dtoMapper.fromCategoryDto(categoryDto);
@@ -56,7 +56,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getCategory(Long id) {
         if(id == null){
-            log.error("Category ID isn't valid");
+            log.error("Category ID is invalid");
+            return null;
         }
         Category category = categoryRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Nothing Category with ID ="+id+"was found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND));
@@ -67,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getCodeCategory(String codeCategory) {
         if(!StringUtils.hasLength(codeCategory))
-            throw new EntityNotFoundException("Nothing CodeCategory with ID="+codeCategory+"was found in DataBase",ErrorCodes.CATEGORY_NOT_FOUND);
+            throw new EntityNotFoundException("Nothing code category with ID="+codeCategory+"was found in database",ErrorCodes.CATEGORY_NOT_FOUND);
         Category category = categoryRepository.findCategoryByCodeCategory(codeCategory);
 
         return dtoMapper.fromCategory(category);
@@ -85,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(Long id) {
         if(id == null){
-            log.error("Catgeory ID isn't valid");
+            log.error("Catgeory ID is invalid");
             return;
         }
 

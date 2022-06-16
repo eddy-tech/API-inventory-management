@@ -30,8 +30,8 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     public EnterpriseDto saveEnterprise(EnterpriseDto enterpriseDto) {
         List<String> errors = EnterpriseValidator.validate(enterpriseDto);
         if(!errors.isEmpty()){
-            log.error("Enterprise isn't valid",enterpriseDto);
-            throw new InvalidEntityException("Enterprise isn't valid", ErrorCodes.ENTERPRISE_NOT_VALID,errors);
+            log.error("Enterprise is invalid",enterpriseDto);
+            throw new InvalidEntityException("Enterprise is invalid", ErrorCodes.ENTERPRISE_NOT_VALID,errors);
         }
 
         Enterprise enterprise = dtoMapper.fromEnterpriseDto(enterpriseDto);
@@ -43,8 +43,8 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     public EnterpriseDto updateEnterprise(EnterpriseDto enterpriseDto) {
         List<String> errors = EnterpriseValidator.validate(enterpriseDto);
         if(!errors.isEmpty()){
-            log.error("Enterprise isn't valid",enterpriseDto);
-            throw new InvalidEntityException("Enterprise isn't valid", ErrorCodes.ENTERPRISE_NOT_VALID,errors);
+            log.error("Enterprise is invalid",enterpriseDto);
+            throw new InvalidEntityException("Enterprise is invalid", ErrorCodes.ENTERPRISE_NOT_VALID,errors);
         }
 
         Enterprise enterprise = dtoMapper.fromEnterpriseDto(enterpriseDto);
@@ -76,7 +76,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     @Override
     public void deleteEnterprise(Long id) {
         if(id == null){
-            log.error("id isn't valid");
+            log.error("id is invalid");
             return;
         }
 

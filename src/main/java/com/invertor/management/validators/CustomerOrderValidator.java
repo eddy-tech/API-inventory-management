@@ -14,7 +14,7 @@ public class CustomerOrderValidator {
         if(customerOrderDto ==null) {
             errors.add("Can you enter customer order code");
             errors.add("Can you enter you order date");
-            errors.add("Can you enter at least a customer");
+            errors.add("Can you enter a customer information");
 
             return errors;
         }
@@ -26,7 +26,7 @@ public class CustomerOrderValidator {
         }
 
         if(customerOrderDto.getCustomerDto() == null) {
-            errors.add("Can you enter at least a customer");
+            errors.add("Can you enter a customer information");
         }
             return errors;
     }

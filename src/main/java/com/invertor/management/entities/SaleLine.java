@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class SaleLine extends AbstractEntity {
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "quantite")
     private BigDecimal quantity;

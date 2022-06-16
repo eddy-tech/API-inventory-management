@@ -10,6 +10,8 @@ public class SaleDto {
 
     private Long id;
 
+    private Long idEnterprise;
+
     private String codeSale;
 
     private Instant dateSale;

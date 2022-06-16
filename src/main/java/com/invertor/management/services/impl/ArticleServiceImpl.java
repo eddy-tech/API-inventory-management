@@ -32,8 +32,8 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDto saveArticle(ArticleDto articleDto) {
         List<String> errors = ArticleValidator.validate(articleDto);
         if(!errors.isEmpty()){
-            log.error("Article isn't valid",articleDto);
-            throw new InvalidEntityException("Article isn't valid", ErrorCodes.ARTICLE_NOT_VALID,errors);
+            log.error("Article is invalid",articleDto);
+            throw new InvalidEntityException("Article is invalid", ErrorCodes.ARTICLE_NOT_VALID,errors);
         }
 
         Article article = dtoMapper.fromArticleDto(articleDto);
@@ -44,7 +44,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDto updateArticle(ArticleDto articleDto) {
         List<String> errors = ArticleValidator.validate(articleDto);
-        if(!errors.isEmpty()) throw new InvalidEntityException("Article isn't exit", ErrorCodes.ARTICLES_NOT_FOUND,errors);
+        if(!errors.isEmpty()) throw new InvalidEntityException("Article is not exit", ErrorCodes.ARTICLES_NOT_FOUND,errors);
 
         Article article = dtoMapper.fromArticleDto(articleDto);
         Article updateArticle = articleRepository.save(article);

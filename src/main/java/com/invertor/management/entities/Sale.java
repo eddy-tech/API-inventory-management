@@ -16,7 +16,7 @@ import java.time.Instant;
 public class Sale extends AbstractEntity{
 
     @Column(name = "idEnterprise")
-    private Long enterprise;
+    private Long idEnterprise;
 
     @Column(name = "codeVente")
     private String codeSale;

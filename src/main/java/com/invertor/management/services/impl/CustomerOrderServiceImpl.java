@@ -19,10 +19,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -56,6 +58,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                     if(article.isEmpty()){
                         articleErrors.add("Article with ID ="+customerOrderLine.getArticleDto().getId()+ "not exist");
                     }
+                } else {
+                    articleErrors.add("Impossible to save customer order with an article null");
                 }
             } );
         }
@@ -65,12 +69,13 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             throw new InvalidEntityException("Article not exist in DataBase",ErrorCodes.ARTICLES_NOT_FOUND,articleErrors);
         }
 
-        CustomerOrder savedCustomerOrder = customerOrderRepository.save(dtoMapper.fromCustomerOrderDto(customerOrderDto));
+        CustomerOrder customerOrder = dtoMapper.fromCustomerOrderDto(customerOrderDto);
+        CustomerOrder savedCustomerOrder = customerOrderRepository.save(customerOrder);
 
         if(customerOrderDto.getCustomerOrderLinesDto() != null){
             customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLine->{
                 CustomerOrderLine customerOrderLines = dtoMapper.fromCustomerOrderLineDto(customerOrderLine);
-                customerOrderLines.setCustomerOrder(savedCustomerOrder);
+                customerOrderLines.setCustomerOrder(savedCustomerOrder); // ASSIGN CUSTOMER ORDER SAVE IN EACH CUSTOMER ORDER LINE BECAUSE WE DON'T SAVE CUSTOMER ORDER LINE WITHOUT CUSTOMER ORDER
                 customerOrderLineRepository.save(customerOrderLines);
             });
         }
@@ -85,21 +90,42 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto getCustomerOrder(Long id) {
-        return null;
+        if(id == null){
+            log.error("Customer order is NULL");
+            return null;
+        }
+
+        CustomerOrder customerOrder = customerOrderRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Nothing Customer order was found with ID ="+id,ErrorCodes.CUSTOMER_ORDER_NOT_FOUND));
+        return dtoMapper.fromCustomerOrder(customerOrder);
     }
 
     @Override
     public CustomerOrderDto getCodeCustomerOrder(String codeCustomerOrder) {
-        return null;
+        if(!StringUtils.hasLength(codeCustomerOrder)){
+            log.error("Customer order is NULL");
+            throw new EntityNotFoundException("Nothing code customer order with ID ="+codeCustomerOrder+"was found in database",ErrorCodes.CUSTOMER_ORDER_NOT_FOUND);
+        }
+
+        CustomerOrder customerOrder = customerOrderRepository.findCustomerOrderByCodeOrderCustomer(codeCustomerOrder);
+        return dtoMapper.fromCustomerOrder(customerOrder);
     }
 
     @Override
     public List<CustomerOrderDto> listCustomerOrder() {
-        return null;
+        List<CustomerOrder> customerOrderList = customerOrderRepository.findAll();
+        List<CustomerOrderDto> customerOrderDtoList = customerOrderList.stream()
+                .map(customerOrder -> dtoMapper.fromCustomerOrder(customerOrder)).collect(Collectors.toList());
+
+        return customerOrderDtoList;
     }
 
     @Override
     public void deleteCustomerOrder(Long id) {
-
+        if(id == null){
+            log.error("Customer order ID is NULL");
+            return;
+        }
+        customerOrderRepository.deleteById(id);
     }
 }

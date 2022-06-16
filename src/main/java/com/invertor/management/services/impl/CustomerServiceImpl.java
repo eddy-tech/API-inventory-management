@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<String> errors = CustomerValidator.validate(customerDto);
         if(!errors.isEmpty()) {
             log.error("Customer isn't valid",customerDto);
-            throw new InvalidEntityException("Customer isn't valid", ErrorCodes.CUSTOMER_NOT_VALID,errors);
+            throw new InvalidEntityException("Customer is invalid", ErrorCodes.CUSTOMER_NOT_VALID,errors);
         }
 
         Customer customer = dtoMapper.fromCustomerDto(customerDto);
@@ -46,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
         List<String> errors = CustomerValidator.validate(customerDto);
         if(!errors.isEmpty()){
             log.error("Customer isn't valid",customerDto);
-            throw new InvalidEntityException("Customer isn't valid",ErrorCodes.CUSTOMER_NOT_VALID,errors);
+            throw new InvalidEntityException("Customer is invalid",ErrorCodes.CUSTOMER_NOT_VALID,errors);
         }
 
         Customer customer = dtoMapper.fromCustomerDto(customerDto);
@@ -57,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDto getCustomer(Long id) {
         if(id == null){
-            log.error("Customer ID isn't valid");
+            log.error("Customer ID is invalid");
             return null;
         }
 

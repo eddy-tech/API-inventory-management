@@ -13,13 +13,14 @@ public class CustomerOrderDto {
 
     private Long id;
 
+    private Long idEnterprise;
+
     private String codeOrderCustomer;
 
     private Instant dateOrder;
 
     private CustomerDto customerDto;
 
-    @JsonIgnore
     private List<CustomerOrderLineDto> customerOrderLinesDto;
 
 }
