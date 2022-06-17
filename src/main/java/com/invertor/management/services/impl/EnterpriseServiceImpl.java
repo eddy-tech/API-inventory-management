@@ -47,8 +47,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
             throw new InvalidEntityException("Enterprise is invalid", ErrorCodes.ENTERPRISE_NOT_VALID,errors);
         }
 
-        Enterprise enterprise = dtoMapper.fromEnterpriseDto(enterpriseDto);
-        Enterprise savedEnterprise = enterpriseRepository.save(enterprise);
+        Enterprise savedEnterprise = enterpriseRepository.save(dtoMapper.fromEnterpriseDto(enterpriseDto));
         return dtoMapper.fromEnterprise(savedEnterprise);
     }
 

@@ -1,8 +1,7 @@
 package com.invertor.management.services.impl;
 
-import com.invertor.management.dto.ProviderDto;
+
 import com.invertor.management.dto.UserDto;
-import com.invertor.management.entities.Provider;
 import com.invertor.management.entities.User;
 import com.invertor.management.exceptions.EntityNotFoundException;
 import com.invertor.management.exceptions.ErrorCodes;
@@ -10,7 +9,6 @@ import com.invertor.management.exceptions.InvalidEntityException;
 import com.invertor.management.mapper.StockMapperImpl;
 import com.invertor.management.repository.UserRepository;
 import com.invertor.management.services.interfaces.UserService;
-import com.invertor.management.validators.ProviderValidator;
 import com.invertor.management.validators.UserValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,9 +48,8 @@ public class UserServiceImpl implements UserService {
             throw new InvalidEntityException("User isn invalid", ErrorCodes.USER_NOT_VALID,errors);
         }
 
-        User user = dtoMapper.fromUserDto(userDto);
-        User savedUser = userRepository.save(user);
-        return dtoMapper.fromUser(savedUser);
+        User updatedUser = userRepository.save(dtoMapper.fromUserDto(userDto));
+        return dtoMapper.fromUser(updatedUser);
     }
 
     @Override

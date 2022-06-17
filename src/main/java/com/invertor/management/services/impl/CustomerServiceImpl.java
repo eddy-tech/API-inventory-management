@@ -49,8 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new InvalidEntityException("Customer is invalid",ErrorCodes.CUSTOMER_NOT_VALID,errors);
         }
 
-        Customer customer = dtoMapper.fromCustomerDto(customerDto);
-        Customer updateCustomer = customerRepository.save(customer);
+        Customer updateCustomer = customerRepository.save(dtoMapper.fromCustomerDto(customerDto));
         return dtoMapper.fromCustomer(updateCustomer);
     }
 

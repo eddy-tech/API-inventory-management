@@ -46,13 +46,12 @@ public class ArticleServiceImpl implements ArticleService {
         List<String> errors = ArticleValidator.validate(articleDto);
         if(!errors.isEmpty()) throw new InvalidEntityException("Article is not exit", ErrorCodes.ARTICLES_NOT_FOUND,errors);
 
-        Article article = dtoMapper.fromArticleDto(articleDto);
-        Article updateArticle = articleRepository.save(article);
+        Article updateArticle = articleRepository.save(dtoMapper.fromArticleDto(articleDto));
         return dtoMapper.fromArticle(updateArticle);
     }
 
     @Override
-    public ArticleDto findById(Long id) {
+    public ArticleDto getArticle(Long id) {
         if(id == null) {
             log.error("Article ID is null");
             return null;
@@ -64,7 +63,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleDto findByCodeArticle(String codeArticle) {
+    public ArticleDto getCodeArticle(String codeArticle) {
         if(!StringUtils.hasLength(codeArticle))
             throw new EntityNotFoundException("Nothing Article with CODE ="+codeArticle+ "has been found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND);
         Article article = articleRepository.findArticleByCodeArticle(codeArticle);

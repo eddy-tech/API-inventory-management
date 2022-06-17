@@ -85,7 +85,41 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateCustomerOrder(CustomerOrderDto customerOrderDto) {
-        return null;
+        List<String> errors = CustomerOrderValidator.validate(customerOrderDto);
+        if(!errors.isEmpty()){
+            log.error("Customer order is invalid",errors);
+            throw  new InvalidEntityException("Customer order is invalid",ErrorCodes.CUSTOMER_ORDER_NOT_VALID,errors);
+        }
+
+        Customer customer = customerRepository.findById(customerOrderDto.getCustomerDto().getId())
+                .orElseThrow(()->new EntityNotFoundException("Nothing customer with ID ="+customerOrderDto.getCustomerDto().getId()+"was found in databse",ErrorCodes.CUSTOMER_NOT_FOUND));
+
+        List<String> articleErrors = new ArrayList<>();
+
+        if(customerOrderDto.getCustomerOrderLinesDto() != null){
+            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLineDto -> {
+                if(customerOrderLineDto.getArticleDto() != null){
+                   Optional<Article> article = articleRepository.findById(customerOrderLineDto.getArticleDto().getId());
+                   if(article.isEmpty()){
+                       articleErrors.add("Nothing article with ID ="+customerOrderLineDto.getArticleDto().getId()+"was found in database");
+                   } else {
+                       articleErrors.add("Impossible to update with an article null");
+                   }
+                }
+            });
+        }
+
+        CustomerOrder updateCustomerOrder = customerOrderRepository.save(dtoMapper.fromCustomerOrderDto(customerOrderDto));
+
+        if(customerOrderDto.getCustomerOrderLinesDto()!= null){
+            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLineDto -> {
+                CustomerOrderLine customerOrderLine = dtoMapper.fromCustomerOrderLineDto(customerOrderLineDto);
+                customerOrderLine.setCustomerOrder(updateCustomerOrder);
+                customerOrderLineRepository.save(customerOrderLine);
+            });
+        }
+
+        return dtoMapper.fromCustomerOrder(updateCustomerOrder);
     }
 
     @Override

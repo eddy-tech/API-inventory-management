@@ -48,8 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new InvalidEntityException("Category is invalid", ErrorCodes.CATEGORY_NOT_VALID,errors);
         }
 
-        Category category = dtoMapper.fromCategoryDto(categoryDto);
-        Category updateCategory = categoryRepository.save(category);
+        Category updateCategory = categoryRepository.save(dtoMapper.fromCategoryDto(categoryDto));
         return dtoMapper.fromCategory(updateCategory);
     }
 

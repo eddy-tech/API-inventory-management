@@ -114,13 +114,12 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             throw new EntityNotFoundException("Article not exist in database",ErrorCodes.ARTICLES_NOT_FOUND);
         }
 
-        ProviderOrder providerOrder = dtoMapper.fromProviderOrderDto(providerOrderDto);
-        ProviderOrder updateProviderOrder = providerOrderRepository.save(providerOrder);
+        ProviderOrder updateProviderOrder = providerOrderRepository.save(dtoMapper.fromProviderOrderDto(providerOrderDto));
 
         if(providerOrderDto.getProviderOrderLinesDto() != null){
             providerOrderDto.getProviderOrderLinesDto().forEach(providerOrderLineDto -> {
                 ProviderOrderLine providerOrderLine = dtoMapper.fromProviderOrderLineDto(providerOrderLineDto);
-                providerOrderLine.setProviderOrder(providerOrder);
+                providerOrderLine.setProviderOrder(updateProviderOrder);
                 providerOrderLineRepository.save(providerOrderLine);
             });
         }

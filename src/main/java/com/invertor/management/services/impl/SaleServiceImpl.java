@@ -72,7 +72,41 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public SaleDto updateSale(SaleDto saleDto) {
-        return null;
+        List<String> errors = SaleValidator.validate(saleDto);
+        if(!errors.isEmpty()){
+            log.error("Sale is invalid",saleDto);
+            throw new InvalidEntityException("Sale is invalid",ErrorCodes.SALE_NOT_VALID,errors);
+        }
+
+        List<String> articleErrors = new ArrayList<>();
+
+        if(saleDto.getSaleLines()!= null){
+            saleDto.getSaleLines().forEach(saleLine -> {
+                if(saleLine.getArticle() != null){
+                    Optional<Article> article = articleRepository.findById(saleLine.getArticle().getId());
+                    if(article.isEmpty()){
+                        articleErrors.add("Nothing article with ID ="+saleLine.getArticle().getId()+"was found in database");
+                    }
+                }
+            });
+        }
+
+        if(!articleErrors.isEmpty()){
+            log.error("One or more articles were not found in database",errors);
+            throw new InvalidEntityException("One or more articles were not found in databse",ErrorCodes.SALE_NOT_VALID,articleErrors);
+        }
+
+        Sale sale = dtoMapper.fromSaleDto(saleDto);
+        Sale updatedSale = saleRepository.save(sale);
+
+        if(saleDto.getSaleLines() != null){
+            saleDto.getSaleLines().forEach(saleLine -> {
+                SaleLine saveSaleLine = dtoMapper.fromSaleLineDto(saleLine);
+                saveSaleLine.setSale(updatedSale);
+                saleLineRepository.save(saveSaleLine);
+            });
+        }
+        return dtoMapper.fromSale(updatedSale);
     }
 
     @Override

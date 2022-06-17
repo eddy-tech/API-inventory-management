@@ -50,9 +50,8 @@ public class ProviderServiceImpl implements ProviderService {
             throw new InvalidEntityException("Enterprise is invalid", ErrorCodes.PROVIDER_NOT_VALID,errors);
         }
 
-        Provider provider = dtoMapper.fromProviderDto(providerDto);
-        Provider savedProvider = providerRepository.save(provider);
-        return dtoMapper.fromProvider(savedProvider);
+        Provider updatedProvider = providerRepository.save(dtoMapper.fromProviderDto(providerDto));
+        return dtoMapper.fromProvider(updatedProvider);
     }
 
     @Override

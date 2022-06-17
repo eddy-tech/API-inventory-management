@@ -28,13 +28,13 @@ public class ArticleRestController {
     }
 
     @GetMapping("/article/{idArticle}")
-    public ArticleDto findById(@PathVariable(name = "idArticle") Long id) {
-        return articleService.findById(id);
+    public ArticleDto getArticle(@PathVariable(name = "idArticle") Long id) {
+        return articleService.getArticle(id);
     }
 
     @GetMapping("/article/{codeArticle}")
-    public ArticleDto findByCodeArticle(@PathVariable(name = "codeArticle") String codeArticle) {
-        return articleService.findByCodeArticle(codeArticle);
+    public ArticleDto getCodeArticle(@PathVariable(name = "codeArticle") String codeArticle) {
+        return articleService.getCodeArticle(codeArticle);
     }
 
     @GetMapping("/article")
