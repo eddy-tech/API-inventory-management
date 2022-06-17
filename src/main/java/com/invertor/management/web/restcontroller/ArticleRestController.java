@@ -1,9 +1,11 @@
-package com.invertor.management.web;
+package com.invertor.management.web.restcontroller;
 
 import com.invertor.management.dto.ArticleDto;
 import com.invertor.management.services.impl.ArticleServiceImpl;
 import com.invertor.management.services.interfaces.ArticleService;
 import com.invertor.management.utils.Constants;
+import com.invertor.management.web.api.ArticleApi;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -11,39 +13,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = Constants.API_ROOT,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
-public class ArticleRestController {
+public class ArticleRestController implements ArticleApi {
 
     private ArticleService articleService;
 
-    @PostMapping("/article")
-    public ArticleDto saveArticle(@RequestBody ArticleDto articleDto) {
+    public ArticleDto saveArticle(ArticleDto articleDto) {
         return articleService.saveArticle(articleDto);
     }
 
-    @PutMapping("/article")
-    public ArticleDto updateArticle (@RequestBody ArticleDto articleDto){
+    public ArticleDto updateArticle (ArticleDto articleDto){
         return articleService.updateArticle(articleDto);
     }
 
-    @GetMapping("/article/{idArticle}")
-    public ArticleDto getArticle(@PathVariable(name = "idArticle") Long id) {
+    public ArticleDto getArticle(Long id) {
         return articleService.getArticle(id);
     }
 
-    @GetMapping("/article/{codeArticle}")
-    public ArticleDto getCodeArticle(@PathVariable(name = "codeArticle") String codeArticle) {
+    public ArticleDto getCodeArticle(String codeArticle) {
         return articleService.getCodeArticle(codeArticle);
     }
 
-    @GetMapping("/article")
     public List<ArticleDto> listArticle() {
         return articleService.listArticle();
     }
 
-    @DeleteMapping("/article/{idArticle}")
-    public void deleteArticle(@PathVariable(name = "idArticle") Long id) {
+    public void deleteArticle(Long id) {
         articleService.deleteArticle(id);
     }
 }
