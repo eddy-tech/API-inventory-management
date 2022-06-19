@@ -11,22 +11,18 @@ import java.io.Serializable;
 @AllArgsConstructor @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-@Entity
 public class Address implements Serializable {
 
-    @Column(name = "idEnterprise")
-    private Long idEnterprise;
-
-    @Column(name = "adresse1")
+    @Column(name = "adresse_1")
     private String address1;
 
-    @Column(name = "adresse2")
+    @Column(name = "adresse_2")
     private String address2;
 
     @Column(name = "ville")
     private String city;
 
-    @Column(name = "codePostal")
+    @Column(name = "code_postal")
     private String codePostal;
 
     @Column(name = "pays")

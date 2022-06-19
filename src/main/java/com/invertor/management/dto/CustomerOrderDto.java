@@ -13,8 +13,6 @@ public class CustomerOrderDto {
 
     private Long id;
 
-    private Long idEnterprise;
-
     private String codeOrderCustomer;
 
     private Instant dateOrder;

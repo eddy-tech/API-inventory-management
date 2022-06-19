@@ -12,13 +12,10 @@ public class CategoryDto {
 
     private Long id;
 
-    private Long idEnterprise;
-
     private String codeCategory;
 
     private String designation;
 
-    @JsonIgnore
     private List<ArticleDto> articlesDto;
 
     /*

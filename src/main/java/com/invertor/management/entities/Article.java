@@ -13,30 +13,31 @@ import java.util.List;
 @Table(name = "articles")
 @EqualsAndHashCode(callSuper = true)
 public class Article extends AbstractEntity {
-    @Column(name = "codearticles")
+    @Column(name = "code_articles")
     private String codeArticle;
 
     @Column(name = "designation")
     private String designation;
 
-    @Column(name = "prixUnitaireHorsTaxe")
+    @Column(name = "prix_unitaire_hors_taxe")
     private BigDecimal unitPriceHt;
 
-    @Column(name = "taux TVA")
+    @Column(name = "taux_TVA")
     private BigDecimal rateTax;
 
-    @Column(name = "prixUnitaireTTC")
+    @Column(name = "prix_unitaireTTC")
     private BigDecimal unitPriceTtc;
-
-    @Column(name = "idEnterprise")
-    private Long idEnterprise;
 
     @Column(name = "photo")
     private String picture;
 
     @ManyToOne
-    @JoinColumn(name = "idCategorie")
+    @JoinColumn(name = "id_categories")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "id_enterprise")
+    private Enterprise enterprise;
 
     @OneToMany(mappedBy = "article")
     private List<SaleLine> saleLines;

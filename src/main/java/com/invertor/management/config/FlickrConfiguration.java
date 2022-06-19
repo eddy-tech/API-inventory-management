@@ -28,12 +28,13 @@ public class FlickrConfiguration {
     @Value("${flickr.apiSecret}")
     private String apiSecret;
 
-    @Value("${Flickr.appKey}")
+    @Value("${flickr.appKey}")
     private String appKey;
-    @Value("${Flickr.appSecret}")
+
+    @Value("{flickr.appSecret}")
     private String appSecret;
 
-    /*
+/*
     @Bean
     public Flickr getFlickr() throws IOException, ExecutionException, InterruptedException, FlickrException {
         Flickr flickr = new Flickr(apiKey,apiSecret,new REST());
@@ -66,7 +67,8 @@ public class FlickrConfiguration {
 
         return flickr;
     }
-    */
+
+ */
 
     @Bean
     public Flickr getConnectFlickr(){

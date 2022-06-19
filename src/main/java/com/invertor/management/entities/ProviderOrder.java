@@ -14,17 +14,14 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ProviderOrder extends AbstractEntity {
 
-    @Column(name = "idEnterprise")
-    private Long idEnterprise;
-
-    @Column(name = "codeCommandeFournisseur")
+    @Column(name = "code_commande_fournisseur")
     private String codeProviderOrder;
 
-    @Column(name = "dateCommande")
+    @Column(name = "date_commande")
     private Instant dateOrdering;
 
     @ManyToOne
-    @JoinColumn(name = "idFournisseur")
+    @JoinColumn(name = "id_fournisseur")
     private Provider provider;
 
     @OneToMany(mappedBy = "providerOrder")

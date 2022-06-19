@@ -30,7 +30,7 @@ public class EnterpriseDto {
 
     private String siteWeb;
 
-    @JsonIgnore
     private List<UserDto> usersDto;
+
 
 }

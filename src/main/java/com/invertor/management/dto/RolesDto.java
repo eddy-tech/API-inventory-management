@@ -8,8 +8,6 @@ public class RolesDto {
 
     private Long id;
 
-    private Long idEnterprise;
-
     private String roleName;
 
     private UserDto userDto;

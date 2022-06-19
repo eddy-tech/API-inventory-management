@@ -15,19 +15,16 @@ import java.time.Instant;
 @EqualsAndHashCode(callSuper = true)
 public class StockMovement extends AbstractEntity {
 
-    @Column(name = "idEnterprise")
-    private Long idEnterprise;
-
-    @Column(name = "dateMouvement")
+    @Column(name = "date_mouvement")
     private Instant dateMovement;
 
     @Column(name = "quantite")
     private BigDecimal quantity;
 
-    @Column(name = "typeMoveStock")
+    @Column(name = "type_move_stock")
     private TypeMoveStock typeMoveStock;
 
     @ManyToOne
-    @JoinColumn(name = "idArticle")
+    @JoinColumn(name = "id_article")
     private Article article;
 }

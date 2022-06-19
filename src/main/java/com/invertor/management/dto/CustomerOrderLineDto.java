@@ -9,8 +9,6 @@ public class CustomerOrderLineDto {
 
     private Long id;
 
-    private Long idEnterprise;
-
     private BigDecimal quantity;
 
     private BigDecimal unitPrice;

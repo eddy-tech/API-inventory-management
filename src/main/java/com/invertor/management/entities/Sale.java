@@ -17,13 +17,10 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Sale extends AbstractEntity{
 
-    @Column(name = "idEnterprise")
-    private Long idEnterprise;
-
-    @Column(name = "codeVente")
+    @Column(name = "code_vente")
     private String codeSale;
 
-    @Column(name = "dateVente")
+    @Column(name = "date_vente")
     private Instant dateSale;
 
     @Column(name = "commentaires")

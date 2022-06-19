@@ -23,10 +23,10 @@ public class User extends AbstractEntity{
     @Column(name = "email")
     private String mail;
 
-    @Column(name = "dateNaissance")
+    @Column(name = "date_naissance")
     private Instant birthDate;
 
-    @Column(name = "motDePasse")
+    @Column(name = "mot_de_passe")
     private String password;
 
     @Embedded
@@ -36,7 +36,7 @@ public class User extends AbstractEntity{
     private String picture;
 
     @ManyToOne
-    @JoinColumn(name = "idEntreprise")
+    @JoinColumn(name = "id_entreprise")
     private Enterprise enterprise;
 
     @OneToMany(mappedBy = "user")

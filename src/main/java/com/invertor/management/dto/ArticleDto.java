@@ -7,11 +7,9 @@ import java.math.BigDecimal;
 @Data
 public class ArticleDto {
 
-    private Long id;
-
     private String codeArticle;
 
-    private Long idEnterprise;
+    private Long id;
 
     private String designation;
 
@@ -24,6 +22,8 @@ public class ArticleDto {
     private String picture;
 
     private CategoryDto categoryDto;
+
+    private EnterpriseDto enterpriseDto;
 
     /*
     public static ArticleDto fromArticle (Article article){

@@ -13,9 +13,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Customer extends AbstractEntity {
 
-    @Column(name = "idEnterprise")
-    private Long idEnterprise;
-
     @Column(name = "nom")
     private String name;
 
@@ -23,7 +20,7 @@ public class Customer extends AbstractEntity {
     private String surname;
 
     @Embedded // Champs composé capable d'être utiliser dans les autres entités
-    private Address adresse;
+    private Address address;
 
     @Column(name = "photo")
     private String picture;

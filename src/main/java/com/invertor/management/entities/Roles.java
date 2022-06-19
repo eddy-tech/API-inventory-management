@@ -12,13 +12,10 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 public class Roles extends AbstractEntity{
 
-    @Column(name = "idEnterprise")
-    private Long idEnterprise;
-
-    @Column(name = "roleName")
+    @Column(name = "role_name")
     private String roleName;
 
     @ManyToOne
-    @JoinColumn(name = "idUser")
+    @JoinColumn(name = "id_user")
     private User user;
 }

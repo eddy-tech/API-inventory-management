@@ -14,8 +14,6 @@ public class ProviderOrderDto {
 
     private Long id;
 
-    private Long idEnterprise;
-
     private String codeProviderOrder;
 
     private Instant dateOrdering;

@@ -12,8 +12,6 @@ public class StockMovementDto {
 
     private Long id;
 
-    private Long idEnterprise;
-
     private Instant dateMovement;
 
     private BigDecimal quantity;
