@@ -17,6 +17,7 @@ import com.inventor.management.exceptions.ErrorCodes;
 import com.inventor.management.mapper.StockMapperImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@AllArgsConstructor
 @Slf4j
 public class ProviderOrderServiceImpl implements ProviderOrderService {
 
@@ -38,6 +38,16 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     private ProviderOrderLineRepository providerOrderLineRepository;
     private StockMapperImpl dtoMapper;
 
+    @Autowired
+    public ProviderOrderServiceImpl(ProviderOrderRepository providerOrderRepository, ArticleRepository articleRepository,
+                                    ProviderRepository providerRepository, ProviderOrderLineRepository providerOrderLineRepository,
+                                    StockMapperImpl dtoMapper) {
+        this.providerOrderRepository = providerOrderRepository;
+        this.articleRepository = articleRepository;
+        this.providerRepository = providerRepository;
+        this.providerOrderLineRepository = providerOrderLineRepository;
+        this.dtoMapper = dtoMapper;
+    }
 
     @Override
     public ProviderOrderDto saveProviderOrder(ProviderOrderDto providerOrderDto) {

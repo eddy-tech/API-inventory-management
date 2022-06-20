@@ -14,27 +14,34 @@ public class ArticleRestController implements ArticleApi {
 
     private ArticleService articleService;
 
+    @Override
     public ArticleDto saveArticle(ArticleDto articleDto) {
         return articleService.saveArticle(articleDto);
     }
 
-    public ArticleDto updateArticle (ArticleDto articleDto){
+    @Override
+    public ArticleDto updateArticle(ArticleDto articleDto) {
         return articleService.updateArticle(articleDto);
     }
 
+    @Override
     public ArticleDto getArticle(Long id) {
         return articleService.getArticle(id);
     }
 
+    @Override
     public ArticleDto getCodeArticle(String codeArticle) {
         return articleService.getCodeArticle(codeArticle);
     }
 
+    @Override
     public List<ArticleDto> listArticle() {
         return articleService.listArticle();
     }
 
+    @Override
     public void deleteArticle(Long id) {
-        articleService.deleteArticle(id);
+         articleService.deleteArticle(id);
     }
 }
+

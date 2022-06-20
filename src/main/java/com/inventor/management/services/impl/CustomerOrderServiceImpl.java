@@ -17,6 +17,7 @@ import com.inventor.management.dto.CustomerOrderDto;
 import com.inventor.management.exceptions.ErrorCodes;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@AllArgsConstructor
 @Slf4j
 public class CustomerOrderServiceImpl implements CustomerOrderService {
 
@@ -37,6 +37,17 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     private CustomerOrderLineRepository customerOrderLineRepository;
     private ArticleRepository articleRepository;
     private StockMapperImpl dtoMapper;
+
+    @Autowired
+    public CustomerOrderServiceImpl(CustomerRepository customerRepository, CustomerOrderRepository customerOrderRepository,
+                                    CustomerOrderLineRepository customerOrderLineRepository, ArticleRepository articleRepository,
+                                    StockMapperImpl dtoMapper) {
+        this.customerRepository = customerRepository;
+        this.customerOrderRepository = customerOrderRepository;
+        this.customerOrderLineRepository = customerOrderLineRepository;
+        this.articleRepository = articleRepository;
+        this.dtoMapper = dtoMapper;
+    }
 
     @Override
     public CustomerOrderDto saveCustomerOrder(CustomerOrderDto customerOrderDto) {
