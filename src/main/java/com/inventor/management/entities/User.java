@@ -41,4 +41,10 @@ public class User extends AbstractEntity{
 
     @OneToMany(mappedBy = "user")
     private List<Roles> roles;
+
+    public User (String email, String password, List<Roles> roles){
+        this.mail = email;
+        this.password = password;
+        this.roles = roles;
+    }
 }
