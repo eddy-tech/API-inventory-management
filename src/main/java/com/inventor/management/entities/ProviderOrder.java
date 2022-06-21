@@ -20,6 +20,9 @@ public class ProviderOrder extends AbstractEntity {
     @Column(name = "date_commande")
     private Instant dateOrdering;
 
+    @Column(name = "id_enterprise")
+    private Long id_enterprise;
+
     @ManyToOne
     @JoinColumn(name = "id_fournisseur")
     private Provider provider;

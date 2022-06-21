@@ -20,6 +20,9 @@ public class CustomerOrder extends AbstractEntity {
     @Column(name = "date_commande")
     private Instant dateOrder;
 
+    @Column(name = "id_enterprise")
+    private Long id_enterprise;
+
     @ManyToOne
     @JoinColumn(name = "id_client")
     private Customer customer;

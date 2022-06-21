@@ -19,14 +19,16 @@ public class AbstractEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@CreatedDate
-    @Column(name = "creation_date",nullable = false)
+    @CreatedDate
+    @Column(name = "creation_date",nullable = false, updatable = false)
     private Instant creationTime;
 
-    //@LastModifiedDate
-    @Column(name = "last_modified_date",nullable = false)
+    @LastModifiedDate
+    @Column(name = "last_modified_date")
     private Instant lastModifiedTime;
 
+    /*
+    TEMPORAL SOLUTION
     @PrePersist
     void prePersist(){
         creationTime = Instant.now();
@@ -36,4 +38,5 @@ public class AbstractEntity implements Serializable {
     void preUpdate(){
         lastModifiedTime = Instant.now();
     }
+     */
 }

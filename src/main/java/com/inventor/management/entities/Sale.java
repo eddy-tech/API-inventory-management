@@ -20,6 +20,9 @@ public class Sale extends AbstractEntity{
     @Column(name = "code_vente")
     private String codeSale;
 
+    @Column(name = "id_enterprise")
+    private Long id_enterprise;
+
     @Column(name = "date_vente")
     private Instant dateSale;
 

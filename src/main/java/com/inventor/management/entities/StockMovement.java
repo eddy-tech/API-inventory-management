@@ -24,6 +24,9 @@ public class StockMovement extends AbstractEntity {
     @Column(name = "type_move_stock")
     private TypeMoveStock typeMoveStock;
 
+    @Column(name = "id_enterprise")
+    private Long id_enterprise;
+
     @ManyToOne
     @JoinColumn(name = "id_article")
     private Article article;

@@ -19,6 +19,9 @@ public class SaleLine extends AbstractEntity {
     @Column(name = "prix_unitaire") // Prix d'achat d'un article
     private BigDecimal unitPrice;
 
+    @Column(name = "id_enterprise")
+    private Long id_enterprise;
+
     @ManyToOne
     @JoinColumn(name = "id_vente")
     private Sale sale;
