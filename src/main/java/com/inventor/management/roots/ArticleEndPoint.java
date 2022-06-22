@@ -1,8 +1,6 @@
-package com.inventor.management.routes.endpoint;
+package com.inventor.management.roots;
 
-import com.inventor.management.routes.Constants;
-
-import java.lang.module.FindException;
+import com.inventor.management.utils.Constants;
 
 public interface ArticleEndPoint {
     String ARTICLE_ENDPOINT = Constants.API_ROOT + "/articles";

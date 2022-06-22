@@ -1,6 +1,6 @@
-package com.inventor.management.routes.endpoint;
+package com.inventor.management.roots;
 
-import com.inventor.management.routes.Constants;
+import com.inventor.management.utils.Constants;
 
 public interface EnterpriseEndPoint {
 

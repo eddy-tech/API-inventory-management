@@ -1,7 +1,7 @@
 package com.inventor.management.web.api;
 
 import com.inventor.management.dto.CustomerOrderDto;
-import com.inventor.management.routes.endpoint.CustomerOrderEndPoint;
+import com.inventor.management.roots.CustomerOrderEndPoint;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

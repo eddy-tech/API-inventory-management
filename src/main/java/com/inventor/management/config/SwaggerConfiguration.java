@@ -1,6 +1,6 @@
 package com.inventor.management.config;
 
-import com.inventor.management.routes.Constants;
+import com.inventor.management.utils.Constants;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;

@@ -1,7 +1,7 @@
 package com.inventor.management.web.api;
 
 import com.inventor.management.dto.CategoryDto;
-import com.inventor.management.routes.endpoint.CategoryEndPoint;
+import com.inventor.management.roots.CategoryEndPoint;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
