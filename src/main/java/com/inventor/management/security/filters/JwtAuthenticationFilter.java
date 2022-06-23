@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis()+JwtUnit.EXPIRE_ACCESS_TOKEN))
                 .withIssuer(request.getRequestURL().toString())
+                .withClaim("idEnterprise","")
                 .withClaim("roles",user.getAuthorities().stream()
                         .map(grantedAuthority ->grantedAuthority.getAuthority()).collect(Collectors.toList()))
                 .sign(algorithm);

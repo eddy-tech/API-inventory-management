@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -27,7 +28,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
         } else{
             String authorizationToken = request.getHeader(JwtUnit.AUTH_HEADER);
-            if(authorizationToken != null && authorizationToken.startsWith(JwtUnit.PREFIX)){
+            if(StringUtils.hasLength(authorizationToken) && authorizationToken.startsWith(JwtUnit.PREFIX)){
                 try {
                     String jwt = authorizationToken.substring(JwtUnit.PREFIX.length());
                     Algorithm algorithm = Algorithm.HMAC256(JwtUnit.SECRET_KEY);
@@ -53,4 +54,5 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
     }
+
 }
