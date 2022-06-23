@@ -45,7 +45,7 @@ public class UserRestController implements UserApi {
     }
 
     @Override
-    public User profile(Principal principal) {
+    public UserDto profile(Principal principal) {
         return userService.loadUserByMail(principal.getName());
     }
 

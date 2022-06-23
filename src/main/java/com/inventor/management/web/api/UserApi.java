@@ -71,7 +71,7 @@ public interface UserApi {
     void deleteUser (@PathVariable(name = "idUser") Long id);
 
     @GetMapping(path = UserEndPoint.PROFILE_USER)
-    User profile (Principal principal);
+    UserDto profile (Principal principal);
 
     @GetMapping(path =UserEndPoint.REFRESH_TOKEN_USER)
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception;

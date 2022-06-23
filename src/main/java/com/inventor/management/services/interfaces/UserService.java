@@ -13,7 +13,7 @@ public interface UserService {
     UserDto updateUser (UserDto userDto);
     RolesDto addNewRole (RolesDto appRole);
     void addRoleToUser (String email, String roleName);
-    User loadUserByMail (String email);
+    UserDto loadUserByMail (String email);
 
     UserDto getUser (Long id);
 

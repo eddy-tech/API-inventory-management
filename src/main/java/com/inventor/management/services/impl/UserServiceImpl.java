@@ -63,16 +63,18 @@ public class UserServiceImpl implements UserService {
         return dtoMapper.fromRoles(addRole);
     }
     @Override
-    public User loadUserByMail(String email) {
+    public UserDto loadUserByMail(String email) {
         User user = userRepository.findByMail(email)
                 .orElseThrow(()-> new EntityNotFoundException("Nothing user with mail ="+ email +"was found in database",ErrorCodes.USER_NOT_FOUND));
-        return user;
+
+        return dtoMapper.fromUser(user);
     }
     @Override
     public void addRoleToUser(String email, String roleName) {
-        User user = loadUserByMail(email);
+        UserDto userDto = loadUserByMail(email);
         Roles roles = rolesRepository.findByRoleName(roleName);
 
+        User user = dtoMapper.fromUserDto(userDto);
         user.getRoles().add(roles);
     }
 
