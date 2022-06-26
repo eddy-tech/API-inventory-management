@@ -38,8 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().frameOptions().disable();
-        http.authorizeRequests().antMatchers("/**/refreshToken",
-                "/**/authenticate", "/**/enterprise","/v2/api-docs",
+        http.authorizeRequests().antMatchers("/**/refreshToken/**",
+                "/**/authenticate/**","/**/login/**", "/**/enterprise/**","/v2/api-docs",
                 "/swagger-resources","/swagger-resources/**","/configuration/ui","/configuration/security",
                 "/swagger-ui.html","/webjars/**","/v3/api-docs/**","/swagger-ui/**")
                 .permitAll();

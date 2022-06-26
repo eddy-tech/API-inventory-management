@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.inventor.management.utils.JwtUnit;
+import org.slf4j.MDC;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,6 +32,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if(StringUtils.hasLength(authorizationToken) && authorizationToken.startsWith(JwtUnit.PREFIX)){
                 try {
                     String jwt = authorizationToken.substring(JwtUnit.PREFIX.length());
+                    String idEnterprise = null;
                     Algorithm algorithm = Algorithm.HMAC256(JwtUnit.SECRET_KEY);
                     JWTVerifier jwtVerifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = jwtVerifier.verify(jwt);
@@ -42,6 +44,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     }
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    MDC.put("idEnterprise", null);
                     filterChain.doFilter(request,response);
 
                 } catch (Exception e) {
@@ -49,6 +52,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 }
             } else {
+                MDC.put("idEnterprise", null); // PERMET DE STOCKER DES OBJETS DIRECTEMENT
                 filterChain.doFilter(request,response);
             }
         }
