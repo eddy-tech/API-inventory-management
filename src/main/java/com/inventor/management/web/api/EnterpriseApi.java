@@ -1,14 +1,11 @@
 package com.inventor.management.web.api;
 
-import com.inventor.management.dto.ArticleDto;
 import com.inventor.management.dto.EnterpriseDto;
-import com.inventor.management.routes.endpoint.ArticleEndPoint;
-import com.inventor.management.routes.endpoint.EnterpriseEndPoint;
+import com.inventor.management.roots.EnterpriseEndPoint;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

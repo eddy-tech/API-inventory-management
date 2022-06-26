@@ -1,7 +1,7 @@
 package com.inventor.management.web.api;
 
 import com.inventor.management.dto.ArticleDto;
-import com.inventor.management.routes.endpoint.ArticleEndPoint;
+import com.inventor.management.roots.ArticleEndPoint;
 import io.swagger.annotations.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

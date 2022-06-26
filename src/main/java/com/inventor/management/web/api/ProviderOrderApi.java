@@ -1,7 +1,7 @@
 package com.inventor.management.web.api;
 
 import com.inventor.management.dto.ProviderOrderDto;
-import com.inventor.management.routes.endpoint.ProviderOrderEndPoint;
+import com.inventor.management.roots.ProviderOrderEndPoint;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

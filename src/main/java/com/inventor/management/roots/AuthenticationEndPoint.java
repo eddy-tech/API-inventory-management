@@ -1,6 +1,4 @@
-package com.inventor.management.routes.endpoint;
-
-import com.inventor.management.routes.Constants;
+package com.inventor.management.roots;
 
 public interface AuthenticationEndPoint {
 
