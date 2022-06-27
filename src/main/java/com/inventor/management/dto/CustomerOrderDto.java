@@ -16,6 +16,8 @@ public class CustomerOrderDto {
 
     private CustomerDto customerDto;
 
+    private Long id_enterprise;
+
     private List<CustomerOrderLineDto> customerOrderLinesDto;
 
 }

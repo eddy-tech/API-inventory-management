@@ -21,6 +21,8 @@ public class ProviderDto {
 
     private String numTel;
 
+    private Long id_enterprise;
+
     @JsonIgnore
     private List<ProviderOrderDto> providerOrdersDto;
 

@@ -1,13 +1,18 @@
 package com.inventor.management.handlers;
 
 import com.inventor.management.exceptions.EntityNotFoundException;
+import com.inventor.management.exceptions.ErrorCodes;
 import com.inventor.management.exceptions.InvalidEntityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.sql.ResultSet;
+import java.util.Collections;
 
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -38,5 +43,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
          return new ResponseEntity<>(errorDto, badRequestStatus);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorDto>handleExceptions(BadCredentialsException exception, WebRequest webRequest){
+        final HttpStatus badRequestStatus = HttpStatus.BAD_REQUEST;
+
+        final ErrorDto errorDto = ErrorDto.builder()
+                .codes(ErrorCodes.BAD_CREDENTIALS)
+                .httpCode(badRequestStatus.value())
+                .message(exception.getMessage())
+                .errors(Collections.singletonList("Login and / or wrong password"))
+                .build();
+
+        return new ResponseEntity<>(errorDto,badRequestStatus);
     }
 }

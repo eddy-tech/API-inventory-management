@@ -16,6 +16,8 @@ public class ProviderOrderDto {
 
     private ProviderDto providerDto;
 
+    private Long id_enterprise;
+
     private List<ProviderOrderLineDto> providerOrderLinesDto;
 
 }

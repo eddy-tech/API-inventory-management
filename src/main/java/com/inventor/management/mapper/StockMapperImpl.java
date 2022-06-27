@@ -91,6 +91,12 @@ public class StockMapperImpl {
          return enterprise;
     }
 
+    public UserDto fromEnterpriseUser (EnterpriseDto enterpriseDto){
+         UserDto userDto = new UserDto();
+         BeanUtils.copyProperties(enterpriseDto,userDto);
+         return userDto;
+    }
+
     public ProviderDto fromProvider (Provider provider){
          ProviderDto providerDto = new ProviderDto();
          BeanUtils.copyProperties(provider,providerDto);

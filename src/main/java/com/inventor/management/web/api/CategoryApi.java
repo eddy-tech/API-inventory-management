@@ -14,7 +14,7 @@ import java.util.List;
 @Api(value = CategoryEndPoint.CATEGORY_ENDPOINT)
 public interface CategoryApi {
 
-    @PostMapping(value = CategoryEndPoint.CATEGORY_ENDPOINT,
+    @PostMapping(path = CategoryEndPoint.CATEGORY_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Save Category", notes = "This method allow to save category", response = CategoryDto.class)
     @ApiResponses(value = {
@@ -24,7 +24,7 @@ public interface CategoryApi {
     })
     CategoryDto saveCategory (@RequestBody CategoryDto categoryDto);
 
-    @PutMapping(value = CategoryEndPoint.CATEGORY_ENDPOINT,
+    @PutMapping(path = CategoryEndPoint.CATEGORY_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update Category",notes = "This method allow to update category",response = CategoryDto.class)
     @ApiResponses(value = {
@@ -34,7 +34,7 @@ public interface CategoryApi {
     })
     CategoryDto updateCategory (@RequestBody CategoryDto categoryDto);
 
-    @GetMapping(value = CategoryEndPoint.FIND_CATEGORY_BY_ID,
+    @GetMapping(path = CategoryEndPoint.FIND_CATEGORY_BY_ID,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Find out a category by ID",
             notes = "This method allow to find out a category with ID",response = CategoryDto.class)
@@ -45,7 +45,7 @@ public interface CategoryApi {
     })
     CategoryDto getCategory (@PathVariable(name = "idCategory") Long id);
 
-    @GetMapping(value = CategoryEndPoint.FIND_CATEGORY_BY_CODE_CATEGORY,
+    @GetMapping(path = CategoryEndPoint.FIND_CATEGORY_BY_CODE_CATEGORY,
             consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Find out a category by code_category",
             notes = "This method allow to find out a category with code_category",response = CategoryDto.class)
@@ -56,7 +56,7 @@ public interface CategoryApi {
     })
     CategoryDto getCodeCategory (@PathVariable(name = "idCodeCategory") String codeCategory);
 
-    @GetMapping(value = CategoryEndPoint.CATEGORY_ENDPOINT,
+    @GetMapping(path = CategoryEndPoint.CATEGORY_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Return list of categories",
             notes = "This method allow to research and return all categories that exist in DB",responseContainer = "List<CategoryDto>")
@@ -66,7 +66,7 @@ public interface CategoryApi {
     })
     List<CategoryDto> listCategory ();
 
-    @DeleteMapping(value = CategoryEndPoint.DELETE_CATEGORY,
+    @DeleteMapping(path = CategoryEndPoint.DELETE_CATEGORY,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Delete a category",
             notes = "This method allow to delete a category by ID",response = CategoryDto.class)

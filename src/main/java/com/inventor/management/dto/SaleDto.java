@@ -17,5 +17,7 @@ public class SaleDto {
 
     private String comments;
 
+    private Long id_enterprise;
+
     private List<SaleLine> saleLines;
 }

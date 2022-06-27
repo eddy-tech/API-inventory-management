@@ -27,7 +27,6 @@ public class UserDto {
 
     private EnterpriseDto enterpriseDto;
 
-    @JsonIgnore
     private List<RolesDto> rolesDto;
 
 }
