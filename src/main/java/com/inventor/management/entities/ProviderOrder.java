@@ -1,5 +1,6 @@
 package com.inventor.management.entities;
 
+import com.inventor.management.enums.StateOrder;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,6 +20,9 @@ public class ProviderOrder extends AbstractEntity {
 
     @Column(name = "date_commande")
     private Instant dateOrdering;
+
+    @Column(name = "etat_commande")
+    private StateOrder stateOrder;
 
     @Column(name = "id_enterprise")
     private Long id_enterprise;

@@ -1,27 +1,33 @@
 package com.inventor.management.services.impl;
 
+import com.inventor.management.dto.CustomerDto;
+import com.inventor.management.dto.CustomerOrderLineDto;
 import com.inventor.management.entities.Article;
 import com.inventor.management.entities.Customer;
 import com.inventor.management.entities.CustomerOrder;
 import com.inventor.management.entities.CustomerOrderLine;
+import com.inventor.management.enums.StateOrder;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
+import com.inventor.management.exceptions.InvalidOperationException;
 import com.inventor.management.mapper.StockMapperImpl;
 import com.inventor.management.repository.ArticleRepository;
 import com.inventor.management.repository.CustomerOrderLineRepository;
 import com.inventor.management.repository.CustomerOrderRepository;
 import com.inventor.management.repository.CustomerRepository;
 import com.inventor.management.services.interfaces.CustomerOrderService;
+import com.inventor.management.validators.ArticleValidator;
 import com.inventor.management.validators.CustomerOrderValidator;
 import com.inventor.management.dto.CustomerOrderDto;
 import com.inventor.management.exceptions.ErrorCodes;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +61,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         if(!errors.isEmpty()){
             log.error("Customer Order is invalid");
             throw new InvalidEntityException("Customer order is invalid", ErrorCodes.CUSTOMER_ORDER_NOT_VALID,errors);
+        }
+
+        if(customerOrderDto.getId() != null && customerOrderDto.isOrderDelivered()){
+          throw new InvalidOperationException("Unable to edit customer order when delivered", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
         }
 
         Customer customer = customerRepository.findById(customerOrderDto.getCustomerDto().getId())
@@ -133,6 +143,131 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         return dtoMapper.fromCustomerOrder(updateCustomerOrder);
     }
 
+    private void checkIdOrder (Long orderId){
+        if(orderId == null) {
+            log.error("customer order ID is null");
+            throw new InvalidOperationException("Unable to edit quantity ordered with null ID",
+                    ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+        }
+    }
+
+    private void checkIdOrderLine (Long orderLineId) {
+        if(orderLineId == null) {
+            log.error("customer order Line ID is null");
+            throw new InvalidOperationException("Unable to edit quantity ordered with null order line",
+                    ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+        }
+    }
+
+    private void checkIdArticle (Long idArticle, String message){
+        if(idArticle == null){
+            log.error("ID of"+message+"is NULL");
+            throw new InvalidOperationException("Unable to edit state order with a" + message + "article ID null",
+                    ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+        }
+    }
+
+    private CustomerOrderDto checkStateOrder(Long orderId){
+        CustomerOrderDto customerOrder = getCustomerOrder(orderId);
+        if(customerOrder.isOrderDelivered()) throw new InvalidOperationException("Unable to edit state order with null ID",
+                ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+
+        return customerOrder;
+    }
+
+    private Optional<CustomerOrderLine> findCustomerOrderLine (Long orderLineId){
+        Optional<CustomerOrderLine> customerOrderLineOptional = customerOrderLineRepository.findById(orderLineId);
+
+        // CHECKED IF LINE COMMAND EXIST WITH ID PROVIDED
+        if(customerOrderLineOptional.isEmpty())
+            throw new EntityNotFoundException("Nothing customer order line has been found with ID ="+orderLineId,
+                    ErrorCodes.CUSTOMER_NOT_FOUND);
+
+        return customerOrderLineOptional;
+    }
+
+    @Override
+    public CustomerOrderDto updateQuantityOrdered(Long orderId, Long orderLineId, BigDecimal quantity) {
+        checkIdOrder(orderId);
+        checkIdOrderLine(orderLineId);
+      if(quantity == null || quantity.compareTo(BigDecimal.ZERO) == 0) {
+            log.error("quantity of customer order is null");
+            throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+        }
+
+       CustomerOrderDto customerOrder = checkStateOrder(orderId);
+      Optional<CustomerOrderLine> customerOrderLineOptional = findCustomerOrderLine(orderLineId);
+
+        CustomerOrderLine customerOrderLine = customerOrderLineOptional.get();
+        customerOrderLine.setQuantity(quantity);
+        customerOrderLineRepository.save(customerOrderLine);
+
+        return customerOrder;
+    }
+
+    @Override
+    public CustomerOrderDto updateStateOrder(Long orderId, StateOrder stateOrder) {
+        checkIdOrder(orderId);
+
+        if(!StringUtils.hasLength(String.valueOf(stateOrder))) {
+            log.error("customer state order is NULL");
+            throw new InvalidOperationException("Unable to edit state order with state NULL", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+        }
+
+        CustomerOrderDto orderDto = checkStateOrder(orderId);
+        orderDto.setStateOrder(stateOrder);
+        CustomerOrder customerOrder = dtoMapper.fromCustomerOrderDto(orderDto);
+        CustomerOrder savedCustomerOrder = customerOrderRepository.save(customerOrder);
+
+        return dtoMapper.fromCustomerOrder(savedCustomerOrder);
+    }
+
+    @Override
+    public CustomerOrderDto updateCustomer(Long orderId, Long customerId) {
+        checkIdOrder(orderId);
+
+       if(customerId == null) {
+            log.error("customer ID is null");
+            throw new InvalidOperationException("Unable to edit state order with null ID",
+                    ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+        }
+
+       CustomerOrderDto customerOrder = checkStateOrder(orderId);
+
+       Customer customerOptional = customerRepository.findById(customerId)
+               .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+customerId,
+                ErrorCodes.CUSTOMER_NOT_FOUND));
+
+       CustomerDto customer = dtoMapper.fromCustomer(customerOptional);
+       customerOrder.setCustomerDto(customer);
+
+       CustomerOrder savedCustomerOrder = customerOrderRepository.save(dtoMapper.fromCustomerOrderDto(customerOrder));
+        return dtoMapper.fromCustomerOrder(savedCustomerOrder);
+    }
+
+    @Override
+    public CustomerOrderDto updateArticle(Long orderId, Long orderLineId, Long articleId) {
+        checkIdOrder(orderId);
+        checkIdOrderLine(orderLineId);
+        checkIdArticle(articleId, "new");
+
+        CustomerOrderDto customerOrder = checkStateOrder(orderId); // CHECK STATE OF ORDER
+        Optional<CustomerOrderLine> customerOrderLine = findCustomerOrderLine(orderLineId);
+
+        Article articleOptional = articleRepository.findById(articleId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId,
+                        ErrorCodes.ARTICLES_NOT_FOUND));
+
+        List<String> errors = ArticleValidator.validate(dtoMapper.fromArticle(articleOptional));
+        if(!errors.isEmpty()) throw new InvalidEntityException("Article invalid", ErrorCodes.ARTICLE_NOT_VALID,errors);
+
+        CustomerOrderLine customerOrderLineToSaved = customerOrderLine.get();
+        customerOrderLineToSaved.setArticle(articleOptional);
+        customerOrderLineRepository.save(customerOrderLineToSaved);
+
+        return customerOrder;
+    }
+
     @Override
     public CustomerOrderDto getCustomerOrder(Long id) {
         if(id == null){
@@ -166,11 +301,34 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     }
 
     @Override
+    public List<CustomerOrderLineDto> findAllCustomerOrdersLinesByCustomerOrderId(Long orderId) {
+         List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(orderId);
+        List<CustomerOrderLineDto> customerOrderLineDtoList = customerOrderLineList.stream().map(customerOrderLineDto -> dtoMapper.fromCustomerOrderLine(customerOrderLineDto))
+                 .collect(Collectors.toList());
+
+        return customerOrderLineDtoList;
+    }
+
+
+    @Override
     public void deleteCustomerOrder(Long id) {
         if(id == null){
             log.error("Customer order ID is NULL");
             return;
         }
         customerOrderRepository.deleteById(id);
+    }
+
+    @Override
+    public CustomerOrderDto deleteArticle(Long orderId, Long orderLineId) {
+        checkIdOrder(orderId);
+        checkIdOrderLine(orderLineId);
+
+        CustomerOrderDto customerOrder = checkStateOrder(orderId);
+        // JUST TO CHECK CUSTOMER ORDER LINE AND INFORM THE CLIENT IN CASE IT IS ABSENT
+        findCustomerOrderLine(orderLineId);
+
+        customerOrderLineRepository.deleteById(orderLineId);
+        return customerOrder;
     }
 }
