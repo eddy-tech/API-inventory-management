@@ -13,6 +13,8 @@ public class SaleLineDto {
 
     private BigDecimal unitPrice;
 
+    private Long id_enterprise;
+
     private SaleDto saleDto;
 
     private ArticleDto articleDto;

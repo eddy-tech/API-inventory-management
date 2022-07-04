@@ -8,8 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @Table(name = "articles")
 @EqualsAndHashCode(callSuper = true)
 public class Article extends AbstractEntity {

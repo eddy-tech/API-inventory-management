@@ -1,5 +1,7 @@
 package com.inventor.management.services.impl;
 
+import com.inventor.management.dto.RolesDto;
+import com.inventor.management.dto.UserDto;
 import com.inventor.management.entities.Enterprise;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
@@ -7,7 +9,9 @@ import com.inventor.management.dto.EnterpriseDto;
 import com.inventor.management.exceptions.ErrorCodes;
 import com.inventor.management.mapper.StockMapperImpl;
 import com.inventor.management.repository.EnterpriseRepository;
+import com.inventor.management.repository.RolesRepository;
 import com.inventor.management.services.interfaces.EnterpriseService;
+import com.inventor.management.services.interfaces.UserService;
 import com.inventor.management.validators.EnterpriseValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,8 @@ import java.util.stream.Collectors;
 public class EnterpriseServiceImpl implements EnterpriseService {
 
     private EnterpriseRepository enterpriseRepository;
+    private RolesRepository rolesRepository;
+    private UserService userService;
     private StockMapperImpl dtoMapper;
 
     @Override
@@ -36,7 +42,17 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
         Enterprise enterprise = dtoMapper.fromEnterpriseDto(enterpriseDto);
         Enterprise savedEnterprise = enterpriseRepository.save(enterprise);
-        return dtoMapper.fromEnterprise(savedEnterprise);
+        EnterpriseDto savedEnterpriseDto = dtoMapper.fromEnterprise(savedEnterprise);
+
+        UserDto userDto = dtoMapper.fromEnterpriseUser(savedEnterpriseDto);
+        UserDto savedUser = userService.saveUser(userDto);
+
+        RolesDto rolesDto = new RolesDto();
+        rolesDto.setRoleName("ADMIN");
+        rolesDto.setUserDto(savedUser);
+        rolesRepository.save(dtoMapper.fromRolesDto(rolesDto));
+
+        return savedEnterpriseDto;
     }
 
     @Override

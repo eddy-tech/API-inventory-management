@@ -4,5 +4,5 @@ import com.inventor.management.utils.Constants;
 
 public interface AuthenticationEndPoint {
 
-    String AUTHENTICATION_ENDPOINT = Constants.API_ROOT + "/authenticate";
+    String AUTHENTICATION_ENDPOINT = Constants.API_ROOT + "/auth";
 }

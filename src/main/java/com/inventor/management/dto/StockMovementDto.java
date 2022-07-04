@@ -17,5 +17,7 @@ public class StockMovementDto {
 
     private TypeMoveStock typeMoveStock;
 
+    private Long id_enterprise;
+
     private ArticleDto articleDto;
 }

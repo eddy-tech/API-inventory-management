@@ -1,4 +1,5 @@
 package com.inventor.management.dto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -14,6 +15,9 @@ public class CustomerOrderLineDto {
 
     private ArticleDto articleDto;
 
+    private Long id_enterprise;
+
+    @JsonIgnore
     private CustomerOrderDto customerOrderDto;
 
 }

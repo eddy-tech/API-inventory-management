@@ -75,15 +75,12 @@ public class FlickrConfiguration {
         Flickr flickr = new Flickr(appKey,appSecret,new REST());
 
         Auth auth = new Auth();
-
         auth.setPermission(Permission.DELETE);
-
         auth.setToken(appKey);
         auth.setToken(appSecret);
 
         RequestContext requestContext = RequestContext.getRequestContext();
         requestContext.setAuth(auth);
-
         flickr.setAuth(auth);
 
         return flickr;

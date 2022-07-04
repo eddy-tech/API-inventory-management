@@ -1,65 +1,68 @@
 package com.inventor.management.security.filters;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inventor.management.security.ExtendedUser;
 import com.inventor.management.utils.JwtUnit;
-import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import io.jsonwebtoken.Claims;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
-@AllArgsConstructor
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private AuthenticationManager authenticationManager;
 
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+@Service
+public class JwtAuthenticationFilter {
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken authenticateToken = new UsernamePasswordAuthenticationToken(username,password);
-        return authenticationManager.authenticate(authenticateToken);
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
-        User user = (User) authResult.getPrincipal();
-        Algorithm algorithm = Algorithm.HMAC256(JwtUnit.SECRET_KEY);
-        // CREATE ACCESS TOKEN
-        String jwtAccessToken = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+JwtUnit.EXPIRE_ACCESS_TOKEN))
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("idEnterprise","")
-                .withClaim("roles",user.getAuthorities().stream()
-                        .map(grantedAuthority ->grantedAuthority.getAuthority()).collect(Collectors.toList()))
-                .sign(algorithm);
-
-        // CREATE REFRESH TOKEN
-        String jwtRefreshToken = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis()+JwtUnit.EXPIRE_REFRESH_TOKEN))
-                .withIssuer(request.getRequestURL().toString())
-                .sign(algorithm);
-        Map<String, String> idToken = new HashMap<>();
-        idToken.put("access-token",jwtAccessToken);
-        idToken.put("refresh-token",jwtRefreshToken);
-        response.setContentType("application/json");
-        new ObjectMapper().writeValue(response.getOutputStream(),idToken);
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
+
+    public String extractIdEnterprise(String token) {
+        final Claims claims = extractAllClaims(token);
+
+        return claims.get("idEnterprise", String.class);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(JwtUnit.SECRET_KEY).parseClaimsJws(token).getBody();
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public String generateToken(ExtendedUser userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails);
+    }
+
+    public String createToken(Map<String, Object> claims, ExtendedUser user){
+        return Jwts.builder().setClaims(claims)
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setIssuedAt(new Date(System.currentTimeMillis() + JwtUnit.EXPIRE_ACCESS_TOKEN))
+                .claim("idEnterprise", user.getId_enterprise().toString())
+                .signWith(SignatureAlgorithm.HS256, JwtUnit.SECRET_KEY).compact();
+    }
+
+    public Boolean validateToken (String token, UserDetails userDetails){
+        final String username =extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+
+
 }

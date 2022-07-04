@@ -13,6 +13,8 @@ public class ProviderOrderLineDto {
 
     private BigDecimal unitPrice;
 
+    private Long id_enterprise;
+
     private ProviderOrderDto providerOrderDto;
 
     private ArticleDto articleDto;

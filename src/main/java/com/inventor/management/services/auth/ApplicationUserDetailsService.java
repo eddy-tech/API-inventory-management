@@ -3,7 +3,7 @@ package com.inventor.management.services.auth;
 import com.inventor.management.dto.UserDto;
 import com.inventor.management.entities.User;
 import com.inventor.management.mapper.StockMapperImpl;
-import com.inventor.management.security.auth.ExtendedUser;
+import com.inventor.management.security.ExtendedUser;
 import com.inventor.management.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +20,7 @@ import java.util.Collection;
 @Service
 @AllArgsConstructor
 public class ApplicationUserDetailsService implements UserDetailsService {
+
     private UserService userService;
     private StockMapperImpl dtoMapper;
 

@@ -65,7 +65,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto loadUserByMail(String email) {
         User user = userRepository.findByMail(email)
-                .orElseThrow(()-> new EntityNotFoundException("Nothing user with mail ="+ email +"was found in database",ErrorCodes.USER_NOT_FOUND));
+                .orElseThrow(()-> new EntityNotFoundException("Nothing user with mail ="+ email +"was found in database",
+                        ErrorCodes.USER_NOT_FOUND));
 
         return dtoMapper.fromUser(user);
     }
@@ -86,7 +87,8 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Nothing User with ID ="+ id + "was found in DataBase",ErrorCodes.USER_NOT_FOUND));
+                .orElseThrow(()-> new EntityNotFoundException("Nothing User with ID ="+ id + "was found in DataBase",
+                        ErrorCodes.USER_NOT_FOUND));
         return dtoMapper.fromUser(user);
     }
 

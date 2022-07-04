@@ -1,5 +1,6 @@
 package com.inventor.management.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public class CustomerDto {
 
     private String numTel;
 
+    private Long id_enterprise;
+
+    @JsonIgnore
     private List<CustomerOrderDto> customerOrderDto;
 
 

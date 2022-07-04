@@ -9,4 +9,5 @@ public interface UserEndPoint {
  String DELETE_USER = FIND_USER_BY_ID;
  String PROFILE_USER = USER_ENDPOINT+ "/profile";
  String REFRESH_TOKEN_USER = Constants.API_ROOT+ "/refreshToken";
+ String USER_ROLE = Constants.API_ROOT + "/addRoleToUser";
 }
