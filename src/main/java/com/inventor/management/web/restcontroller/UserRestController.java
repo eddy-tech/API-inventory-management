@@ -1,7 +1,6 @@
 package com.inventor.management.web.restcontroller;
 
 import com.inventor.management.dto.UserDto;
-import com.inventor.management.entities.User;
 import com.inventor.management.services.interfaces.UserService;
 import com.inventor.management.web.api.UserApi;
 import lombok.AllArgsConstructor;

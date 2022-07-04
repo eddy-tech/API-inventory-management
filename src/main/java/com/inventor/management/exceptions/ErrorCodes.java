@@ -32,7 +32,10 @@ public enum ErrorCodes {
     USER_NOT_VALID(12001),
     BAD_CREDENTIALS(12003),
     SALE_NOT_FOUND(13000),
-    SALE_NOT_VALID(13001);
+    SALE_NOT_VALID(13001),
+    // TECHNICAL EXCEPTION LIST
+    UPDATE_PICTURE_EXCEPTION(14000),
+    UNKNOWN_CONTEXT (14001);
 
     private int code;
     ErrorCodes(int code){

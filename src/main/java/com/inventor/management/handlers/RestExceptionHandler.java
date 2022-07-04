@@ -1,5 +1,6 @@
 package com.inventor.management.handlers;
 
+import com.flickr4java.flickr.FlickrException;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.ErrorCodes;
 import com.inventor.management.exceptions.InvalidEntityException;
@@ -20,7 +21,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorDto> handleException (EntityNotFoundException exception, WebRequest webRequest){
-
         final HttpStatus notFoundStatus = HttpStatus.NOT_FOUND;
         final ErrorDto errorDto = ErrorDto.builder()
                 .codes(exception.getErrorCodes())
@@ -30,10 +30,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(errorDto,notFoundStatus);
     }
+  @ExceptionHandler(FlickrException.class)
+    public ResponseEntity<ErrorDto> handleException (FlickrException exception, WebRequest webRequest){
+        final HttpStatus notFoundStatus = HttpStatus.NOT_FOUND;
+        final ErrorDto errorDto = ErrorDto.builder()
+                .codes(ErrorCodes.valueOf(exception.getErrorCode()))
+                .httpCode(notFoundStatus.value())
+                .message(exception.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorDto,notFoundStatus);
+    }
 
     @ExceptionHandler(InvalidOperationException.class)
     public ResponseEntity<ErrorDto> handleException (InvalidOperationException exception, WebRequest webRequest){
-
         final HttpStatus notFoundStatus = HttpStatus.BAD_REQUEST;
         final ErrorDto errorDto = ErrorDto.builder()
                 .codes(exception.getErrorCodes())
@@ -48,7 +58,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(InvalidEntityException.class)
     public ResponseEntity<ErrorDto> handleException (InvalidEntityException exception, WebRequest webRequest){
         final HttpStatus badRequestStatus = HttpStatus.BAD_REQUEST;
-
          final ErrorDto errorDto = ErrorDto.builder()
                 .codes(exception.getErrorCodes())
                 .httpCode(badRequestStatus.value())
@@ -62,7 +71,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorDto>handleExceptions(BadCredentialsException exception, WebRequest webRequest){
         final HttpStatus badRequestStatus = HttpStatus.BAD_REQUEST;
-
         final ErrorDto errorDto = ErrorDto.builder()
                 .codes(ErrorCodes.BAD_CREDENTIALS)
                 .httpCode(badRequestStatus.value())

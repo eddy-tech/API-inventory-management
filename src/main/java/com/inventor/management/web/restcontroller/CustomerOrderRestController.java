@@ -5,7 +5,6 @@ import com.inventor.management.dto.CustomerOrderLineDto;
 import com.inventor.management.enums.StateOrder;
 import com.inventor.management.services.interfaces.CustomerOrderService;
 import com.inventor.management.web.api.CustomerOrderApi;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

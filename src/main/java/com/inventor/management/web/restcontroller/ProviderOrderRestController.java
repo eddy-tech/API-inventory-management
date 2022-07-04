@@ -1,6 +1,5 @@
 package com.inventor.management.web.restcontroller;
 
-import com.inventor.management.dto.CustomerOrderLineDto;
 import com.inventor.management.dto.ProviderOrderDto;
 import com.inventor.management.dto.ProviderOrderLineDto;
 import com.inventor.management.enums.StateOrder;

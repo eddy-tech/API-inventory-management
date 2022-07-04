@@ -1,7 +1,14 @@
 package com.inventor.management.services.impl;
 
+import com.inventor.management.dto.CustomerOrderLineDto;
+import com.inventor.management.dto.ProviderOrderLineDto;
+import com.inventor.management.dto.SaleLineDto;
+import com.inventor.management.entities.SaleLine;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
+import com.inventor.management.repository.CustomerOrderLineRepository;
+import com.inventor.management.repository.ProviderOrderLineRepository;
+import com.inventor.management.repository.SaleLineRepository;
 import com.inventor.management.services.interfaces.ArticleService;
 import com.inventor.management.dto.ArticleDto;
 import com.inventor.management.entities.Article;
@@ -25,7 +32,11 @@ import java.util.stream.Collectors;
 public class ArticleServiceImpl implements ArticleService {
 
     private ArticleRepository articleRepository;
+    private CustomerOrderLineRepository customerOrderLineRepository;
+    private ProviderOrderLineRepository providerOrderLineRepository;
+    private SaleLineRepository saleLineRepository;
     private StockMapperImpl dtoMapper;
+
 
     @Override
     public ArticleDto saveArticle(ArticleDto articleDto) {
@@ -74,9 +85,41 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleDto> listArticle() {
         List<Article> articleList = articleRepository.findAll();
         List<ArticleDto> articleDtoList =articleList.stream()
-                .map(article -> dtoMapper.fromArticle(article)).collect(Collectors.toList());
+                .map(article -> dtoMapper.fromArticle(article))
+                .collect(Collectors.toList());
 
         return articleDtoList;
+    }
+
+    @Override
+    public List<SaleLineDto> findHistorySales(Long articleId) {
+        List<SaleLine> saleLineList = saleLineRepository.findAllByArticleId(articleId);
+        List<SaleLineDto> saleLineDtoList = saleLineList.stream()
+                .map(saleLine -> dtoMapper.fromSaleLine(saleLine))
+                .collect(Collectors.toList());
+
+        return saleLineDtoList;
+    }
+
+    @Override
+    public List<CustomerOrderLineDto> findHistoryCustomerOrder(Long articleId) {
+        return customerOrderLineRepository.findAllByArticleId(articleId).stream()
+                .map(customerOrderLine -> dtoMapper.fromCustomerOrderLine(customerOrderLine))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProviderOrderLineDto> findHistoryProviderOrder(Long articleId) {
+        return providerOrderLineRepository.findAllByArticleId(articleId).stream()
+                .map(providerOrderLine -> dtoMapper.fromProviderOrderLine(providerOrderLine))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ArticleDto> findAllArticleByCategory(Long categoryId) {
+        return articleRepository.findAllByCategoryId(categoryId).stream()
+                .map(article -> dtoMapper.fromArticle(article))
+                .collect(Collectors.toList());
     }
 
     @Override
