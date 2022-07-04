@@ -2,11 +2,14 @@ package com.inventor.management.services.impl;
 
 import com.inventor.management.dto.CustomerDto;
 import com.inventor.management.dto.CustomerOrderLineDto;
+import com.inventor.management.dto.StockMovementDto;
 import com.inventor.management.entities.Article;
 import com.inventor.management.entities.Customer;
 import com.inventor.management.entities.CustomerOrder;
 import com.inventor.management.entities.CustomerOrderLine;
+import com.inventor.management.enums.SourceStockMovement;
 import com.inventor.management.enums.StateOrder;
+import com.inventor.management.enums.TypeMoveStock;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.exceptions.InvalidOperationException;
@@ -16,6 +19,7 @@ import com.inventor.management.repository.CustomerOrderLineRepository;
 import com.inventor.management.repository.CustomerOrderRepository;
 import com.inventor.management.repository.CustomerRepository;
 import com.inventor.management.services.interfaces.CustomerOrderService;
+import com.inventor.management.services.interfaces.StockMovementService;
 import com.inventor.management.validators.ArticleValidator;
 import com.inventor.management.validators.CustomerOrderValidator;
 import com.inventor.management.dto.CustomerOrderDto;
@@ -27,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +46,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     private CustomerOrderRepository customerOrderRepository;
     private CustomerOrderLineRepository customerOrderLineRepository;
     private ArticleRepository articleRepository;
+    private StockMovementService stockMovementService;
     private StockMapperImpl dtoMapper;
 
     @Autowired
@@ -329,5 +335,19 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
         customerOrderLineRepository.deleteById(orderLineId);
         return customerOrder;
+    }
+
+    private void updateStockMovement (Long orderId){
+        List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(orderId);
+        customerOrderLineList.forEach(customerOrderLine -> {
+            StockMovementDto stockMovement = new StockMovementDto();
+            stockMovement.setArticleDto(dtoMapper.fromArticle(customerOrderLine.getArticle()));
+            stockMovement.setDateMovement(Instant.now());
+            stockMovement.setTypeMoveStock(TypeMoveStock.EXIT);
+            stockMovement.setSourceStockMovement(SourceStockMovement.CUSTOMER_ORDER);
+            stockMovement.setQuantity(customerOrderLine.getQuantity());
+            stockMovement.setId_enterprise(customerOrderLine.getId_enterprise());
+            stockMovementService.exitStock(stockMovement);
+        });
     }
 }

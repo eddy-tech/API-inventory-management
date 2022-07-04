@@ -1,8 +1,10 @@
 package com.inventor.management.dto;
 
+import com.inventor.management.enums.SourceStockMovement;
 import com.inventor.management.enums.TypeMoveStock;
 import lombok.Data;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -16,6 +18,8 @@ public class StockMovementDto {
     private BigDecimal quantity;
 
     private TypeMoveStock typeMoveStock;
+
+    private SourceStockMovement sourceStockMovement;
 
     private Long id_enterprise;
 

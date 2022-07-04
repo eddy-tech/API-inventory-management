@@ -1,5 +1,5 @@
 package com.inventor.management.enums;
 
 public enum TypeMoveStock {
-    ENTER, EXIT
+    ENTRANCE, EXIT, CORRECTION_POSITIVE, CORRECTION_NEGATIVE
 }

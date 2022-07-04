@@ -1,5 +1,6 @@
 package com.inventor.management.entities;
 
+import com.inventor.management.enums.SourceStockMovement;
 import com.inventor.management.enums.TypeMoveStock;
 import lombok.*;
 
@@ -23,6 +24,9 @@ public class StockMovement extends AbstractEntity {
 
     @Column(name = "type_move_stock")
     private TypeMoveStock typeMoveStock;
+
+    @Column(name = "source_move_stock")
+    private SourceStockMovement sourceStockMovement;
 
     @Column(name = "id_enterprise")
     private Long id_enterprise;
