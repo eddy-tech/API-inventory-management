@@ -67,7 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
             return null;
         }
       Article article = articleRepository.findById(id).orElseThrow(()->
-              new EntityNotFoundException("Nothing article with ID ="+id+"was found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND));
+              new EntityNotFoundException("Nothing article with ID ="+id+"were found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND));
 
       return dtoMapper.fromArticle(article);
     }
@@ -75,7 +75,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDto getCodeArticle(String codeArticle) {
         if(!StringUtils.hasLength(codeArticle))
-            throw new EntityNotFoundException("Nothing Article with CODE ="+codeArticle+ "has been found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND);
+            throw new EntityNotFoundException("Nothing Article with CODE ="+codeArticle+ "were found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND);
         Article article = articleRepository.findArticleByCodeArticle(codeArticle);
 
        return dtoMapper.fromArticle(article);

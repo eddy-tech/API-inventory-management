@@ -52,12 +52,13 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     @Autowired
     public CustomerOrderServiceImpl(CustomerRepository customerRepository, CustomerOrderRepository customerOrderRepository,
                                     CustomerOrderLineRepository customerOrderLineRepository, ArticleRepository articleRepository,
-                                    StockMapperImpl dtoMapper) {
+                                    StockMapperImpl dtoMapper, StockMovementService stockMovementService) {
         this.customerRepository = customerRepository;
         this.customerOrderRepository = customerOrderRepository;
         this.customerOrderLineRepository = customerOrderLineRepository;
         this.articleRepository = articleRepository;
         this.dtoMapper = dtoMapper;
+        this.stockMovementService = stockMovementService;
     }
 
     @Override
@@ -73,7 +74,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         }
 
         Customer customer = customerRepository.findById(customerOrderDto.getCustomerDto().getId())
-                .orElseThrow(()-> new EntityNotFoundException("Nothing customer with ID ="+customerOrderDto.getCustomerDto().getId()+"was found in database",ErrorCodes.CUSTOMER_NOT_FOUND));
+                .orElseThrow(()-> new EntityNotFoundException("Nothing customer with ID ="+customerOrderDto.getCustomerDto().getId()+"were found in database",ErrorCodes.CUSTOMER_NOT_FOUND));
 
         List<String> articleErrors = new ArrayList<>();
 
@@ -148,7 +149,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         return dtoMapper.fromCustomerOrder(updateCustomerOrder);
     }
 
-    private void checkIdOrder (Long orderId){
+    private void checkOrderId (Long orderId){
         if(orderId == null) {
             log.error("customer order ID is null");
             throw new InvalidOperationException("Unable to edit quantity ordered with null ID",
@@ -156,7 +157,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         }
     }
 
-    private void checkIdOrderLine (Long orderLineId) {
+    private void checkOrderLineId (Long orderLineId) {
         if(orderLineId == null) {
             log.error("customer order Line ID is null");
             throw new InvalidOperationException("Unable to edit quantity ordered with null order line",
@@ -164,7 +165,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         }
     }
 
-    private void checkIdArticle (Long idArticle, String message){
+    private void checkArticleId (Long idArticle, String message){
         if(idArticle == null){
             log.error("ID of"+message+"is NULL");
             throw new InvalidOperationException("Unable to edit state order with a" + message + "article ID null",
@@ -185,7 +186,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
         // CHECKED IF LINE COMMAND EXIST WITH ID PROVIDED
         if(customerOrderLineOptional.isEmpty())
-            throw new EntityNotFoundException("Nothing customer order line has been found with ID ="+orderLineId,
+            throw new EntityNotFoundException("Nothing customer order line were found with ID ="+orderLineId,
                     ErrorCodes.CUSTOMER_NOT_FOUND);
 
         return customerOrderLineOptional;
@@ -193,15 +194,15 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateQuantityOrdered(Long orderId, Long orderLineId, BigDecimal quantity) {
-        checkIdOrder(orderId);
-        checkIdOrderLine(orderLineId);
+        checkOrderId(orderId);
+        checkOrderLineId(orderLineId);
       if(quantity == null || quantity.compareTo(BigDecimal.ZERO) == 0) {
             log.error("quantity of customer order is null");
             throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
         }
 
        CustomerOrderDto customerOrder = checkStateOrder(orderId);
-      Optional<CustomerOrderLine> customerOrderLineOptional = findCustomerOrderLine(orderLineId);
+       Optional<CustomerOrderLine> customerOrderLineOptional = findCustomerOrderLine(orderLineId);
 
         CustomerOrderLine customerOrderLine = customerOrderLineOptional.get();
         customerOrderLine.setQuantity(quantity);
@@ -212,7 +213,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateStateOrder(Long orderId, StateOrder stateOrder) {
-        checkIdOrder(orderId);
+        checkOrderId(orderId);
 
         if(!StringUtils.hasLength(String.valueOf(stateOrder))) {
             log.error("customer state order is NULL");
@@ -229,7 +230,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateCustomer(Long orderId, Long customerId) {
-        checkIdOrder(orderId);
+        checkOrderId(orderId);
 
        if(customerId == null) {
             log.error("customer ID is null");
@@ -252,9 +253,9 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateArticle(Long orderId, Long orderLineId, Long articleId) {
-        checkIdOrder(orderId);
-        checkIdOrderLine(orderLineId);
-        checkIdArticle(articleId, "new");
+        checkOrderId(orderId);
+        checkOrderLineId(orderLineId);
+        checkArticleId(articleId, "new");
 
         CustomerOrderDto customerOrder = checkStateOrder(orderId); // CHECK STATE OF ORDER
         Optional<CustomerOrderLine> customerOrderLine = findCustomerOrderLine(orderLineId);
@@ -281,7 +282,9 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         }
 
         CustomerOrder customerOrder = customerOrderRepository.findById(id)
-                .orElseThrow(()->new EntityNotFoundException("Nothing Customer order was found with ID ="+id,ErrorCodes.CUSTOMER_ORDER_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing Customer order was found with ID ="+id,
+                        ErrorCodes.CUSTOMER_ORDER_NOT_FOUND));
+
         return dtoMapper.fromCustomerOrder(customerOrder);
     }
 
@@ -300,7 +303,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     public List<CustomerOrderDto> listCustomerOrder() {
         List<CustomerOrder> customerOrderList = customerOrderRepository.findAll();
         List<CustomerOrderDto> customerOrderDtoList = customerOrderList.stream()
-                .map(customerOrder -> dtoMapper.fromCustomerOrder(customerOrder)).collect(Collectors.toList());
+                .map(customerOrder -> dtoMapper.fromCustomerOrder(customerOrder))
+                .collect(Collectors.toList());
 
         return customerOrderDtoList;
     }
@@ -308,7 +312,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     @Override
     public List<CustomerOrderLineDto> findAllCustomerOrdersLinesByCustomerOrderId(Long orderId) {
          List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(orderId);
-        List<CustomerOrderLineDto> customerOrderLineDtoList = customerOrderLineList.stream().map(customerOrderLineDto -> dtoMapper.fromCustomerOrderLine(customerOrderLineDto))
+        List<CustomerOrderLineDto> customerOrderLineDtoList = customerOrderLineList.stream()
+                .map(customerOrderLineDto -> dtoMapper.fromCustomerOrderLine(customerOrderLineDto))
                  .collect(Collectors.toList());
 
         return customerOrderLineDtoList;
@@ -326,19 +331,20 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto deleteArticle(Long orderId, Long orderLineId) {
-        checkIdOrder(orderId);
-        checkIdOrderLine(orderLineId);
+        checkOrderId(orderId);
+        checkOrderLineId(orderLineId);
 
         CustomerOrderDto customerOrder = checkStateOrder(orderId);
         // JUST TO CHECK CUSTOMER ORDER LINE AND INFORM THE CLIENT IN CASE IT IS ABSENT
         findCustomerOrderLine(orderLineId);
-
         customerOrderLineRepository.deleteById(orderLineId);
+
         return customerOrder;
     }
 
     private void updateStockMovement (Long orderId){
         List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(orderId);
+
         customerOrderLineList.forEach(customerOrderLine -> {
             StockMovementDto stockMovement = new StockMovementDto();
             stockMovement.setArticleDto(dtoMapper.fromArticle(customerOrderLine.getArticle()));

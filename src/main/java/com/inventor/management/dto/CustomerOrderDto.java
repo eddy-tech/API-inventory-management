@@ -24,7 +24,7 @@ public class CustomerOrderDto {
     @JsonIgnore
     private List<CustomerOrderLineDto> customerOrderLinesDto;
 
-    // METHOD TO CHECK IF ORDER STATE HAS DELIVERED OR NO
+    // METHOD TO CHECK IF ORDER STATE HAS BEEN DELIVERED OR NO
     public boolean isOrderDelivered() {
         return stateOrder.equals(this.stateOrder);
     }

@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Slf4j
 public class EnterpriseServiceImpl implements EnterpriseService {
-
     private EnterpriseRepository enterpriseRepository;
     private RolesRepository rolesRepository;
     private UserService userService;

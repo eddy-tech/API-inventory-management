@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
 
     private CustomerRepository customerRepository;
-
     private StockMapperImpl dtoMapper;
 
 
@@ -69,7 +68,8 @@ public class CustomerServiceImpl implements CustomerService {
     public List<CustomerDto> listCustomer() {
         List<Customer> customerList = customerRepository.findAll();
         List<CustomerDto> customerDtoList = customerList.stream()
-                .map((customer -> dtoMapper.fromCustomer(customer))).collect(Collectors.toList());
+                .map((customer -> dtoMapper.fromCustomer(customer)))
+                  .collect(Collectors.toList());
 
         return customerDtoList;
     }

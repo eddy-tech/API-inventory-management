@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 public class ExtendedUser extends User {
-
     @Getter
     @Setter
     private Long id_enterprise;
