@@ -26,6 +26,11 @@ public class ProviderServiceImpl implements ProviderService {
     private ProviderRepository providerRepository;
     private StockMapperImpl dtoMapper;
 
+    private Provider findProvider(Long providerId){
+        return providerRepository.findById(providerId)
+                .orElseThrow(()-> new EntityNotFoundException("Nothing Provider with ID ="+ providerId + "was found in DataBase",
+                        ErrorCodes.PROVIDER_NOT_FOUND));
+    }
 
     @Override
     public ProviderDto saveProvider(ProviderDto providerDto) {
@@ -59,8 +64,7 @@ public class ProviderServiceImpl implements ProviderService {
             return null;
         }
 
-        Provider provider = providerRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Nothing Provider with ID ="+ id + "was found in DataBase",ErrorCodes.PROVIDER_NOT_FOUND));
+        Provider provider = findProvider(id);
         return dtoMapper.fromProvider(provider);
     }
 
@@ -81,6 +85,5 @@ public class ProviderServiceImpl implements ProviderService {
         }
 
         providerRepository.deleteById(id);
-
     }
 }

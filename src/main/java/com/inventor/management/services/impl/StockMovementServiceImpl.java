@@ -26,9 +26,10 @@ public class StockMovementServiceImpl implements StockMovementService {
     private StockMovementRepository stockMovementRepository;
     private ArticleService articleService;
     private StockMapperImpl dtoMapper;
-    private StockMovementService stockMovementService;
+
 
     @Override
+    // CALCUL STOCK REEL DE CHAQUE ARTICLE
     public BigDecimal stockRealArticle(Long articleId) {
         if(articleId == null) {
             log.warn("ID article is NULL");

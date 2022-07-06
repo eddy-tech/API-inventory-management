@@ -2,7 +2,9 @@ package com.inventor.management.services.impl;
 
 import com.inventor.management.dto.*;
 import com.inventor.management.entities.*;
+import com.inventor.management.enums.SourceStockMovement;
 import com.inventor.management.enums.StateOrder;
+import com.inventor.management.enums.TypeMoveStock;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.exceptions.InvalidOperationException;
@@ -11,6 +13,7 @@ import com.inventor.management.repository.ProviderOrderLineRepository;
 import com.inventor.management.repository.ProviderOrderRepository;
 import com.inventor.management.repository.ProviderRepository;
 import com.inventor.management.services.interfaces.ProviderOrderService;
+import com.inventor.management.services.interfaces.StockMovementService;
 import com.inventor.management.validators.ArticleValidator;
 import com.inventor.management.validators.ProviderOrderValidator;
 import com.inventor.management.exceptions.ErrorCodes;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,16 +40,18 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     private ArticleRepository articleRepository;
     private ProviderRepository providerRepository;
     private ProviderOrderLineRepository providerOrderLineRepository;
+    private StockMovementService stockMovementService;
     private StockMapperImpl dtoMapper;
 
     @Autowired
     public ProviderOrderServiceImpl(ProviderOrderRepository providerOrderRepository, ArticleRepository articleRepository,
                                     ProviderRepository providerRepository, ProviderOrderLineRepository providerOrderLineRepository,
-                                    StockMapperImpl dtoMapper) {
+                                    StockMovementService stockMovementService,StockMapperImpl dtoMapper) {
         this.providerOrderRepository = providerOrderRepository;
         this.articleRepository = articleRepository;
         this.providerRepository = providerRepository;
         this.providerOrderLineRepository = providerOrderLineRepository;
+        this.stockMovementService = stockMovementService;
         this.dtoMapper = dtoMapper;
     }
 
@@ -58,7 +64,12 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         }
 
         Provider provider = providerRepository.findById(providerOrderDto.getProviderDto().getId())
-                .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="+providerOrderDto.getProviderDto().getId()+"was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="+providerOrderDto.getProviderDto().getId()+
+                        "was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+
+        if(providerOrderDto.getId() != null && providerOrderDto.isOrderDelivered()){
+            throw new InvalidOperationException("Unable to edit customer order when delivered",ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
+        }
 
         List<String> articleErrors = new ArrayList<>();
 
@@ -69,7 +80,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
                     if(articleDto.isEmpty()){
                         articleErrors.add("Article with ID ="+providerOrderLineDto.getArticleDto().getId()+"not exist in database");
                     } else {
-                        articleErrors.add("Impossible to save provider order with an article null");
+                        articleErrors.add("Unable to save provider order with an article null");
                     }
                 }
             });
@@ -102,7 +113,11 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         }
 
         Provider provider = providerRepository.findById(providerOrderDto.getProviderDto().getId())
-                .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="+providerOrderDto.getProviderDto().getId()+"was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="+providerOrderDto.getProviderDto().getId()+
+                        "was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+
+        if(providerOrderDto.getId() != null && providerOrderDto.isOrderDelivered())
+            throw new InvalidOperationException("Unable to update provider order", ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
 
         List<String> articleErrors = new ArrayList<>();
 
@@ -168,17 +183,30 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         return providerOrder;
     }
 
-    private Optional<ProviderOrderLine> findCProviderOrderLine (Long orderLineId){
-        Optional<ProviderOrderLine> providerOrderLineOptional = providerOrderLineRepository.findById(orderLineId);
+    private ProviderOrderLine findProviderOrderLine (Long orderLineId){
+        return providerOrderLineRepository.findById(orderLineId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing customer order line has been found with ID ="+orderLineId,
+                        ErrorCodes.CUSTOMER_NOT_FOUND));
 
-        // CHECKED IF LINE COMMAND EXIST WITH ID PROVIDED
-        if(providerOrderLineOptional.isEmpty())
-            throw new EntityNotFoundException("Nothing customer order line has been found with ID ="+orderLineId,
-                    ErrorCodes.CUSTOMER_NOT_FOUND);
-
-        return providerOrderLineOptional;
     }
 
+    private Provider findProvider (Long providerId){
+        return providerRepository.findById(providerId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+providerId,
+                        ErrorCodes.PROVIDER_NOT_FOUND));
+    }
+
+    private Article findArticle (Long articleId){
+        return  articleRepository.findById(articleId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId,
+                        ErrorCodes.ARTICLES_NOT_FOUND));
+    }
+
+    private ProviderOrder findProviderOrder (Long providerOrderId){
+        return providerOrderRepository.findById(providerOrderId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing Provider order with ID="+ providerOrderId +"was found in database",
+                        ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+    }
     @Override
     public ProviderOrderDto updateStateOrder(Long orderId, StateOrder stateOrder) {
         checkIdOrder(orderId);
@@ -192,6 +220,10 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         orderDto.setStateOrder(stateOrder);
         ProviderOrder providerOrder = dtoMapper.fromProviderOrderDto(orderDto);
         ProviderOrder savedProviderOrder = providerOrderRepository.save(providerOrder);
+        // MAKE THE STOCK OUT ONLY WHEN PROVIDER ORDER IS DELIVERED
+        if(orderDto.isOrderDelivered()){
+        updateStockMovementProvider(orderId); // METTRE A JOUR L'ETAT DE STOCK DU FOURNISSEUR
+        }
 
         return dtoMapper.fromProviderOrder(savedProviderOrder);
     }
@@ -206,9 +238,9 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         }
 
         ProviderOrderDto providerOrder = checkStateOrder(orderId);
-        Optional<ProviderOrderLine> providerOrderLineOptional = findCProviderOrderLine(orderLineId);
+        ProviderOrderLine providerOrderLineOptional = findProviderOrderLine(orderLineId);
 
-        ProviderOrderLine providerOrderLine = providerOrderLineOptional.get();
+        ProviderOrderLine providerOrderLine = providerOrderLineOptional;
         providerOrderLine.setQuantity(quantity);
         providerOrderLineRepository.save(providerOrderLine);
 
@@ -227,9 +259,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
         ProviderOrderDto providerOrder = checkStateOrder(orderId);
 
-        Provider providerOptional = providerRepository.findById(providerId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+providerId,
-                        ErrorCodes.CUSTOMER_NOT_FOUND));
+        Provider providerOptional = findProvider(providerId);
 
         ProviderDto provider = dtoMapper.fromProvider(providerOptional);
         providerOrder.setProviderDto(provider);
@@ -245,16 +275,13 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         checkIdArticle(articleId, "new");
 
         ProviderOrderDto providerOrder = checkStateOrder(orderId); // CHECK STATE OF ORDER
-        Optional<ProviderOrderLine> providerOrderLine = findCProviderOrderLine(orderLineId);
-
-        Article articleOptional = articleRepository.findById(articleId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId,
-                        ErrorCodes.ARTICLES_NOT_FOUND));
+        ProviderOrderLine providerOrderLine = findProviderOrderLine(orderLineId);
+        Article articleOptional = findArticle(articleId);
 
         List<String> errors = ArticleValidator.validate(dtoMapper.fromArticle(articleOptional));
         if(!errors.isEmpty()) throw new InvalidEntityException("Article invalid", ErrorCodes.ARTICLE_NOT_VALID,errors);
 
-        ProviderOrderLine providerOrderLineToSaved = providerOrderLine.get();
+        ProviderOrderLine providerOrderLineToSaved = providerOrderLine;
         providerOrderLineToSaved.setArticle(articleOptional);
         providerOrderLineRepository.save(providerOrderLineToSaved);
 
@@ -268,8 +295,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             return null;
         }
 
-        ProviderOrder providerOrder = providerOrderRepository.findById(id)
-                .orElseThrow(()->new EntityNotFoundException("Nothing Provider order with ID="+ id +"was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+        ProviderOrder providerOrder = findProviderOrder(id);
         return dtoMapper.fromProviderOrder(providerOrder);
     }
 
@@ -277,7 +303,8 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     public ProviderOrderDto getCodeProviderOrder(String codeProviderOrder) {
         if(!StringUtils.hasLength(codeProviderOrder)){
             log.error("Provider Order is NULL");
-            throw new InvalidEntityException("Nothing provider order with code ="+codeProviderOrder+"was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND);
+            throw new InvalidEntityException("Nothing provider order with code ="+codeProviderOrder+"was found in database",
+                    ErrorCodes.PROVIDER_ORDER_NOT_FOUND);
         }
 
         ProviderOrder providerOrder = providerOrderRepository.findProviderOrderByCodeProviderOrder(codeProviderOrder);
@@ -288,7 +315,8 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     public List<ProviderOrderDto> listProviderOrder() {
         List<ProviderOrder> providerOrdersList = providerOrderRepository.findAll();
         List<ProviderOrderDto> providerOrderDtoList = providerOrdersList.stream()
-                .map(providerOrder -> dtoMapper.fromProviderOrder(providerOrder)).collect(Collectors.toList());
+                .map(providerOrder -> dtoMapper.fromProviderOrder(providerOrder))
+                    .collect(Collectors.toList());
 
         return providerOrderDtoList;
     }
@@ -298,7 +326,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         List<ProviderOrderLine> providerOrderLineList = providerOrderLineRepository.findAllByProviderOrderId(orderId);
         List<ProviderOrderLineDto> providerOrderLineDtoList = providerOrderLineList.stream()
                 .map(providerOrderLineDto -> dtoMapper.fromProviderOrderLine(providerOrderLineDto))
-                .collect(Collectors.toList());
+                    .collect(Collectors.toList());
 
         return providerOrderLineDtoList;
     }
@@ -309,7 +337,6 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             log.error("Provider order ID is not exist");
             return;
         }
-
         providerOrderRepository.deleteById(id);
 
     }
@@ -318,12 +345,26 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     public ProviderOrderDto deleteArticle(Long orderId, Long orderLineId) {
         checkIdOrder(orderId);
         checkIdOrderLine(orderLineId);
-
         ProviderOrderDto providerOrder = checkStateOrder(orderId);
-        // JUST TO CHECK CUSTOMER ORDER LINE AND INFORM THE CLIENT IN CASE IT IS ABSENT
-        findCProviderOrderLine(orderLineId);
-
+        findProviderOrderLine(orderLineId);         // JUST TO CHECK CUSTOMER ORDER LINE AND INFORM THE CLIENT IN CASE IT IS ABSENT
         providerOrderLineRepository.deleteById(orderLineId);
+
         return providerOrder;
+    }
+
+    public void updateStockMovementProvider (Long orderId){
+        List<ProviderOrderLine> providerOrderLineList = providerOrderLineRepository.findAllByProviderOrderId(orderId);
+
+        providerOrderLineList.forEach(providerOrderLine -> {
+            StockMovementDto stockMovement = new StockMovementDto();
+            stockMovement.setArticleDto(dtoMapper.fromArticle(providerOrderLine.getArticle()));
+            stockMovement.setDateMovement(Instant.now());
+            stockMovement.setTypeMoveStock(TypeMoveStock.ENTRANCE);
+            stockMovement.setQuantity(providerOrderLine.getQuantity());
+            stockMovement.setSourceStockMovement(SourceStockMovement.PROVIDER_ORDER);
+            stockMovement.setId_enterprise(providerOrderLine.getId_enterprise());
+
+            stockMovementService.entranceStock(stockMovement);
+        });
     }
 }

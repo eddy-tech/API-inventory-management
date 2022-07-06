@@ -1,9 +1,12 @@
 package com.inventor.management.services.impl;
 
 import com.inventor.management.dto.SaleDto;
+import com.inventor.management.dto.StockMovementDto;
 import com.inventor.management.entities.Article;
 import com.inventor.management.entities.Sale;
 import com.inventor.management.entities.SaleLine;
+import com.inventor.management.enums.SourceStockMovement;
+import com.inventor.management.enums.TypeMoveStock;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.mapper.StockMapperImpl;
@@ -11,6 +14,7 @@ import com.inventor.management.repository.ArticleRepository;
 import com.inventor.management.repository.SaleLineRepository;
 import com.inventor.management.repository.SaleRepository;
 import com.inventor.management.services.interfaces.SaleService;
+import com.inventor.management.services.interfaces.StockMovementService;
 import com.inventor.management.validators.SaleValidator;
 import com.inventor.management.exceptions.ErrorCodes;
 import lombok.AllArgsConstructor;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +38,7 @@ public class SaleServiceImpl implements SaleService {
     private ArticleRepository articleRepository;
     private SaleRepository saleRepository;
     private SaleLineRepository saleLineRepository;
+    private StockMovementService stockMovementService;
     private StockMapperImpl dtoMapper;
 
 
@@ -65,6 +71,7 @@ public class SaleServiceImpl implements SaleService {
             SaleLine saleLines = dtoMapper.fromSaleLineDto(saleLine);
             saleLines.setSale(savedSale);
             saleLineRepository.save(saleLines);
+            updateStockMovementSale(saleLine); // METTRE A JOUR STOCK DE VENTE
         });
 
         return dtoMapper.fromSale(savedSale);
@@ -116,7 +123,8 @@ public class SaleServiceImpl implements SaleService {
             return null;
         }
         Sale sale = saleRepository.findById(id)
-                .orElseThrow(()->new EntityNotFoundException("Nothing Sale was found with ID ="+id+"in database",ErrorCodes.SALE_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing Sale was found with ID ="+id+"in database",
+                        ErrorCodes.SALE_NOT_FOUND));
 
         return dtoMapper.fromSale(sale);
     }
@@ -125,7 +133,8 @@ public class SaleServiceImpl implements SaleService {
     public SaleDto getCodeSale(String codeSale) {
         if(!StringUtils.hasLength(codeSale)){
             log.error("code Sale is invalid");
-            throw new EntityNotFoundException("Nothing code sale with ID ="+codeSale+"was found in database",ErrorCodes.SALE_NOT_FOUND);
+            throw new EntityNotFoundException("Nothing code sale with ID ="+codeSale+"was found in database",
+                    ErrorCodes.SALE_NOT_FOUND);
         }
 
         Sale sale = saleRepository.findSaleByCodeSale(codeSale);
@@ -136,7 +145,8 @@ public class SaleServiceImpl implements SaleService {
     public List<SaleDto> listSale() {
         List<Sale> saleList = saleRepository.findAll();
         List<SaleDto> saleDtoList = saleList.stream()
-                .map(sale -> dtoMapper.fromSale(sale)).collect(Collectors.toList());
+                .map(sale -> dtoMapper.fromSale(sale))
+                    .collect(Collectors.toList());
 
         return saleDtoList;
     }
@@ -147,7 +157,18 @@ public class SaleServiceImpl implements SaleService {
             log.error("Sale ID is NULL");
             return;
         }
-
         saleRepository.deleteById(id);
+    }
+
+    private void updateStockMovementSale (SaleLine saleLine){
+            StockMovementDto stock = new StockMovementDto();
+            stock.setArticleDto(dtoMapper.fromArticle(saleLine.getArticle()));
+            stock.setDateMovement(Instant.now());
+            stock.setTypeMoveStock(TypeMoveStock.EXIT);
+            stock.setQuantity(saleLine.getQuantity());
+            stock.setSourceStockMovement(SourceStockMovement.SALE);
+            stock.setId_enterprise(saleLine.getId_enterprise());
+
+            stockMovementService.exitStock(stock);
     }
 }

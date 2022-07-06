@@ -61,94 +61,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         this.stockMovementService = stockMovementService;
     }
 
-    @Override
-    public CustomerOrderDto saveCustomerOrder(CustomerOrderDto customerOrderDto) {
-        List<String> errors = CustomerOrderValidator.validate(customerOrderDto);
-        if(!errors.isEmpty()){
-            log.error("Customer Order is invalid");
-            throw new InvalidEntityException("Customer order is invalid", ErrorCodes.CUSTOMER_ORDER_NOT_VALID,errors);
-        }
-
-        if(customerOrderDto.getId() != null && customerOrderDto.isOrderDelivered()){
-          throw new InvalidOperationException("Unable to edit customer order when delivered", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
-        }
-
-        Customer customer = customerRepository.findById(customerOrderDto.getCustomerDto().getId())
-                .orElseThrow(()-> new EntityNotFoundException("Nothing customer with ID ="+customerOrderDto.getCustomerDto().getId()+"were found in database",ErrorCodes.CUSTOMER_NOT_FOUND));
-
-        List<String> articleErrors = new ArrayList<>();
-
-        if(customerOrderDto.getCustomerOrderLinesDto() != null){
-            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLine -> {
-                if(customerOrderLine.getArticleDto() != null){
-                    Optional<Article> article = articleRepository.findById(customerOrderLine.getArticleDto().getId());
-                    if(article.isEmpty()){
-                        articleErrors.add("Article with ID ="+customerOrderLine.getArticleDto().getId()+ "not exist");
-                    }
-                } else {
-                    articleErrors.add("Impossible to save customer order with an article null");
-                }
-            } );
-        }
-
-        if(!articleErrors.isEmpty()){
-            log.warn("");
-            throw new InvalidEntityException("Article not exist in DataBase",ErrorCodes.ARTICLES_NOT_FOUND,articleErrors);
-        }
-
-        CustomerOrder customerOrder = dtoMapper.fromCustomerOrderDto(customerOrderDto);
-        CustomerOrder savedCustomerOrder = customerOrderRepository.save(customerOrder);
-
-        if(customerOrderDto.getCustomerOrderLinesDto() != null){
-            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLine->{
-                CustomerOrderLine customerOrderLines = dtoMapper.fromCustomerOrderLineDto(customerOrderLine);
-                customerOrderLines.setCustomerOrder(savedCustomerOrder); // ASSIGN CUSTOMER ORDER SAVE IN EACH CUSTOMER ORDER LINE BECAUSE WE DON'T SAVE CUSTOMER ORDER LINE WITHOUT CUSTOMER ORDER
-                customerOrderLineRepository.save(customerOrderLines);
-            });
-        }
-
-        return dtoMapper.fromCustomerOrder(savedCustomerOrder);
-    }
-
-    @Override
-    public CustomerOrderDto updateCustomerOrder(CustomerOrderDto customerOrderDto) {
-        List<String> errors = CustomerOrderValidator.validate(customerOrderDto);
-        if(!errors.isEmpty()){
-            log.error("Customer order is invalid",errors);
-            throw  new InvalidEntityException("Customer order is invalid",ErrorCodes.CUSTOMER_ORDER_NOT_VALID,errors);
-        }
-
-        Customer customer = customerRepository.findById(customerOrderDto.getCustomerDto().getId())
-                .orElseThrow(()->new EntityNotFoundException("Nothing customer with ID ="+customerOrderDto.getCustomerDto().getId()+"was found in databse",ErrorCodes.CUSTOMER_NOT_FOUND));
-
-        List<String> articleErrors = new ArrayList<>();
-
-        if(customerOrderDto.getCustomerOrderLinesDto() != null){
-            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLineDto -> {
-                if(customerOrderLineDto.getArticleDto() != null){
-                   Optional<Article> article = articleRepository.findById(customerOrderLineDto.getArticleDto().getId());
-                   if(article.isEmpty()){
-                       articleErrors.add("Nothing article with ID ="+customerOrderLineDto.getArticleDto().getId()+"was found in database");
-                   } else {
-                       articleErrors.add("Impossible to update with an article null");
-                   }
-                }
-            });
-        }
-
-        CustomerOrder updateCustomerOrder = customerOrderRepository.save(dtoMapper.fromCustomerOrderDto(customerOrderDto));
-
-        if(customerOrderDto.getCustomerOrderLinesDto()!= null){
-            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLineDto -> {
-                CustomerOrderLine customerOrderLine = dtoMapper.fromCustomerOrderLineDto(customerOrderLineDto);
-                customerOrderLine.setCustomerOrder(updateCustomerOrder);
-                customerOrderLineRepository.save(customerOrderLine);
-            });
-        }
-
-        return dtoMapper.fromCustomerOrder(updateCustomerOrder);
-    }
-
     private void checkOrderId (Long orderId){
         if(orderId == null) {
             log.error("customer order ID is null");
@@ -183,13 +95,124 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     private Optional<CustomerOrderLine> findCustomerOrderLine (Long orderLineId){
         Optional<CustomerOrderLine> customerOrderLineOptional = customerOrderLineRepository.findById(orderLineId);
-
         // CHECKED IF LINE COMMAND EXIST WITH ID PROVIDED
         if(customerOrderLineOptional.isEmpty())
             throw new EntityNotFoundException("Nothing customer order line were found with ID ="+orderLineId,
                     ErrorCodes.CUSTOMER_NOT_FOUND);
 
         return customerOrderLineOptional;
+    }
+
+    private Customer findCustomer (Long customerId){
+        return customerRepository.findById(customerId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+customerId,
+                        ErrorCodes.CUSTOMER_NOT_FOUND));
+    }
+
+    private Article findArticle (Long articleId){
+        return articleRepository.findById(articleId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId,
+                        ErrorCodes.ARTICLES_NOT_FOUND));
+    }
+
+    private CustomerOrder findCustomerOrder (Long customerOrderId){
+        return customerOrderRepository.findById(customerOrderId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing Customer order was found with ID ="+customerOrderId,
+                        ErrorCodes.CUSTOMER_ORDER_NOT_FOUND));
+    }
+
+    @Override
+    public CustomerOrderDto saveCustomerOrder(CustomerOrderDto customerOrderDto) {
+        List<String> errors = CustomerOrderValidator.validate(customerOrderDto);
+        if(!errors.isEmpty()){
+            log.error("Customer Order is invalid");
+            throw new InvalidEntityException("Customer order is invalid", ErrorCodes.CUSTOMER_ORDER_NOT_VALID,errors);
+        }
+
+        Customer customer = customerRepository.findById(customerOrderDto.getCustomerDto().getId())
+                .orElseThrow(()-> new EntityNotFoundException("Nothing customer order with ID ="+customerOrderDto.getCustomerDto().getId()+
+                        "were found in database",ErrorCodes.CUSTOMER_NOT_FOUND));
+
+        if(customerOrderDto.getId() != null && customerOrderDto.isOrderDelivered()){
+            throw new InvalidOperationException("Unable to edit customer order when delivered", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+        }
+
+
+        List<String> articleErrors = new ArrayList<>();
+
+        if(customerOrderDto.getCustomerOrderLinesDto() != null){
+            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLine -> {
+                if(customerOrderLine.getArticleDto() != null){
+                    Optional<Article> article = articleRepository.findById(customerOrderLine.getArticleDto().getId());
+                    if(article.isEmpty()){
+                        articleErrors.add("Article with ID ="+customerOrderLine.getArticleDto().getId()+ "not exist");
+                    }
+                } else {
+                    articleErrors.add("Unable to save customer order with an article null");
+                }
+            } );
+        }
+
+        if(!articleErrors.isEmpty()){
+            log.warn("");
+            throw new InvalidEntityException("Article not exist in DataBase",ErrorCodes.ARTICLES_NOT_FOUND,articleErrors);
+        }
+
+        CustomerOrder customerOrder = dtoMapper.fromCustomerOrderDto(customerOrderDto);
+        CustomerOrder savedCustomerOrder = customerOrderRepository.save(customerOrder);
+
+        if(customerOrderDto.getCustomerOrderLinesDto() != null){
+            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLine->{
+                CustomerOrderLine customerOrderLines = dtoMapper.fromCustomerOrderLineDto(customerOrderLine);
+                customerOrderLines.setCustomerOrder(savedCustomerOrder); // ASSIGN CUSTOMER ORDER SAVE IN EACH CUSTOMER ORDER LINE BECAUSE WE DON'T SAVE CUSTOMER ORDER LINE WITHOUT CUSTOMER ORDER
+                customerOrderLineRepository.save(customerOrderLines);
+            });
+        }
+
+        return dtoMapper.fromCustomerOrder(savedCustomerOrder);
+    }
+
+    @Override
+    public CustomerOrderDto updateCustomerOrder(CustomerOrderDto customerOrderDto) {
+        List<String> errors = CustomerOrderValidator.validate(customerOrderDto);
+        if(!errors.isEmpty()){
+            log.error("Customer order is invalid",errors);
+            throw  new InvalidEntityException("Customer order is invalid",ErrorCodes.CUSTOMER_ORDER_NOT_VALID,errors);
+        }
+
+        Customer customer = customerRepository.findById(customerOrderDto.getCustomerDto().getId())
+                .orElseThrow(()->new EntityNotFoundException("Nothing customer with ID ="+customerOrderDto.getCustomerDto().getId()+
+                        "was found in databse",ErrorCodes.CUSTOMER_NOT_FOUND));
+
+        if(customerOrderDto.getId() != null && customerOrderDto.isOrderDelivered())
+            throw new InvalidOperationException("Unable to update provider order",ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+
+        List<String> articleErrors = new ArrayList<>();
+
+        if(customerOrderDto.getCustomerOrderLinesDto() != null){
+            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLineDto -> {
+                if(customerOrderLineDto.getArticleDto() != null){
+                    Optional<Article> article = articleRepository.findById(customerOrderLineDto.getArticleDto().getId());
+                    if(article.isEmpty()){
+                        articleErrors.add("Nothing article with ID ="+customerOrderLineDto.getArticleDto().getId()+"was found in database");
+                    } else {
+                        articleErrors.add("Impossible to update with an article null");
+                    }
+                }
+            });
+        }
+
+        CustomerOrder updateCustomerOrder = customerOrderRepository.save(dtoMapper.fromCustomerOrderDto(customerOrderDto));
+
+        if(customerOrderDto.getCustomerOrderLinesDto()!= null){
+            customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLineDto -> {
+                CustomerOrderLine customerOrderLine = dtoMapper.fromCustomerOrderLineDto(customerOrderLineDto);
+                customerOrderLine.setCustomerOrder(updateCustomerOrder);
+                customerOrderLineRepository.save(customerOrderLine);
+            });
+        }
+
+        return dtoMapper.fromCustomerOrder(updateCustomerOrder);
     }
 
     @Override
@@ -224,6 +247,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         orderDto.setStateOrder(stateOrder);
         CustomerOrder customerOrder = dtoMapper.fromCustomerOrderDto(orderDto);
         CustomerOrder savedCustomerOrder = customerOrderRepository.save(customerOrder);
+        // EFFECTUER LA SORTIE DU STOCK QUE LORSQUE LA COMMANDE CLIENT EST LIVREE : IMPORTANT !!!!
+        if(orderDto.isOrderDelivered()){
+        updateStockMovementCustomer(orderId); // METTRE A JOUR MON STOCK
+        }
 
         return dtoMapper.fromCustomerOrder(savedCustomerOrder);
     }
@@ -240,9 +267,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
        CustomerOrderDto customerOrder = checkStateOrder(orderId);
 
-       Customer customerOptional = customerRepository.findById(customerId)
-               .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+customerId,
-                ErrorCodes.CUSTOMER_NOT_FOUND));
+       Customer customerOptional = findCustomer(customerId);
 
        CustomerDto customer = dtoMapper.fromCustomer(customerOptional);
        customerOrder.setCustomerDto(customer);
@@ -259,10 +284,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
         CustomerOrderDto customerOrder = checkStateOrder(orderId); // CHECK STATE OF ORDER
         Optional<CustomerOrderLine> customerOrderLine = findCustomerOrderLine(orderLineId);
-
-        Article articleOptional = articleRepository.findById(articleId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId,
-                        ErrorCodes.ARTICLES_NOT_FOUND));
+        Article articleOptional = findArticle(articleId);
 
         List<String> errors = ArticleValidator.validate(dtoMapper.fromArticle(articleOptional));
         if(!errors.isEmpty()) throw new InvalidEntityException("Article invalid", ErrorCodes.ARTICLE_NOT_VALID,errors);
@@ -281,9 +303,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             return null;
         }
 
-        CustomerOrder customerOrder = customerOrderRepository.findById(id)
-                .orElseThrow(()->new EntityNotFoundException("Nothing Customer order was found with ID ="+id,
-                        ErrorCodes.CUSTOMER_ORDER_NOT_FOUND));
+        CustomerOrder customerOrder = findCustomerOrder(id);
 
         return dtoMapper.fromCustomerOrder(customerOrder);
     }
@@ -335,14 +355,13 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         checkOrderLineId(orderLineId);
 
         CustomerOrderDto customerOrder = checkStateOrder(orderId);
-        // JUST TO CHECK CUSTOMER ORDER LINE AND INFORM THE CLIENT IN CASE IT IS ABSENT
-        findCustomerOrderLine(orderLineId);
+        findCustomerOrderLine(orderLineId);   // JUST TO CHECK CUSTOMER ORDER LINE AND INFORM THE CLIENT IN CASE IT IS ABSENT
         customerOrderLineRepository.deleteById(orderLineId);
 
         return customerOrder;
     }
 
-    private void updateStockMovement (Long orderId){
+    private void updateStockMovementCustomer (Long orderId){
         List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(orderId);
 
         customerOrderLineList.forEach(customerOrderLine -> {
@@ -353,6 +372,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             stockMovement.setSourceStockMovement(SourceStockMovement.CUSTOMER_ORDER);
             stockMovement.setQuantity(customerOrderLine.getQuantity());
             stockMovement.setId_enterprise(customerOrderLine.getId_enterprise());
+
             stockMovementService.exitStock(stockMovement);
         });
     }
