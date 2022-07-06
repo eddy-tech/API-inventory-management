@@ -1,5 +1,6 @@
 package com.inventor.management.web.api;
 
+import com.inventor.management.dto.ChangePasswordUserDto;
 import com.inventor.management.dto.UserDto;
 import com.inventor.management.entities.User;
 import com.inventor.management.roots.UserEndPoint;
@@ -23,7 +24,7 @@ public interface UserApi {
             @ApiResponse(code = 403, message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404,message = "User objet has invalid")
     })
-    @PostAuthorize("hasAuthority('USER')")
+   // @PostAuthorize("hasAuthority('USER')")
     UserDto saveUser (@RequestBody UserDto userDto);
 
     @PutMapping(path = UserEndPoint.USER_ENDPOINT)
@@ -33,7 +34,7 @@ public interface UserApi {
             @ApiResponse(code = 403,message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404,message = "User objet has invalid")
     })
-    @PostAuthorize("hasAuthority('USER')")
+   // @PostAuthorize("hasAuthority('USER')")
     UserDto updateUser (@RequestBody UserDto userDto);
 
     @GetMapping(path = UserEndPoint.FIND_USER_BY_ID)
@@ -44,7 +45,7 @@ public interface UserApi {
             @ApiResponse(code = 403, message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404, message = "Nothing user exist in DB with ID provided")
     })
-    @PostAuthorize("hasAuthority('ADMIN')")
+    //@PostAuthorize("hasAuthority('ADMIN')")
     UserDto getUser (@PathVariable(name = "idUser") Long id);
 
     @GetMapping(path = UserEndPoint.USER_ENDPOINT)
@@ -54,7 +55,7 @@ public interface UserApi {
             @ApiResponse(code = 200,message = "All users were found in DB / Empty list"),
             @ApiResponse(code = 403, message = "Unauthorized access for this objet")
     })
-    @PostAuthorize("hasAuthority('ADMIN')")
+    //@PostAuthorize("hasAuthority('ADMIN')")
     List<UserDto> listUsers ();
 
     @DeleteMapping(path = UserEndPoint.DELETE_USER)
@@ -64,11 +65,20 @@ public interface UserApi {
             @ApiResponse(code = 200,message = "User has been deleted"),
             @ApiResponse(code = 403, message = "Unauthorized access for this objet")
     })
-    @PostAuthorize("hasAuthority('ADMIN')")
+    //@PostAuthorize("hasAuthority('ADMIN')")
     void deleteUser (@PathVariable(name = "idUser") Long id);
 
     @GetMapping(path = UserEndPoint.PROFILE_USER)
     UserDto profile (Principal principal);
+
+    @PostMapping(path = UserEndPoint.CHANGE_PASSWORD)
+    @ApiOperation(value = "Save user", notes = "This method allow to save user", response = UserDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "User objet has been saved"),
+            @ApiResponse(code = 403, message = "Unauthorized access for this objet"),
+            @ApiResponse(code = 404,message = "User objet has invalid")
+    })
+    UserDto changePassword (@RequestBody ChangePasswordUserDto passwordUserDto);
 
 /*
     @GetMapping(path =UserEndPoint.REFRESH_TOKEN_USER)

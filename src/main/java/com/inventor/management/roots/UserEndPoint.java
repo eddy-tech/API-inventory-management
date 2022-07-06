@@ -8,6 +8,8 @@ public interface UserEndPoint {
  String FIND_USER_BY_ID = USER_ENDPOINT + "/id/{idUser}";
  String DELETE_USER = FIND_USER_BY_ID;
  String PROFILE_USER = USER_ENDPOINT+ "/profile";
+ String CHANGE_PASSWORD = USER_ENDPOINT + "/changePassword";
+
  String REFRESH_TOKEN_USER = Constants.API_ROOT+ "/refreshToken";
  String USER_ROLE = Constants.API_ROOT + "/addRoleToUser";
 }

@@ -1,5 +1,6 @@
 package com.inventor.management.web.restcontroller;
 
+import com.inventor.management.dto.ChangePasswordUserDto;
 import com.inventor.management.dto.UserDto;
 import com.inventor.management.services.interfaces.UserService;
 import com.inventor.management.web.api.UserApi;
@@ -47,4 +48,9 @@ public class UserRestController implements UserApi {
         return userService.loadUserByMail(principal.getName());
     }
 
+    @Override
+    public UserDto changePassword(ChangePasswordUserDto passwordUserDto) {
+        return userService.changePassword(passwordUserDto);
     }
+
+}
