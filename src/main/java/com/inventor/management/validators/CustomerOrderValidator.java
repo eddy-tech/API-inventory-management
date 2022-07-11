@@ -14,6 +14,7 @@ public class CustomerOrderValidator {
         if(customerOrderDto ==null) {
             errors.add("Can you enter customer order code");
             errors.add("Can you enter you order date");
+            errors.add("Can you enter you state order");
             errors.add("Can you enter a customer information");
 
             return errors;
@@ -24,10 +25,13 @@ public class CustomerOrderValidator {
         if(customerOrderDto.getDateOrder() == null){
             errors.add("Can you enter you order date");
         }
-
-        if(customerOrderDto.getCustomerDto() == null) {
+        if(!StringUtils.hasLength(customerOrderDto.getStateOrder().toString())) {
+            errors.add("Can you enter state order");
+        }
+        if(customerOrderDto.getCustomerDto() == null || customerOrderDto.getCustomerDto().getId() == null) {
             errors.add("Can you enter a customer information");
         }
-            return errors;
+
+        return errors;
     }
 }

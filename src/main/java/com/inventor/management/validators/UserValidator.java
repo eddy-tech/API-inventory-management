@@ -16,7 +16,7 @@ public class UserValidator {
             errors.add("Can you please enter your surname");
             errors.add("Can you please enter user birthday");
             errors.add("Can you please enter your password");
-            errors.add("Can you please enter your address");
+            errors.addAll(AddressValidator.validate(null));
 
             return errors;
         }
@@ -36,26 +36,8 @@ public class UserValidator {
         if(!StringUtils.hasLength(userDto.getPassword())) {
             errors.add("Can you please enter your password");
         }
-        if(userDto.getAddressDto() == null) {
-            errors.add("Can you please enter your address");
-        } else {
-            if(!StringUtils.hasLength(userDto.getAddressDto().getAddress1())) {
-                errors.add("Field 'Address 1' is required");
-            }
-            if(!StringUtils.hasLength(userDto.getAddressDto().getCity())) {
-                errors.add("Field 'City' is required");
-            }
-            if(!StringUtils.hasLength(userDto.getAddressDto().getCountry())) {
-                errors.add("Field 'Country' is required");
-            }
-            if(!StringUtils.hasLength(userDto.getAddressDto().getCodePostal())) {
-                errors.add("Field 'Code Postal' is required");
-            }
-        }
-        if(!StringUtils.hasLength(userDto.getNameUser())) {
-            errors.add("Can you please enter your username");
-        }
 
+        errors.addAll(AddressValidator.validate(userDto.getAddressDto()));
         return errors;
     }
 }

@@ -37,7 +37,6 @@ public class UserRestController implements UserApi {
         return userService.listUsers();
     }
 
-
     @Override
     public void deleteUser(Long id) {
        userService.deleteUser(id);

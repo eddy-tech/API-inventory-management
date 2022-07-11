@@ -17,8 +17,7 @@ public class EnterpriseValidator {
             errors.add("Can you enter your fiscal code");
             errors.add("Can you enter your phone number");
             errors.add("Can you enter your e-mail");
-            errors.add("Can you enter your site-web");
-            errors.add("Can you please enter your address");
+            errors.addAll(AddressValidator.validate(null));
 
             return errors;
         }
@@ -38,10 +37,10 @@ public class EnterpriseValidator {
         if (!StringUtils.hasLength(enterpriseDto.getMail())) {
             errors.add("Can you enter your e-mail");
         }
-        if (!StringUtils.hasLength(enterpriseDto.getSiteWeb())) {
-            errors.add("Can you enter your site-web");
-        }
+
+       /*
         if (enterpriseDto.getAddressDto() == null) {
+
             errors.add("Can you please enter your address");
         } else {
             if (!StringUtils.hasLength(enterpriseDto.getAddressDto().getAddress1())) {
@@ -56,7 +55,9 @@ public class EnterpriseValidator {
             if (!StringUtils.hasLength(enterpriseDto.getAddressDto().getCodePostal())) {
                 errors.add("Field 'Code Postal' is required");
             }
-        }
+            */
+
+        errors.addAll(AddressValidator.validate(enterpriseDto.getAddressDto()));
         return errors;
     }
 }

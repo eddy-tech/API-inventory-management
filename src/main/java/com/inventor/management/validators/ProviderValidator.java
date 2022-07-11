@@ -16,6 +16,7 @@ public class ProviderValidator {
             errors.add("Can you enter surname");
             errors.add("Can you enter e-mail");
             errors.add("Can you enter phone number");
+            errors.addAll(AddressValidator.validate(null));
 
             return errors;
         }
@@ -33,6 +34,7 @@ public class ProviderValidator {
             errors.add("Can you enter phone number");
         }
 
+        errors.addAll(AddressValidator.validate(providerDto.getAddressDto()));
         return errors;
     }
 

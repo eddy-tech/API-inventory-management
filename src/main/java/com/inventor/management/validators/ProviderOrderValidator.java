@@ -13,6 +13,7 @@ public class ProviderOrderValidator {
         if(providerOrderDto ==null) {
             errors.add("Can you enter provider order code");
             errors.add("Can you enter you order date");
+            errors.add("Can you enter you state order");
             errors.add("Can you enter at least a provider");
 
             return errors;
@@ -23,8 +24,11 @@ public class ProviderOrderValidator {
         if(providerOrderDto.getDateOrdering() == null){
             errors.add("Can you enter you order date");
         }
+        if(!StringUtils.hasLength(providerOrderDto.getStateOrder().toString())){
+            errors.add("Can you enter you state order");
+        }
 
-        if(providerOrderDto.getProviderDto() == null) {
+        if(providerOrderDto.getProviderDto() == null || providerOrderDto.getProviderDto().getId() == null) {
             errors.add("Can you enter at least a provider");
         }
         return errors;

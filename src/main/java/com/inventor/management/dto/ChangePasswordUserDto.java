@@ -8,7 +8,7 @@ import lombok.Data;
 public class ChangePasswordUserDto {
 
     private Long id;
-
+    
     private String password;
 
     private String confirmPassword;

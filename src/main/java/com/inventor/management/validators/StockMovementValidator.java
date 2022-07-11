@@ -1,7 +1,9 @@
 package com.inventor.management.validators;
 
 import com.inventor.management.dto.StockMovementDto;
+import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +22,16 @@ public class StockMovementValidator {
         if (stockMovementDto.getDateMovement() ==null){
             errors.add("Can you enter date movement");
         }
-        if (stockMovementDto.getTypeMoveStock() ==null){
+        if (!StringUtils.hasLength(stockMovementDto.getTypeMoveStock().name())){
+            // RENVOIE name() EN TANT QUE CHAINE DE CARACTERE
             errors.add("Can you enter type of stock movement");
         }
-        if (stockMovementDto.getArticleDto() ==null){
+        if (stockMovementDto.getArticleDto() ==null || stockMovementDto.getArticleDto().getId() == null){
             errors.add("Can you enter an article");
         }
-        if (stockMovementDto.getQuantity() ==null){
-            errors.add("Can you enter quantity");
+        // compareTo () => renvoie -1 si inférieur, 0 si égale et 1 si supérieur
+        if (stockMovementDto.getQuantity() ==null || stockMovementDto.getQuantity().compareTo(BigDecimal.ZERO) == 0){
+           errors.add("Can you enter movement quantity");
         }
 
         return errors;
