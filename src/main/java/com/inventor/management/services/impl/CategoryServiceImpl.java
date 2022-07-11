@@ -1,11 +1,14 @@
 package com.inventor.management.services.impl;
 
+import com.inventor.management.entities.Article;
 import com.inventor.management.entities.Category;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.dto.CategoryDto;
 import com.inventor.management.exceptions.ErrorCodes;
+import com.inventor.management.exceptions.InvalidOperationException;
 import com.inventor.management.mapper.StockMapperImpl;
+import com.inventor.management.repository.ArticleRepository;
 import com.inventor.management.repository.CategoryRepository;
 import com.inventor.management.services.interfaces.CategoryService;
 import com.inventor.management.validators.CategoryValidator;
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private CategoryRepository categoryRepository;
+    private ArticleRepository articleRepository;
     private StockMapperImpl dtoMapper;
 
     @Override
@@ -87,6 +91,12 @@ public class CategoryServiceImpl implements CategoryService {
         if(id == null){
             log.error("Catgeory ID is invalid");
             return;
+        }
+
+        List<Article> articleList = articleRepository.findAllByCategoryId(id);
+        if(!articleList.isEmpty()){
+            throw new InvalidOperationException("Unable to delete a category that already using by article",
+                    ErrorCodes.ARTICLE_ALREADY_IN_USE);
         }
 
         categoryRepository.deleteById(id);

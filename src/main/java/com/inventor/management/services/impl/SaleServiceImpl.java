@@ -9,6 +9,7 @@ import com.inventor.management.enums.SourceStockMovement;
 import com.inventor.management.enums.TypeMoveStock;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
+import com.inventor.management.exceptions.InvalidOperationException;
 import com.inventor.management.mapper.StockMapperImpl;
 import com.inventor.management.repository.ArticleRepository;
 import com.inventor.management.repository.SaleLineRepository;
@@ -157,6 +158,19 @@ public class SaleServiceImpl implements SaleService {
             log.error("Sale ID is NULL");
             return;
         }
+
+        List<Article>articleList = articleRepository.findAllByCategoryId(id);
+        if(!articleList.isEmpty()){
+            throw new InvalidOperationException("Unable to delete sale that has already using article",
+                    ErrorCodes.SALE_ALREADY_IN_USE);
+        }
+
+        List<SaleLine> saleLineList = saleLineRepository.findAllBySaleId(id);
+        if(!saleLineList.isEmpty()){
+            throw new InvalidOperationException("Unable to delete sale that has already using sale line",
+                    ErrorCodes.SALE_ALREADY_IN_USE);
+        }
+
         saleRepository.deleteById(id);
     }
 

@@ -1,11 +1,14 @@
 package com.inventor.management.services.impl;
 
 import com.inventor.management.entities.Customer;
+import com.inventor.management.entities.CustomerOrder;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.dto.CustomerDto;
 import com.inventor.management.exceptions.ErrorCodes;
+import com.inventor.management.exceptions.InvalidOperationException;
 import com.inventor.management.mapper.StockMapperImpl;
+import com.inventor.management.repository.CustomerOrderRepository;
 import com.inventor.management.repository.CustomerRepository;
 import com.inventor.management.services.interfaces.CustomerService;
 import com.inventor.management.validators.CustomerValidator;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
 
     private CustomerRepository customerRepository;
+    private CustomerOrderRepository customerOrderRepository;
     private StockMapperImpl dtoMapper;
 
 
@@ -79,6 +83,12 @@ public class CustomerServiceImpl implements CustomerService {
         if(id == null){
             log.error("Customer ID is null");
             return;
+        }
+
+        List<CustomerOrder> customerOrders = customerOrderRepository.findAllByCustomerId(id);
+        if(!customerOrders.isEmpty()){
+            throw new InvalidOperationException("Unable to delete a customer that has already customer orders ",
+                    ErrorCodes.USER_NOT_ALREADY_IN_USE);
         }
         customerRepository.deleteById(id);
 

@@ -1,11 +1,15 @@
 package com.inventor.management.services.impl;
 
+import com.inventor.management.entities.CustomerOrder;
 import com.inventor.management.entities.Provider;
+import com.inventor.management.entities.ProviderOrder;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.dto.ProviderDto;
 import com.inventor.management.exceptions.ErrorCodes;
+import com.inventor.management.exceptions.InvalidOperationException;
 import com.inventor.management.mapper.StockMapperImpl;
+import com.inventor.management.repository.ProviderOrderRepository;
 import com.inventor.management.repository.ProviderRepository;
 import com.inventor.management.services.interfaces.ProviderService;
 import com.inventor.management.validators.ProviderValidator;
@@ -24,6 +28,7 @@ import java.util.stream.Collectors;
 public class ProviderServiceImpl implements ProviderService {
 
     private ProviderRepository providerRepository;
+    private ProviderOrderRepository providerOrderRepository;
     private StockMapperImpl dtoMapper;
 
     private Provider findProvider(Long providerId){
@@ -82,6 +87,12 @@ public class ProviderServiceImpl implements ProviderService {
         if(id == null){
             log.error("id is invalid");
             return;
+        }
+
+        List<ProviderOrder> providerOrders = providerOrderRepository.findAllByProviderId(id);
+        if(!providerOrders.isEmpty()){
+            throw new InvalidOperationException("Unable to delete a provider that has already provider orders ",
+                    ErrorCodes.PROVIDER_ALREADY_IN_USE);
         }
 
         providerRepository.deleteById(id);

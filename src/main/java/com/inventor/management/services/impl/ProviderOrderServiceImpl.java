@@ -337,6 +337,13 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             log.error("Provider order ID is not exist");
             return;
         }
+
+        List<ProviderOrderLine> providerOrderLineList = providerOrderLineRepository.findAllByProviderOrderId(id);
+        if(!providerOrderLineList.isEmpty()){
+            throw new InvalidOperationException("Unable to delete provider order that has already provider order line",
+                    ErrorCodes.PROVIDER_ORDER_ALREADY_IN_USE);
+        }
+
         providerOrderRepository.deleteById(id);
 
     }

@@ -3,9 +3,12 @@ package com.inventor.management.services.impl;
 import com.inventor.management.dto.CustomerOrderLineDto;
 import com.inventor.management.dto.ProviderOrderLineDto;
 import com.inventor.management.dto.SaleLineDto;
+import com.inventor.management.entities.CustomerOrderLine;
+import com.inventor.management.entities.ProviderOrderLine;
 import com.inventor.management.entities.SaleLine;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
+import com.inventor.management.exceptions.InvalidOperationException;
 import com.inventor.management.repository.CustomerOrderLineRepository;
 import com.inventor.management.repository.ProviderOrderLineRepository;
 import com.inventor.management.repository.SaleLineRepository;
@@ -127,6 +130,24 @@ public class ArticleServiceImpl implements ArticleService {
         if(id == null) {
             log.error("Article ID is null");
             return;
+        }
+
+        List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByArticleId(id);
+        if(!customerOrderLineList.isEmpty()){
+            throw new InvalidOperationException("Unable to delete an article that already use in customer order",
+                    ErrorCodes.ARTICLE_ALREADY_IN_USE);
+        }
+
+        List<ProviderOrderLine> providerOrderLineList = providerOrderLineRepository.findAllByArticleId(id);
+        if(!providerOrderLineList.isEmpty()){
+            throw new InvalidOperationException("Unable to delete an article that already use in provider order",
+                    ErrorCodes.ARTICLE_ALREADY_IN_USE);
+        }
+
+        List<SaleLine> saleLineList = saleLineRepository.findAllByArticleId(id);
+        if(!saleLineList.isEmpty()){
+            throw new InvalidOperationException("Unable to delete an article that already use in sale ",
+                    ErrorCodes.ARTICLE_ALREADY_IN_USE);
         }
      articleRepository.deleteById(id);
     }

@@ -346,6 +346,12 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             log.error("Customer order ID is NULL");
             return;
         }
+
+        List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(id);
+        if(!customerOrderLineList.isEmpty()){
+            throw new InvalidOperationException("Unable to delete customer order that has already customer order line",
+                    ErrorCodes.CUSTOMER_ORDER_ALREADY_IN_USE);
+        }
         customerOrderRepository.deleteById(id);
     }
 
