@@ -63,7 +63,8 @@ public class CategoryServiceImpl implements CategoryService {
             return null;
         }
         Category category = categoryRepository.findById(id)
-                .orElseThrow(()->new EntityNotFoundException("Nothing Category with ID ="+id+"was found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing Category with ID ="+id+"was found in DataBase",
+                        ErrorCodes.ARTICLES_NOT_FOUND));
 
         return dtoMapper.fromCategory(category);
     }
@@ -72,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto getCodeCategory(String codeCategory) {
         if(!StringUtils.hasLength(codeCategory))
             throw new EntityNotFoundException("Nothing code category with ID="+codeCategory+"was found in database",ErrorCodes.CATEGORY_NOT_FOUND);
-        Category category = categoryRepository.findCategoryByCodeCategory(codeCategory);
+        Category category = categoryRepository.findByCodeCategory(codeCategory);
 
         return dtoMapper.fromCategory(category);
     }

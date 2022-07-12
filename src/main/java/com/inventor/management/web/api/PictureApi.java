@@ -19,14 +19,14 @@ import java.io.InputStream;
 
 @Api(PictureEndPoint.PICTURE_ENDPOINT)
 public interface PictureApi {
-
     @PostMapping(value = PictureEndPoint.SAVE_PICTURE,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Save picture", notes = "This method allow to save a picture", response = ArticleDto.class)
+    @ApiOperation(value = "Save picture", notes = "This method allow to save a picture")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Picture objet has been saved"),
             @ApiResponse(code = 403, message = "Unauthorized access for this objet"),
             @ApiResponse(code = 400, message = "Picture objet has invalid")
     })
-    Object savePicture(String context, Long id, @RequestPart(name = "file") MultipartFile picture, String title) throws IOException, FlickrException;
+    Object savePicture(String context, Long id, @RequestPart(name = "file") MultipartFile picture, String title)
+            throws IOException, FlickrException;
 }

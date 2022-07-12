@@ -30,7 +30,6 @@ public class FlickrConfiguration {
 
     @Value("${flickr.appKey}")
     private String appKey;
-
     @Value("{flickr.appSecret}")
     private String appSecret;
 
@@ -69,7 +68,6 @@ public class FlickrConfiguration {
     }
 
  */
-
     @Bean
     public Flickr getConnectFlickr(){
         Flickr flickr = new Flickr(appKey,appSecret,new REST());
@@ -85,6 +83,5 @@ public class FlickrConfiguration {
 
         return flickr;
     }
-
 
 }

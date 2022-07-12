@@ -20,7 +20,6 @@ import java.util.List;
 @Configuration
 @EnableSwagger2WebMvc
 public class SwaggerConfiguration {
-
     public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(
@@ -56,6 +55,4 @@ public class SwaggerConfiguration {
         authorizationScopes[0] = authorizationScope;
         return Collections.singletonList(new SecurityReference("JWT", authorizationScopes));
     }
-
-
 }

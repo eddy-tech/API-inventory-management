@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProviderOrderRepository extends JpaRepository<ProviderOrder, Long> {
 
-    ProviderOrder findProviderOrderByCodeProviderOrder (String codeProviderOrder);
+    ProviderOrder findByCodeProviderOrder (String codeProviderOrder);
     List<ProviderOrder> findAllByProviderId (Long providerId);
 
 }

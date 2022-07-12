@@ -5,15 +5,19 @@ import com.inventor.management.exceptions.ErrorCodes;
 import com.inventor.management.exceptions.InvalidOperationException;
 import lombok.Setter;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 
+@Service
 public class StrategyPictureContext {
     private Strategy strategy;
     private BeanFactory beanFactory;
     @Setter
     private String context;
 
+    @Autowired
     public StrategyPictureContext(BeanFactory beanFactory){
         this.beanFactory = beanFactory;
     }

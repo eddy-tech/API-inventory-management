@@ -48,7 +48,7 @@ public class SaleServiceImpl implements SaleService {
         List<String> errors = SaleValidator.validate(saleDto);
         if(!errors.isEmpty()){
             log.error("Sale is invalid");
-            throw new InvalidEntityException("Sale objet is invalid", ErrorCodes.SALE_NOT_VALID,errors);
+            throw new InvalidEntityException("Sale objet is invalid", ErrorCodes.SALE_NOT_VALID, errors);
         }
 
         List<String> articleError = new ArrayList<>();
@@ -65,8 +65,7 @@ public class SaleServiceImpl implements SaleService {
             throw new InvalidEntityException("One or more articles were not found in database",ErrorCodes.SALE_NOT_VALID,errors);
         }
 
-        Sale sale = dtoMapper.fromSaleDto(saleDto);
-        Sale savedSale = saleRepository.save(sale);
+        Sale savedSale = saleRepository.save(dtoMapper.fromSaleDto(saleDto));
 
         saleDto.getSaleLines().forEach(saleLine -> {
             SaleLine saleLines = dtoMapper.fromSaleLineDto(saleLine);
@@ -138,8 +137,7 @@ public class SaleServiceImpl implements SaleService {
                     ErrorCodes.SALE_NOT_FOUND);
         }
 
-        Sale sale = saleRepository.findSaleByCodeSale(codeSale);
-        return dtoMapper.fromSale(sale);
+        return dtoMapper.fromSale(saleRepository.findByCodeSale(codeSale));
     }
 
     @Override

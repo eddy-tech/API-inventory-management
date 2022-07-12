@@ -6,7 +6,7 @@ public interface ProviderOrderEndPoint {
 
     String PROVIDER_ORDER_ENDPOINT = Constants.API_ROOT + "/providerOrder";
     String UPDATE_STATE_ORDER = PROVIDER_ORDER_ENDPOINT + "/stateOrder/{idOrder}/{stateOrder}";
-    String UPDATE_CUSTOMER = PROVIDER_ORDER_ENDPOINT + "/update/customer/{idOrder}/{idCustomer}";
+    String UPDATE_PROVIDER = PROVIDER_ORDER_ENDPOINT + "/update/provider/{idOrder}/{idProvider}";
     String UPDATE_ARTICLE = PROVIDER_ORDER_ENDPOINT + "/update/article/{idOrder}/{idOrderLine}/{idArticle}";
     String UPDATE_QUANTITY_ORDER = PROVIDER_ORDER_ENDPOINT + "/update/quantityOrder/{idOrder}/{idOrderLine}/{quantity}";
     String FIND_PROVIDER_ORDER_BY_ID = PROVIDER_ORDER_ENDPOINT + "/id/{idProviderOrder}";

@@ -46,7 +46,7 @@ public interface ProviderOrderApi {
     ResponseEntity<ProviderOrderDto> updateStateOrder (@PathVariable(name = "idOrder") Long orderId,
                                                        @PathVariable(name = "stateOrder") StateOrder stateOrder);
 
-    @PatchMapping(value = CustomerOrderEndPoint.UPDATE_QUANTITY_ORDER)
+    @PatchMapping(value = ProviderOrderEndPoint.UPDATE_QUANTITY_ORDER)
     @ApiOperation(value = "Update State Order", notes = "This method allow to update state order provider", response = ProviderOrderDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "State order object has been updated"),
@@ -57,7 +57,7 @@ public interface ProviderOrderApi {
                                                             @PathVariable(name = "idOrderLine")Long orderLineId,
                                                             @PathVariable(name = "quantity") BigDecimal quantity);
 
-    @PatchMapping(value = CustomerOrderEndPoint.UPDATE_CUSTOMER)
+    @PatchMapping(value = ProviderOrderEndPoint.UPDATE_PROVIDER)
     @ApiOperation(value = "Update State provider", notes = "This method allow to update state provider", response = ProviderOrderDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "State provider object has been updated"),
@@ -67,7 +67,7 @@ public interface ProviderOrderApi {
     ResponseEntity<ProviderOrderDto> updateProvider (@PathVariable(name = "idOrder") Long orderId,
                                                      @PathVariable(name = "idCustomer") Long customerId);
 
-    @PatchMapping(value = CustomerOrderEndPoint.UPDATE_ARTICLE)
+    @PatchMapping(value = ProviderOrderEndPoint.UPDATE_ARTICLE)
     @ApiOperation(value = "Update State article", notes = "This method allow to update state article", response = ProviderOrderDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "State article object has been updated"),

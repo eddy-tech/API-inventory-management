@@ -79,7 +79,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDto getCodeArticle(String codeArticle) {
         if(!StringUtils.hasLength(codeArticle))
             throw new EntityNotFoundException("Nothing Article with CODE ="+codeArticle+ "were found in DataBase",ErrorCodes.ARTICLES_NOT_FOUND);
-        Article article = articleRepository.findArticleByCodeArticle(codeArticle);
+        Article article = articleRepository.findByCodeArticle(codeArticle);
 
        return dtoMapper.fromArticle(article);
     }

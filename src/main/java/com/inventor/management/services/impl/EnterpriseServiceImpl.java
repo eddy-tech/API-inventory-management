@@ -72,9 +72,10 @@ public class EnterpriseServiceImpl implements EnterpriseService {
             log.error("Enterprise ID is null");
             return null;
         }
-
         Enterprise enterprise = enterpriseRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Nothing Enterprise with ID ="+ id + "was found in DataBase",ErrorCodes.ENTERPRISE_NOT_FOUND));
+                .orElseThrow(()-> new EntityNotFoundException("Nothing Enterprise with ID ="+ id + "was found in DataBase",
+                        ErrorCodes.ENTERPRISE_NOT_FOUND));
+
         return dtoMapper.fromEnterprise(enterprise);
     }
 
@@ -93,7 +94,6 @@ public class EnterpriseServiceImpl implements EnterpriseService {
             log.error("id is invalid");
             return;
         }
-
         enterpriseRepository.deleteById(id);
     }
 }

@@ -17,7 +17,6 @@ import java.io.InputStream;
 @Slf4j
 @AllArgsConstructor
 public class SaveArticlePicture implements Strategy<ArticleDto>{
-
     private FlickrService flickrService;
     private ArticleService articleService;
 

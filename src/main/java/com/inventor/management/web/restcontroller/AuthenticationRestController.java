@@ -16,14 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationRestController implements AuthenticationApi {
 
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private ApplicationUserDetailsService userDetailsService;
+    private JwtAuthenticationFilter authenticationFilter;
 
     @Autowired
-    private JwtAuthenticationFilter authenticationFilter;
+    AuthenticationRestController(AuthenticationManager authenticationManager, ApplicationUserDetailsService userDetailsService,
+                                 JwtAuthenticationFilter authenticationFilter){
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.authenticationFilter = authenticationFilter;
+    }
 
     @Override
     public ResponseEntity<AuthenticationResponse> authenticate(AuthenticationRequest request) {

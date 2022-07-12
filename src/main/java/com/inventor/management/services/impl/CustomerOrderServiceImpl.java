@@ -124,6 +124,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     @Override
     public CustomerOrderDto saveCustomerOrder(CustomerOrderDto customerOrderDto) {
         List<String> errors = CustomerOrderValidator.validate(customerOrderDto);
+        // IF ERRORS LIST WON'T EMPTY
         if(!errors.isEmpty()){
             log.error("Customer Order is invalid");
             throw new InvalidEntityException("Customer order is invalid", ErrorCodes.CUSTOMER_ORDER_NOT_VALID,errors);
@@ -132,12 +133,11 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         Customer customer = customerRepository.findById(customerOrderDto.getCustomerDto().getId())
                 .orElseThrow(()-> new EntityNotFoundException("Nothing customer order with ID ="+customerOrderDto.getCustomerDto().getId()+
                         "were found in database",ErrorCodes.CUSTOMER_NOT_FOUND));
-
+        /*
         if(customerOrderDto.getId() != null && customerOrderDto.isOrderDelivered()){
             throw new InvalidOperationException("Unable to edit customer order when delivered", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
         }
-
-
+          */
         List<String> articleErrors = new ArrayList<>();
 
         if(customerOrderDto.getCustomerOrderLinesDto() != null){
@@ -164,7 +164,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         if(customerOrderDto.getCustomerOrderLinesDto() != null){
             customerOrderDto.getCustomerOrderLinesDto().forEach(customerOrderLine->{
                 CustomerOrderLine customerOrderLines = dtoMapper.fromCustomerOrderLineDto(customerOrderLine);
-                customerOrderLines.setCustomerOrder(savedCustomerOrder); // ASSIGN CUSTOMER ORDER SAVE IN EACH CUSTOMER ORDER LINE BECAUSE WE DON'T SAVE CUSTOMER ORDER LINE WITHOUT CUSTOMER ORDER
+                customerOrderLines.setCustomerOrder(savedCustomerOrder); // ASSIGN CUSTOMER ORDER SAVE IN EACH CUSTOMER ORDER LINE BECAUSE
+                // WE DON'T SAVE CUSTOMER ORDER LINE WITHOUT CUSTOMER ORDER
                 customerOrderLineRepository.save(customerOrderLines);
             });
         }
@@ -221,7 +222,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         checkOrderLineId(orderLineId);
       if(quantity == null || quantity.compareTo(BigDecimal.ZERO) == 0) {
             log.error("quantity of customer order is null");
-            throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+            throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0",
+                    ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
         }
 
        CustomerOrderDto customerOrder = checkStateOrder(orderId);
@@ -287,7 +289,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         Article articleOptional = findArticle(articleId);
 
         List<String> errors = ArticleValidator.validate(dtoMapper.fromArticle(articleOptional));
-        if(!errors.isEmpty()) throw new InvalidEntityException("Article invalid", ErrorCodes.ARTICLE_NOT_VALID,errors);
+        if(!errors.isEmpty()) throw new InvalidEntityException("Article invalid", ErrorCodes.ARTICLE_NOT_VALID, errors);
 
         CustomerOrderLine customerOrderLineToSaved = customerOrderLine.get();
         customerOrderLineToSaved.setArticle(articleOptional);
@@ -302,7 +304,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             log.error("Customer order is NULL");
             return null;
         }
-
         CustomerOrder customerOrder = findCustomerOrder(id);
 
         return dtoMapper.fromCustomerOrder(customerOrder);
@@ -315,7 +316,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             throw new EntityNotFoundException("Nothing code customer order with ID ="+codeCustomerOrder+"was found in database",ErrorCodes.CUSTOMER_ORDER_NOT_FOUND);
         }
 
-        CustomerOrder customerOrder = customerOrderRepository.findCustomerOrderByCodeOrderCustomer(codeCustomerOrder);
+        CustomerOrder customerOrder = customerOrderRepository.findByCodeCustomerOrder(codeCustomerOrder);
         return dtoMapper.fromCustomerOrder(customerOrder);
     }
 

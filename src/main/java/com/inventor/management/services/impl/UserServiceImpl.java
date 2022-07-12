@@ -35,14 +35,17 @@ public class UserServiceImpl implements UserService {
     private RolesRepository rolesRepository;
     private StockMapperImpl dtoMapper;
 
-    @Override
-    public UserDto saveUser(UserDto userDto) {
+
+    private void validateUser (UserDto userDto){
         List<String> errors = UserValidator.validate(userDto);
         if(!errors.isEmpty()){
             log.error("User is invalid",userDto);
             throw new InvalidEntityException("User is invalid", ErrorCodes.USER_NOT_VALID,errors);
         }
-
+    }
+    @Override
+    public UserDto saveUser(UserDto userDto) {
+        validateUser(userDto);
         User user = dtoMapper.fromUserDto(userDto);
         User savedUser = userRepository.save(user);
         return dtoMapper.fromUser(savedUser);
@@ -50,17 +53,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        List<String> errors = UserValidator.validate(userDto);
-        if(!errors.isEmpty()){
-            log.error("User is invalid",userDto);
-            throw new InvalidEntityException("User isn invalid", ErrorCodes.USER_NOT_VALID,errors);
-        }
-
+        validateUser(userDto);
         User updatedUser = userRepository.save(dtoMapper.fromUserDto(userDto));
         return dtoMapper.fromUser(updatedUser);
     }
 
-    private void validate (ChangePasswordUserDto passwordUserDto){
+    private void validatePassword(ChangePasswordUserDto passwordUserDto){
 
         if(passwordUserDto == null){
             log.warn("Unable to edit password with NULL object");
@@ -89,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto changePassword(ChangePasswordUserDto passwordUserDto) {
-        validate(passwordUserDto);
+        validatePassword(passwordUserDto);
         Optional<User> user = userRepository.findById(passwordUserDto.getId());
         if(user.isEmpty()){
             log.warn("No User were found with ID ="+passwordUserDto.getId());
@@ -102,8 +100,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RolesDto addNewRole(RolesDto appRole) {
-        Roles roles = dtoMapper.fromRolesDto(appRole);
+    public RolesDto addNewRole(RolesDto rolesDto) {
+        Roles roles = dtoMapper.fromRolesDto(rolesDto);
         Roles addRole = rolesRepository.save(roles);
         return dtoMapper.fromRoles(addRole);
     }

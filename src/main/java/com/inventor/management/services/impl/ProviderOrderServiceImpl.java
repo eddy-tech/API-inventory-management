@@ -55,6 +55,64 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         this.dtoMapper = dtoMapper;
     }
 
+
+    private void checkIdOrder (Long orderId){
+        if(orderId == null) {
+            log.error("provider order ID is null");
+            throw new InvalidOperationException("Unable to edit quantity ordered with null ID",
+                    ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
+        }
+    }
+
+    private void checkIdOrderLine (Long orderLineId) {
+        if(orderLineId == null) {
+            log.error("provider order Line ID is null");
+            throw new InvalidOperationException("Unable to edit quantity ordered with null order line",
+                    ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
+        }
+    }
+
+    private void checkIdArticle (Long idArticle, String message){
+        if(idArticle == null){
+            log.error("ID of"+message+"is NULL");
+            throw new InvalidOperationException("Unable to edit state order with a" + message + "article ID null",
+                    ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
+        }
+    }
+
+    private ProviderOrderDto checkStateOrder(Long orderId){
+        ProviderOrderDto providerOrder = getProviderOrder(orderId);
+        if(providerOrder.isOrderDelivered()) throw new InvalidOperationException("Unable to edit state order with null ID",
+                ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+
+        return providerOrder;
+    }
+
+    private ProviderOrderLine findProviderOrderLine (Long orderLineId){
+        return providerOrderLineRepository.findById(orderLineId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing customer order line has been found with ID ="+orderLineId,
+                        ErrorCodes.CUSTOMER_NOT_FOUND));
+
+    }
+
+    private Provider findProvider (Long providerId){
+        return providerRepository.findById(providerId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+providerId,
+                        ErrorCodes.PROVIDER_NOT_FOUND));
+    }
+
+    private Article findArticle (Long articleId){
+        return  articleRepository.findById(articleId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId,
+                        ErrorCodes.ARTICLES_NOT_FOUND));
+    }
+
+    private ProviderOrder findProviderOrder (Long providerOrderId){
+        return providerOrderRepository.findById(providerOrderId)
+                .orElseThrow(()->new EntityNotFoundException("Nothing Provider order with ID="+ providerOrderId +"was found in database",
+                        ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+    }
+
     @Override
     public ProviderOrderDto saveProviderOrder(ProviderOrderDto providerOrderDto) {
         List<String> errors = ProviderOrderValidator.validate(providerOrderDto);
@@ -67,9 +125,11 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
                 .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="+providerOrderDto.getProviderDto().getId()+
                         "was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
 
+        /*
         if(providerOrderDto.getId() != null && providerOrderDto.isOrderDelivered()){
             throw new InvalidOperationException("Unable to edit customer order when delivered",ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
         }
+         */
 
         List<String> articleErrors = new ArrayList<>();
 
@@ -151,62 +211,6 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         return dtoMapper.fromProviderOrder(updateProviderOrder);
     }
 
-    private void checkIdOrder (Long orderId){
-        if(orderId == null) {
-            log.error("provider order ID is null");
-            throw new InvalidOperationException("Unable to edit quantity ordered with null ID",
-                    ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
-        }
-    }
-
-    private void checkIdOrderLine (Long orderLineId) {
-        if(orderLineId == null) {
-            log.error("provider order Line ID is null");
-            throw new InvalidOperationException("Unable to edit quantity ordered with null order line",
-                    ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
-        }
-    }
-
-    private void checkIdArticle (Long idArticle, String message){
-        if(idArticle == null){
-            log.error("ID of"+message+"is NULL");
-            throw new InvalidOperationException("Unable to edit state order with a" + message + "article ID null",
-                    ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
-        }
-    }
-
-    private ProviderOrderDto checkStateOrder(Long orderId){
-        ProviderOrderDto providerOrder = getProviderOrder(orderId);
-        if(providerOrder.isOrderDelivered()) throw new InvalidOperationException("Unable to edit state order with null ID",
-                ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
-
-        return providerOrder;
-    }
-
-    private ProviderOrderLine findProviderOrderLine (Long orderLineId){
-        return providerOrderLineRepository.findById(orderLineId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing customer order line has been found with ID ="+orderLineId,
-                        ErrorCodes.CUSTOMER_NOT_FOUND));
-
-    }
-
-    private Provider findProvider (Long providerId){
-        return providerRepository.findById(providerId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+providerId,
-                        ErrorCodes.PROVIDER_NOT_FOUND));
-    }
-
-    private Article findArticle (Long articleId){
-        return  articleRepository.findById(articleId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId,
-                        ErrorCodes.ARTICLES_NOT_FOUND));
-    }
-
-    private ProviderOrder findProviderOrder (Long providerOrderId){
-        return providerOrderRepository.findById(providerOrderId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing Provider order with ID="+ providerOrderId +"was found in database",
-                        ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
-    }
     @Override
     public ProviderOrderDto updateStateOrder(Long orderId, StateOrder stateOrder) {
         checkIdOrder(orderId);
@@ -234,14 +238,14 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         checkIdOrderLine(orderLineId);
         if(quantity == null || quantity.compareTo(BigDecimal.ZERO) == 0) {
             log.error("quantity of customer order is null");
-            throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0", ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+            throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0",
+                    ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
         }
 
         ProviderOrderDto providerOrder = checkStateOrder(orderId);
-        ProviderOrderLine providerOrderLineOptional = findProviderOrderLine(orderLineId);
-
-        ProviderOrderLine providerOrderLine = providerOrderLineOptional;
+        ProviderOrderLine providerOrderLine = findProviderOrderLine(orderLineId);
         providerOrderLine.setQuantity(quantity);
+
         providerOrderLineRepository.save(providerOrderLine);
 
         return providerOrder;
@@ -250,7 +254,6 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     @Override
     public ProviderOrderDto updateProvider(Long orderId, Long providerId) {
         checkIdOrder(orderId);
-
         if(providerId == null) {
             log.error("customer ID is null");
             throw new InvalidOperationException("Unable to edit state order with null ID",
@@ -258,9 +261,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         }
 
         ProviderOrderDto providerOrder = checkStateOrder(orderId);
-
         Provider providerOptional = findProvider(providerId);
-
         ProviderDto provider = dtoMapper.fromProvider(providerOptional);
         providerOrder.setProviderDto(provider);
 
@@ -307,7 +308,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
                     ErrorCodes.PROVIDER_ORDER_NOT_FOUND);
         }
 
-        ProviderOrder providerOrder = providerOrderRepository.findProviderOrderByCodeProviderOrder(codeProviderOrder);
+        ProviderOrder providerOrder = providerOrderRepository.findByCodeProviderOrder(codeProviderOrder);
         return dtoMapper.fromProviderOrder(providerOrder);
     }
 
@@ -353,7 +354,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         checkIdOrder(orderId);
         checkIdOrderLine(orderLineId);
         ProviderOrderDto providerOrder = checkStateOrder(orderId);
-        findProviderOrderLine(orderLineId);         // JUST TO CHECK CUSTOMER ORDER LINE AND INFORM THE CLIENT IN CASE IT IS ABSENT
+        findProviderOrderLine(orderLineId); // JUST TO CHECK CUSTOMER ORDER LINE AND INFORM THE CLIENT IN CASE IT IS ABSENT
         providerOrderLineRepository.deleteById(orderLineId);
 
         return providerOrder;

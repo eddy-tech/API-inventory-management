@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 public class ErrorDto {
+
     private Integer httpCode;
 
     private ErrorCodes codes;

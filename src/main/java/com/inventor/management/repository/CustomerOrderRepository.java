@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, Long> {
 
-    CustomerOrder findCustomerOrderByCodeOrderCustomer (String codeOrderCustomer);
+    CustomerOrder findByCodeCustomerOrder(String codeCustomerOrder);
 
     List<CustomerOrder> findAllByCustomerId (Long customerId);
 }
