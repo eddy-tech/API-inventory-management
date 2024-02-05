@@ -3,15 +3,14 @@ package com.inventor.management.services.impl;
 
 import com.inventor.management.dto.ChangePasswordUserDto;
 import com.inventor.management.dto.RolesDto;
-import com.inventor.management.entities.Roles;
 import com.inventor.management.entities.User;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.dto.UserDto;
 import com.inventor.management.exceptions.ErrorCodes;
 import com.inventor.management.exceptions.InvalidOperationException;
-import com.inventor.management.mapper.StockMapperImpl;
-import com.inventor.management.repository.RolesRepository;
+import com.inventor.management.mapper.UserMapper;
+import com.inventor.management.repository.SaleLineRepository;
 import com.inventor.management.repository.UserRepository;
 import com.inventor.management.services.interfaces.UserService;
 import com.inventor.management.validators.UserValidator;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,30 +30,29 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    private RolesRepository rolesRepository;
-    private StockMapperImpl dtoMapper;
+    private SaleLineRepository.RolesRepository rolesRepository;
+    private UserMapper userMapper;
 
 
     private void validateUser (UserDto userDto){
         List<String> errors = UserValidator.validate(userDto);
         if(!errors.isEmpty()){
-            log.error("User is invalid",userDto);
+            log.error("User is invalid" + userDto);
             throw new InvalidEntityException("User is invalid", ErrorCodes.USER_NOT_VALID,errors);
         }
     }
     @Override
     public UserDto saveUser(UserDto userDto) {
         validateUser(userDto);
-        User user = dtoMapper.fromUserDto(userDto);
-        User savedUser = userRepository.save(user);
-        return dtoMapper.fromUser(savedUser);
+        var savedUser = userRepository.save(userMapper.fromUserDto(userDto));
+        return userMapper.fromUser(savedUser);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto) {
         validateUser(userDto);
-        User updatedUser = userRepository.save(dtoMapper.fromUserDto(userDto));
-        return dtoMapper.fromUser(updatedUser);
+        var updatedUser = userRepository.save(userMapper.fromUserDto(userDto));
+        return userMapper.fromUser(updatedUser);
     }
 
     private void validatePassword(ChangePasswordUserDto passwordUserDto){
@@ -88,7 +85,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto changePassword(ChangePasswordUserDto passwordUserDto) {
         validatePassword(passwordUserDto);
-        Optional<User> user = userRepository.findById(passwordUserDto.getId());
+        var user = userRepository.findById(passwordUserDto.getId());
         if(user.isEmpty()){
             log.warn("No User were found with ID ="+passwordUserDto.getId());
             throw new EntityNotFoundException("No User were found with ID ="+passwordUserDto.getId(),ErrorCodes.USER_NOT_FOUND);
@@ -96,29 +93,28 @@ public class UserServiceImpl implements UserService {
         User changeUser = user.get(); // RECUPERER LE USER
         changeUser.setPassword(passwordUserDto.getPassword());
 
-        return dtoMapper.fromUser(userRepository.save(changeUser));
+        return userMapper.fromUser(userRepository.save(changeUser));
     }
 
     @Override
     public RolesDto addNewRole(RolesDto rolesDto) {
-        Roles roles = dtoMapper.fromRolesDto(rolesDto);
-        Roles addRole = rolesRepository.save(roles);
-        return dtoMapper.fromRoles(addRole);
+        var addRole = rolesRepository.save(userMapper.fromRolesDto(rolesDto));
+        return userMapper.fromRoles(addRole);
     }
     @Override
     public UserDto loadUserByMail(String email) {
-        User user = userRepository.findByMail(email)
+        var user = userRepository.findByMail(email)
                 .orElseThrow(()-> new EntityNotFoundException("Nothing user with mail ="+ email +"was found in database",
                         ErrorCodes.USER_NOT_FOUND));
 
-        return dtoMapper.fromUser(user);
+        return userMapper.fromUser(user);
     }
     @Override
     public void addRoleToUser(String email, String roleName) {
         UserDto userDto = loadUserByMail(email);
-        Roles roles = rolesRepository.findByRoleName(roleName);
+        var roles = rolesRepository.findByRoleName(roleName);
+        var user = userMapper.fromUserDto(userDto);
 
-        User user = dtoMapper.fromUserDto(userDto);
         user.getRoles().add(roles);
     }
 
@@ -132,16 +128,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Nothing User with ID ="+ id + "was found in DataBase",
                         ErrorCodes.USER_NOT_FOUND));
-        return dtoMapper.fromUser(user);
+        return userMapper.fromUser(user);
     }
 
     @Override
     public List<UserDto> listUsers() {
         List<User> userList = userRepository.findAll();
-        List<UserDto> userDtoList = userList.stream()
-                .map(user -> dtoMapper.fromUser(user)).collect(Collectors.toList());
 
-        return userDtoList;
+        return userList.stream()
+                .map(userMapper::fromUser).collect(Collectors.toList());
     }
 
     @Override
@@ -152,6 +147,5 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.deleteById(id);
-
     }
 }

@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface StockMovementRepository extends JpaRepository<StockMovement, Long> {
-
     @Query("select sum(m.quantity) from StockMovement m where m.article.id = :idArticle")
     BigDecimal stockRealArticle(@Param("idArticle") Long articleId);
     List<StockMovement> findAllByArticleId (Long articleId);

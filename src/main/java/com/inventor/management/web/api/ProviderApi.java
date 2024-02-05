@@ -24,7 +24,7 @@ public interface ProviderApi {
     })
     ProviderDto saveProvider (@RequestBody ProviderDto providerDto);
 
-    @PutMapping(value = ProviderEndPoint.PROVIDER_ENDPOINT,
+    @PutMapping(value = ProviderEndPoint.UPDATE_PROVIDER_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update Provider",notes = "This method allow to update provider",response = ProviderDto.class)
     @ApiResponses(value = {
@@ -32,7 +32,8 @@ public interface ProviderApi {
             @ApiResponse(code = 403,message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404,message = "Provider objet has invalid")
     })
-    ProviderDto updateProvider (@RequestBody ProviderDto providerDto);
+    ProviderDto updateProvider (@PathVariable(name = "idProvider") Long providerId,
+                                @RequestBody ProviderDto providerDto);
 
     @GetMapping(value = ProviderEndPoint.FIND_PROVIDER_BY_ID,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

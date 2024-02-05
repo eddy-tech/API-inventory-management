@@ -26,14 +26,15 @@ public interface CustomerOrderApi {
     })
     ResponseEntity<CustomerOrderDto> saveCustomerOrder (@RequestBody CustomerOrderDto customerOrderDto);
 
-    @PutMapping(value = CustomerOrderEndPoint.CUSTOMER_ORDER_ENDPOINT)
+    @PutMapping(value = CustomerOrderEndPoint.UPDATE_CUSTOMER_ORDER_ENDPOINT)
     @ApiOperation(value = "Update Customer Order",notes = "This method allow to update customer order",response = CustomerOrderDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200,message = "Customer Order objet has been updated"),
             @ApiResponse(code = 403,message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404,message = "Customer Order objet has invalid")
     })
-    ResponseEntity<CustomerOrderDto> updateCustomerOrder (@RequestBody CustomerOrderDto customerOrderDto);
+    ResponseEntity<CustomerOrderDto> updateCustomerOrder (@PathVariable(name = "idCustomerOrder") Long customerOrderId,
+                                                          @RequestBody CustomerOrderDto customerOrderDto);
 
     @PatchMapping(value = CustomerOrderEndPoint.UPDATE_STATE_ORDER)
     @ApiOperation(value = "Updater State Order", notes = "This method allow to update state order customer", response = CustomerOrderDto.class)

@@ -16,7 +16,7 @@ import java.util.List;
 public class CustomerOrder extends AbstractEntity {
 
     @Column(name = "code_commande_client")
-    private String codeOrderCustomer;
+    private String codeCustomerOrder;
 
     @Column(name = "date_commande")
     private Instant dateOrder;

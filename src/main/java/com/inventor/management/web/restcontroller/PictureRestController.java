@@ -13,7 +13,7 @@ import java.io.IOException;
 @RestController
 @AllArgsConstructor
 public class PictureRestController implements PictureApi {
-    private StrategyPictureContext strategyPictureContext;
+    private final StrategyPictureContext strategyPictureContext;
 
     @Override
     public Object savePicture(String context, Long id, MultipartFile picture, String title) throws IOException, FlickrException {

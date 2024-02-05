@@ -5,6 +5,7 @@ import com.inventor.management.utils.Constants;
 public interface ArticleEndPoint {
 
     String ARTICLE_ENDPOINT = Constants.API_ROOT + "/articles";
+    String UPDATE_ARTICLE_ENDPOINT = ARTICLE_ENDPOINT + "/{idArticle}";
     String FIND_HISTORY_SALES = ARTICLE_ENDPOINT + "/history/sales/{idArticle}";
     String FIND_HISTORY_CUSTOMER_ORDER = ARTICLE_ENDPOINT + "/history/customerOrder/{idArticle}";
     String FIND_HISTORY_PROVIDER_ORDER = ARTICLE_ENDPOINT + "/history/providerOrder/{idArticle}";

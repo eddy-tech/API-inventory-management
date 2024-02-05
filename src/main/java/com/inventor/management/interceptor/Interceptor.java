@@ -6,7 +6,6 @@ import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
 
 public class Interceptor extends EmptyInterceptor {
-
     @Override
     public String onPrepareStatement(String sql){
         if(StringUtils.hasLength(sql) && sql.toLowerCase().startsWith("select")){
@@ -17,7 +16,6 @@ public class Interceptor extends EmptyInterceptor {
                     && !entityName.toLowerCase().contains("enterprise")
                     && !entityName.toLowerCase().contains("roles")
                     && StringUtils.hasLength(idEnterprise)) {
-
                 if(sql.contains("where")){
                     sql = sql + "and" + entityName + ".idEnterprise = " + idEnterprise;
                 } else {

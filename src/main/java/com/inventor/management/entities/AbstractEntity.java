@@ -1,7 +1,5 @@
 package com.inventor.management.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,23 +18,11 @@ public class AbstractEntity implements Serializable {
     private Long id;
 
     @CreatedDate
-    @Column(name = "creation_date",nullable = false, updatable = false)
+    @Column(name = "creation_date", nullable = false, updatable = false)
     private Instant creationTime;
 
     @LastModifiedDate
     @Column(name = "last_modified_date")
     private Instant lastModifiedTime;
 
-    /*
-    TEMPORAL SOLUTION
-    @PrePersist
-    void prePersist(){
-        creationTime = Instant.now();
-    }
-
-    @PreUpdate
-    void preUpdate(){
-        lastModifiedTime = Instant.now();
-    }
-     */
 }

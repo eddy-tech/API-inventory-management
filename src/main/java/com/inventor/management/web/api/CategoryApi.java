@@ -24,7 +24,7 @@ public interface CategoryApi {
     })
     CategoryDto saveCategory (@RequestBody CategoryDto categoryDto);
 
-    @PutMapping(path = CategoryEndPoint.CATEGORY_ENDPOINT,
+    @PutMapping(path = CategoryEndPoint.UPDATE_CATEGORY_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update Category",notes = "This method allow to update category",response = CategoryDto.class)
     @ApiResponses(value = {
@@ -32,7 +32,7 @@ public interface CategoryApi {
             @ApiResponse(code = 403,message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404,message = "Catgeory objet has invalid")
     })
-    CategoryDto updateCategory (@RequestBody CategoryDto categoryDto);
+    CategoryDto updateCategory (@PathVariable(name = "idCategory") Long categoryId, @RequestBody CategoryDto categoryDto);
 
     @GetMapping(path = CategoryEndPoint.FIND_CATEGORY_BY_ID,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

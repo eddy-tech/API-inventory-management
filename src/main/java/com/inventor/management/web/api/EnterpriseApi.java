@@ -22,14 +22,15 @@ public interface EnterpriseApi {
     })
     EnterpriseDto saveEnterprise (@RequestBody EnterpriseDto enterpriseDto);
 
-    @PutMapping(value = EnterpriseEndPoint.ENTERPRISE_ENDPOINT)
+    @PutMapping(value = EnterpriseEndPoint.UPDATE_ENTERPRISE_ENDPOINT)
     @ApiOperation(value = "Update Enterprise", notes = "This method allow to save an enterprise", response = EnterpriseDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Enterprise objet has been saved"),
             @ApiResponse(code = 403, message = "Unauthorized access for this objet"),
             @ApiResponse(code = 400, message = "Enterprise objet has invalid")
     })
-    EnterpriseDto updateEnterprise (@RequestBody EnterpriseDto enterpriseDto);
+    EnterpriseDto updateEnterprise (@PathVariable(name = "idEnterprise") Long enterpriseId,
+                                    @RequestBody EnterpriseDto enterpriseDto);
 
     @GetMapping(value = EnterpriseEndPoint.FIND_ENTERPRISE_BY_ID)
     @ApiOperation(value = "Find out an enterprise by ID",

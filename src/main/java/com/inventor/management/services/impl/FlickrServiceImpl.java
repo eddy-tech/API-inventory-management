@@ -5,6 +5,7 @@ import com.flickr4java.flickr.FlickrException;
 import com.flickr4java.flickr.uploader.UploadMetaData;
 import com.inventor.management.services.interfaces.FlickrService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,9 @@ import java.io.InputStream;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FlickrServiceImpl implements FlickrService {
-    private Flickr flickr;
+    private final Flickr flickr;
 
     @Override
     public String savePicture(InputStream picture, String title) throws FlickrException {

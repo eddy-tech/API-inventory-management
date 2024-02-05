@@ -27,14 +27,15 @@ public interface ProviderOrderApi {
     })
     ResponseEntity<ProviderOrderDto> saveProviderOrder (@RequestBody ProviderOrderDto providerOrderDto);
 
-    @PutMapping(value = ProviderOrderEndPoint.PROVIDER_ORDER_ENDPOINT)
+    @PutMapping(value = ProviderOrderEndPoint.UPDATE_PROVIDER_ORDER_ENDPOINT)
     @ApiOperation(value = "Update Provider Order",notes = "This method allow to update provider order",response = ProviderOrderDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200,message = "Provider Order objet has been updated"),
             @ApiResponse(code = 403,message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404,message = "Provider Order objet has invalid")
     })
-    ResponseEntity<ProviderOrderDto> updateProviderOrder (@RequestBody ProviderOrderDto providerOrderDto);
+    ResponseEntity<ProviderOrderDto> updateProviderOrder (@PathVariable(name = "idProviderOrder") Long providerOrderId,
+                                                          @RequestBody ProviderOrderDto providerOrderDto);
 
     @PatchMapping(value = ProviderOrderEndPoint.UPDATE_STATE_ORDER)
     @ApiOperation(value = "Updater State Order", notes = "This method allow to update state order provider", response = ProviderOrderDto.class)

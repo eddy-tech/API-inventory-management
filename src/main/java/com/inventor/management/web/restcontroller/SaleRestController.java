@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SaleRestController implements SaleApi {
 
-    private SaleService saleService;
+    private final SaleService saleService;
 
     @Override
     public SaleDto saveSale(SaleDto saleDto) {
@@ -20,7 +20,7 @@ public class SaleRestController implements SaleApi {
     }
 
     @Override
-    public SaleDto updateSale(SaleDto saleDto) {
+    public SaleDto updateSale(Long saleId, SaleDto saleDto) {
         return saleService.updateSale(saleDto);
     }
 

@@ -1,6 +1,5 @@
 package com.inventor.management.repository;
 
-import com.inventor.management.dto.CustomerOrderLineDto;
 import com.inventor.management.entities.CustomerOrderLine;
 import org.springframework.data.jpa.repository.JpaRepository;
 

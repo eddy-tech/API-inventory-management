@@ -25,7 +25,7 @@ public interface CustomerApi {
     })
     CustomerDto saveCustomer (@RequestBody CustomerDto customerDto);
 
-    @PutMapping(value = CustomerEndPoint.CUSTOMER_ENDPOINT,
+    @PutMapping(value = CustomerEndPoint.UPDATE_CUSTOMER_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update Customer",notes = "This method allow to update customer",response = CustomerDto.class)
     @ApiResponses(value = {
@@ -33,7 +33,7 @@ public interface CustomerApi {
             @ApiResponse(code = 403,message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404,message = "Customer objet has invalid")
     })
-    CustomerDto updateCustomer (@RequestBody CustomerDto customerDto);
+    CustomerDto updateCustomer (@PathVariable(name = "idCustomer") Long customerId, @RequestBody CustomerDto customerDto);
 
     @GetMapping(value = CustomerEndPoint.FIND_CUSTOMER_BY_ID,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

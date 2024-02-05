@@ -13,7 +13,7 @@ import java.io.InputStream;
 @Service
 public class StrategyPictureContext {
     private Strategy strategy;
-    private BeanFactory beanFactory;
+    private final BeanFactory beanFactory;
     @Setter
     private String context;
 

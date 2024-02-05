@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EnterpriseRestController implements EnterpriseApi {
 
-    private EnterpriseService enterpriseService;
+    private final EnterpriseService enterpriseService;
 
     @Override
     public EnterpriseDto saveEnterprise(EnterpriseDto enterpriseDto) {
@@ -20,7 +20,7 @@ public class EnterpriseRestController implements EnterpriseApi {
     }
 
     @Override
-    public EnterpriseDto updateEnterprise(EnterpriseDto enterpriseDto) {
+    public EnterpriseDto updateEnterprise(Long enterpriseId, EnterpriseDto enterpriseDto) {
         return enterpriseService.updateEnterprise(enterpriseDto);
     }
 

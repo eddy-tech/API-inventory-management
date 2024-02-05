@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserRestController implements UserApi {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Override
     public UserDto saveUser(UserDto userDto) {
@@ -23,7 +23,7 @@ public class UserRestController implements UserApi {
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto) {
+    public UserDto updateUser(Long userId, UserDto userDto) {
         return userService.updateUser(userDto);
     }
 

@@ -1,19 +1,19 @@
 package com.inventor.management.services.impl;
 
 import com.inventor.management.dto.RolesDto;
-import com.inventor.management.dto.UserDto;
 import com.inventor.management.entities.Enterprise;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.dto.EnterpriseDto;
 import com.inventor.management.exceptions.ErrorCodes;
-import com.inventor.management.mapper.StockMapperImpl;
+import com.inventor.management.mapper.EnterpriseMapper;
+import com.inventor.management.mapper.UserMapper;
 import com.inventor.management.repository.EnterpriseRepository;
-import com.inventor.management.repository.RolesRepository;
+import com.inventor.management.repository.SaleLineRepository;
 import com.inventor.management.services.interfaces.EnterpriseService;
 import com.inventor.management.services.interfaces.UserService;
 import com.inventor.management.validators.EnterpriseValidator;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,35 +21,38 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.inventor.management.utils.JwtUnit.ADMIN_ROLE;
+
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class EnterpriseServiceImpl implements EnterpriseService {
-    private EnterpriseRepository enterpriseRepository;
-    private RolesRepository rolesRepository;
-    private UserService userService;
-    private StockMapperImpl dtoMapper;
+    private final EnterpriseRepository enterpriseRepository;
+    private final SaleLineRepository.RolesRepository rolesRepository;
+    private final UserService userService;
+    private final EnterpriseMapper enterpriseMapper;
+    private final UserMapper userMapper;
 
     @Override
     public EnterpriseDto saveEnterprise(EnterpriseDto enterpriseDto) {
         List<String> errors = EnterpriseValidator.validate(enterpriseDto);
         if(!errors.isEmpty()){
-            log.error("Enterprise is invalid",enterpriseDto);
+            log.error("Enterprise is invalid" + enterpriseDto);
             throw new InvalidEntityException("Enterprise is invalid", ErrorCodes.ENTERPRISE_NOT_VALID,errors);
         }
 
-        Enterprise enterprise = dtoMapper.fromEnterpriseDto(enterpriseDto);
-        Enterprise savedEnterprise = enterpriseRepository.save(enterprise);
-        EnterpriseDto savedEnterpriseDto = dtoMapper.fromEnterprise(savedEnterprise);
+        var enterprise = enterpriseMapper.fromEnterpriseDto(enterpriseDto);
+        var savedEnterprise = enterpriseRepository.save(enterprise);
+        var savedEnterpriseDto = enterpriseMapper.fromEnterprise(savedEnterprise);
 
-        UserDto userDto = dtoMapper.fromEnterpriseUser(savedEnterpriseDto);
-        UserDto savedUser = userService.saveUser(userDto);
+        var userDto = enterpriseMapper.fromEnterpriseUser(savedEnterpriseDto);
+        var savedUser = userService.saveUser(userDto);
 
         RolesDto rolesDto = new RolesDto();
-        rolesDto.setRoleName("ADMIN");
+        rolesDto.setRoleName(ADMIN_ROLE);
         rolesDto.setUserDto(savedUser);
-        rolesRepository.save(dtoMapper.fromRolesDto(rolesDto));
+        rolesRepository.save(userMapper.fromRolesDto(rolesDto));
 
         return savedEnterpriseDto;
     }
@@ -58,12 +61,12 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     public EnterpriseDto updateEnterprise(EnterpriseDto enterpriseDto) {
         List<String> errors = EnterpriseValidator.validate(enterpriseDto);
         if(!errors.isEmpty()){
-            log.error("Enterprise is invalid",enterpriseDto);
+            log.error("Enterprise is invalid" + enterpriseDto);
             throw new InvalidEntityException("Enterprise is invalid", ErrorCodes.ENTERPRISE_NOT_VALID,errors);
         }
 
-        Enterprise savedEnterprise = enterpriseRepository.save(dtoMapper.fromEnterpriseDto(enterpriseDto));
-        return dtoMapper.fromEnterprise(savedEnterprise);
+        Enterprise savedEnterprise = enterpriseRepository.save(enterpriseMapper.fromEnterpriseDto(enterpriseDto));
+        return enterpriseMapper.fromEnterprise(savedEnterprise);
     }
 
     @Override
@@ -72,20 +75,19 @@ public class EnterpriseServiceImpl implements EnterpriseService {
             log.error("Enterprise ID is null");
             return null;
         }
-        Enterprise enterprise = enterpriseRepository.findById(id)
+        var enterprise = enterpriseRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Nothing Enterprise with ID ="+ id + "was found in DataBase",
                         ErrorCodes.ENTERPRISE_NOT_FOUND));
 
-        return dtoMapper.fromEnterprise(enterprise);
+        return enterpriseMapper.fromEnterprise(enterprise);
     }
 
     @Override
     public List<EnterpriseDto> listEnterprise() {
         List<Enterprise> enterpriseList = enterpriseRepository.findAll();
-        List<EnterpriseDto> enterpriseDtoList = enterpriseList.stream()
-                .map(enterprise -> dtoMapper.fromEnterprise(enterprise)).collect(Collectors.toList());
-
-        return enterpriseDtoList;
+        return enterpriseList.stream()
+                .map(enterpriseMapper::fromEnterprise)
+                .collect(Collectors.toList());
     }
 
     @Override

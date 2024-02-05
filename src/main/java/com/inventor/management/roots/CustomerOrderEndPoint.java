@@ -5,6 +5,7 @@ import com.inventor.management.utils.Constants;
 public interface CustomerOrderEndPoint {
 
     String CUSTOMER_ORDER_ENDPOINT = Constants.API_ROOT + "/customerOrder";
+    String UPDATE_CUSTOMER_ORDER_ENDPOINT = Constants.API_ROOT + "/customerOrder/{idCustomerOrder}";
     String FIND_CUSTOMER_ORDER_BY_ID = CUSTOMER_ORDER_ENDPOINT + "/id/{idCustomerOrder}";
     String UPDATE_STATE_ORDER = CUSTOMER_ORDER_ENDPOINT + "/stateOrder/{idOrder}/{stateOrder}";
     String UPDATE_CUSTOMER = CUSTOMER_ORDER_ENDPOINT + "/update/customer/{idOrder}/{idCustomer}";

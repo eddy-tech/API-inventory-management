@@ -29,5 +29,4 @@ public class EnterpriseDto {
     @JsonIgnore
     private List<UserDto> usersDto;
 
-
 }

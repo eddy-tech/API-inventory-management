@@ -24,7 +24,7 @@ public interface ArticleApi {
     })
     ArticleDto saveArticle (@RequestBody ArticleDto articleDto);
 
-    @PutMapping(value = ArticleEndPoint.ARTICLE_ENDPOINT,
+    @PutMapping(value = ArticleEndPoint.UPDATE_ARTICLE_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update article", notes = "This method allow to update an article", response = ArticleDto.class)
     @ApiResponses(value = {
@@ -39,7 +39,7 @@ public interface ArticleApi {
     @ApiOperation(value = "Find out an article by ID",
             notes = "This method allow to find out an article with ID", response = ArticleDto.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "Article was found in DB"),
+            @ApiResponse(code = 200,message = "Article has been found in DB"),
             @ApiResponse(code = 403, message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404, message = "Nothing article exist in DB with ID provided")
     })
@@ -50,7 +50,7 @@ public interface ArticleApi {
     @ApiOperation(value = "Find out an article by code_article",
             notes = "This method allow to find out an article with code_article",response = ArticleDto.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Article was found in DB"),
+            @ApiResponse(code = 200, message = "Article has been found in DB"),
             @ApiResponse(code = 403, message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404, message = "Nothing article exist in DB with code_article provided")
     })
@@ -61,7 +61,7 @@ public interface ArticleApi {
     @ApiOperation(value = "Return list of articles",
             notes = "This method allow to research and return all articles that exist in DB",responseContainer = "List<ArticleDto>")
     @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "All articles were found in DB / Empty list"),
+            @ApiResponse(code = 200,message = "All articles had been found in DB / Empty list"),
             @ApiResponse(code = 403, message = "Unauthorized access for this objet")
     })
     List<ArticleDto> listArticle ();
@@ -71,7 +71,7 @@ public interface ArticleApi {
     @ApiOperation(value = "Return history of sales",
             notes = "This method allow to research and return all sales histories of an article that exist in DB",responseContainer = "List<SaleLineDto>")
     @ApiResponses(value = {
-            @ApiResponse(code = 200,message = "All sales histories were found in DB / Empty list"),
+            @ApiResponse(code = 200,message = "All sales histories had been found in DB / Empty list"),
             @ApiResponse(code = 403, message = "Unauthorized access for this objet")
     })
     List<SaleLineDto> findHistorySales (@PathVariable(name = "idArticle") Long articleId);

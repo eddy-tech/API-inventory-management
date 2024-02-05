@@ -26,5 +26,4 @@ public class ProviderDto {
     @JsonIgnore
     private List<ProviderOrderDto> providerOrdersDto;
 
-
 }

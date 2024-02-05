@@ -40,6 +40,7 @@ public class ArticleValidator {
         if(articleDto.getCategoryDto() == null){
             errors.add("Can you select at least one category");
         }
+
         return errors;
     }
 }

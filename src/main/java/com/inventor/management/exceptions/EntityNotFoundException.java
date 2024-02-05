@@ -2,7 +2,7 @@ package com.inventor.management.exceptions;
 
 import lombok.Getter;
 
-// WE USED WHEN THE ENTITY WASN'T FOUND IN THE DB
+// WE USED WHEN THE ENTITY HASN'T BEEN FOUND IN THE DB
 public class EntityNotFoundException extends RuntimeException{
 
     @Getter

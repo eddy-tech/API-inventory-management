@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Api(StockMovementEndPoint.STOCK_MOVEMENT_ENDPOINT)
-public interface StockMovementApi {
+public interface    StockMovementApi {
 
     @GetMapping (value = StockMovementEndPoint.ARTICLE_REAL_STOCK)
     @ApiOperation(value = "Get Real stock article", notes = "This method allow to calculate an article real stock",

@@ -1,15 +1,14 @@
 package com.inventor.management.exceptions;
 
+
 import lombok.Getter;
 
 import java.util.List;
 
-// TO RECORD IN DB AND WE WANT TO KNOW IF THIS ENTITY WASN'T VALID (REFERENCE VALIDATOR)
+// TO RECORD IN DB AND WE WANT TO KNOW IF THIS ENTITY HAS BEEN NOT VALID (REFERENCE VALIDATOR)
+@Getter
 public class InvalidEntityException extends RuntimeException {
-
-    @Getter
     private ErrorCodes errorCodes;
-    @Getter
     private List<String>errors;
 
     public InvalidEntityException (String message){
@@ -35,6 +34,4 @@ public class InvalidEntityException extends RuntimeException {
         this.errorCodes = errorCodes;
         this.errors = errors;
     }
-
-
 }

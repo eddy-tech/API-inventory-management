@@ -2,9 +2,8 @@ package com.inventor.management.exceptions;
 
 import lombok.Getter;
 
+@Getter
 public class InvalidOperationException extends RuntimeException {
-
-    @Getter
     private ErrorCodes errorCodes;
 
     public InvalidOperationException (String message) {

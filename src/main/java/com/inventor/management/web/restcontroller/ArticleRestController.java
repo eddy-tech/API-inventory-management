@@ -6,16 +6,16 @@ import com.inventor.management.dto.SaleLineDto;
 import com.inventor.management.services.interfaces.ArticleService;
 import com.inventor.management.dto.ArticleDto;
 import com.inventor.management.web.api.ArticleApi;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ArticleRestController implements ArticleApi {
 
-    private ArticleService articleService;
+    private final ArticleService articleService;
 
     @Override
     public ArticleDto saveArticle(ArticleDto articleDto) {

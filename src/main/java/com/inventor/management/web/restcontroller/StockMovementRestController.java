@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StockMovementRestController implements StockMovementApi {
 
-    private StockMovementService stockMovementService;
+    private final StockMovementService stockMovementService;
 
     @Override
     public BigDecimal stockRealArticle(Long articleId) {

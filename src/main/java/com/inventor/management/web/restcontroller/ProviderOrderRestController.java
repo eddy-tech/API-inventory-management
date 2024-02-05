@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 public class ProviderOrderRestController implements ProviderOrderApi {
 
-    private ProviderOrderService providerOrderService;
+    private final ProviderOrderService providerOrderService;
 
     @Autowired
     public ProviderOrderRestController(ProviderOrderService providerOrderService) {
@@ -28,7 +28,7 @@ public class ProviderOrderRestController implements ProviderOrderApi {
     }
 
     @Override
-    public ResponseEntity<ProviderOrderDto> updateProviderOrder(ProviderOrderDto providerOrderDto) {
+    public ResponseEntity<ProviderOrderDto> updateProviderOrder(Long providerOrderId, ProviderOrderDto providerOrderDto) {
         return ResponseEntity.ok(providerOrderService.updateProviderOrder(providerOrderDto));
     }
 

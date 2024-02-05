@@ -22,14 +22,14 @@ public interface SaleApi {
     })
     SaleDto saveSale (@RequestBody SaleDto saleDto);
 
-    @PutMapping(value = SaleEndPoint.SALE_ENDPOINT)
+    @PutMapping(value = SaleEndPoint.UPDATE_SALE_ENDPOINT)
     @ApiOperation(value = "Update Sale",notes = "This method allow to update sale",response = SaleDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200,message = "Sale objet has been updated"),
             @ApiResponse(code = 403,message = "Unauthorized access for this objet"),
             @ApiResponse(code = 404,message = "Sale objet has invalid")
     })
-    SaleDto updateSale (@RequestBody SaleDto saleDto);
+    SaleDto updateSale (@PathVariable(name = "idSale") Long saleId, @RequestBody SaleDto saleDto);
 
     @GetMapping(value = SaleEndPoint.FIND_SALE_BY_ID)
     @ApiOperation(value = "Find out a sale by ID",

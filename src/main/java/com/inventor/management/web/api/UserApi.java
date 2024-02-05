@@ -27,7 +27,7 @@ public interface UserApi {
    // @PostAuthorize("hasAuthority('USER')")
     UserDto saveUser (@RequestBody UserDto userDto);
 
-    @PutMapping(path = UserEndPoint.USER_ENDPOINT)
+    @PutMapping(path = UserEndPoint.UPDATE_USER_ENDPOINT)
     @ApiOperation(value = "Update User",notes = "This method allow to update user",response = UserDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200,message = "User objet has been updated"),
@@ -35,7 +35,7 @@ public interface UserApi {
             @ApiResponse(code = 404,message = "User objet has invalid")
     })
    // @PostAuthorize("hasAuthority('USER')")
-    UserDto updateUser (@RequestBody UserDto userDto);
+    UserDto updateUser (@PathVariable(name = "idUser") Long userId, @RequestBody UserDto userDto);
 
     @GetMapping(path = UserEndPoint.FIND_USER_BY_ID)
     @ApiOperation(value = "Find out a user by ID",

@@ -17,7 +17,6 @@ import java.io.InputStream;
 @Slf4j
 @AllArgsConstructor
 public class SaveEnterprisePicture implements Strategy<EnterpriseDto> {
-
     private EnterpriseService enterpriseService;
     private FlickrService flickrService;
 

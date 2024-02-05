@@ -10,7 +10,8 @@ import com.inventor.management.enums.TypeMoveStock;
 import com.inventor.management.exceptions.EntityNotFoundException;
 import com.inventor.management.exceptions.InvalidEntityException;
 import com.inventor.management.exceptions.InvalidOperationException;
-import com.inventor.management.mapper.StockMapperImpl;
+import com.inventor.management.mapper.ArticleMapper;
+import com.inventor.management.mapper.SaleMapper;
 import com.inventor.management.repository.ArticleRepository;
 import com.inventor.management.repository.SaleLineRepository;
 import com.inventor.management.repository.SaleRepository;
@@ -18,7 +19,7 @@ import com.inventor.management.services.interfaces.SaleService;
 import com.inventor.management.services.interfaces.StockMovementService;
 import com.inventor.management.validators.SaleValidator;
 import com.inventor.management.exceptions.ErrorCodes;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +33,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class SaleServiceImpl implements SaleService {
 
-    private ArticleRepository articleRepository;
-    private SaleRepository saleRepository;
-    private SaleLineRepository saleLineRepository;
-    private StockMovementService stockMovementService;
-    private StockMapperImpl dtoMapper;
+    private final ArticleRepository articleRepository;
+    private final SaleRepository saleRepository;
+    private final SaleLineRepository saleLineRepository;
+    private final StockMovementService stockMovementService;
+    private final SaleMapper saleMapper;
+    private final ArticleMapper articleMapper;
 
 
     @Override
@@ -61,27 +63,27 @@ public class SaleServiceImpl implements SaleService {
         });
 
         if(!articleError.isEmpty()){
-            log.error("One or more articles were not found in the database,",errors);
+            log.error("One or more articles were not found in the database," + errors);
             throw new InvalidEntityException("One or more articles were not found in database",ErrorCodes.SALE_NOT_VALID,errors);
         }
 
-        Sale savedSale = saleRepository.save(dtoMapper.fromSaleDto(saleDto));
+        Sale savedSale = saleRepository.save(saleMapper.fromSaleDto(saleDto));
 
         saleDto.getSaleLines().forEach(saleLine -> {
-            SaleLine saleLines = dtoMapper.fromSaleLineDto(saleLine);
+            SaleLine saleLines = saleMapper.fromSaleLineDto(saleLine);
             saleLines.setSale(savedSale);
             saleLineRepository.save(saleLines);
             updateStockMovementSale(saleLine); // METTRE A JOUR STOCK DE VENTE
         });
 
-        return dtoMapper.fromSale(savedSale);
+        return saleMapper.fromSale(savedSale);
     }
 
     @Override
     public SaleDto updateSale(SaleDto saleDto) {
         List<String> errors = SaleValidator.validate(saleDto);
         if(!errors.isEmpty()){
-            log.error("Sale is invalid",saleDto);
+            log.error("Sale is invalid" + saleDto);
             throw new InvalidEntityException("Sale is invalid",ErrorCodes.SALE_NOT_VALID,errors);
         }
 
@@ -99,21 +101,22 @@ public class SaleServiceImpl implements SaleService {
         }
 
         if(!articleErrors.isEmpty()){
-            log.error("One or more articles were not found in database",errors);
-            throw new InvalidEntityException("One or more articles were not found in databse",ErrorCodes.SALE_NOT_VALID,articleErrors);
+            log.error("One or more articles were not found in database" + errors);
+            throw new InvalidEntityException(
+                    "One or more articles were not found in database", ErrorCodes.SALE_NOT_VALID, articleErrors
+            );
         }
 
-        Sale sale = dtoMapper.fromSaleDto(saleDto);
-        Sale updatedSale = saleRepository.save(sale);
+        Sale updatedSale = saleRepository.save(saleMapper.fromSaleDto(saleDto));
 
         if(saleDto.getSaleLines() != null){
             saleDto.getSaleLines().forEach(saleLine -> {
-                SaleLine saveSaleLine = dtoMapper.fromSaleLineDto(saleLine);
+                SaleLine saveSaleLine = saleMapper.fromSaleLineDto(saleLine);
                 saveSaleLine.setSale(updatedSale);
                 saleLineRepository.save(saveSaleLine);
             });
         }
-        return dtoMapper.fromSale(updatedSale);
+        return saleMapper.fromSale(updatedSale);
     }
 
     @Override
@@ -122,32 +125,32 @@ public class SaleServiceImpl implements SaleService {
             log.error("Id Sale is NULL");
             return null;
         }
-        Sale sale = saleRepository.findById(id)
+        var sale = saleRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException("Nothing Sale was found with ID ="+id+"in database",
                         ErrorCodes.SALE_NOT_FOUND));
 
-        return dtoMapper.fromSale(sale);
+        return saleMapper.fromSale(sale);
     }
 
     @Override
     public SaleDto getCodeSale(String codeSale) {
         if(!StringUtils.hasLength(codeSale)){
             log.error("code Sale is invalid");
-            throw new EntityNotFoundException("Nothing code sale with ID ="+codeSale+"was found in database",
-                    ErrorCodes.SALE_NOT_FOUND);
+            throw new EntityNotFoundException(
+                    "Nothing code sale with ID ="+codeSale+"was found in database", ErrorCodes.SALE_NOT_FOUND
+            );
         }
 
-        return dtoMapper.fromSale(saleRepository.findByCodeSale(codeSale));
+        return saleMapper.fromSale(saleRepository.findByCodeSale(codeSale));
     }
 
     @Override
     public List<SaleDto> listSale() {
         List<Sale> saleList = saleRepository.findAll();
-        List<SaleDto> saleDtoList = saleList.stream()
-                .map(sale -> dtoMapper.fromSale(sale))
-                    .collect(Collectors.toList());
 
-        return saleDtoList;
+        return saleList.stream()
+                .map(saleMapper::fromSale)
+                    .collect(Collectors.toList());
     }
 
     @Override
@@ -174,7 +177,7 @@ public class SaleServiceImpl implements SaleService {
 
     private void updateStockMovementSale (SaleLine saleLine){
             StockMovementDto stock = new StockMovementDto();
-            stock.setArticleDto(dtoMapper.fromArticle(saleLine.getArticle()));
+            stock.setArticleDto(articleMapper.fromArticle(saleLine.getArticle()));
             stock.setDateMovement(Instant.now());
             stock.setTypeMoveStock(TypeMoveStock.EXIT);
             stock.setQuantity(saleLine.getQuantity());

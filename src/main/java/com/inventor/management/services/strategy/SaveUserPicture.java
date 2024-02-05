@@ -17,7 +17,6 @@ import java.io.InputStream;
 @Slf4j
 @AllArgsConstructor
 public class SaveUserPicture implements Strategy<UserDto> {
-
     private FlickrService flickrService;
     private UserService userService;
 

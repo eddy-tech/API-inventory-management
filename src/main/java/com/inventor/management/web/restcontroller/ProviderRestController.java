@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProviderRestController implements ProviderApi {
 
-    private ProviderService providerService;
+    private final ProviderService providerService;
 
     @Override
     public ProviderDto saveProvider(ProviderDto providerDto) {
@@ -20,7 +20,7 @@ public class ProviderRestController implements ProviderApi {
     }
 
     @Override
-    public ProviderDto updateProvider(ProviderDto providerDto) {
+    public ProviderDto updateProvider(Long providerId, ProviderDto providerDto) {
         return providerService.updateProvider(providerDto);
     }
 

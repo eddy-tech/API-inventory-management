@@ -11,8 +11,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 public class CategoryRestController implements CategoryApi {
-
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @Override
     public CategoryDto saveCategory(CategoryDto categoryDto) {
@@ -20,7 +19,7 @@ public class CategoryRestController implements CategoryApi {
     }
 
     @Override
-    public CategoryDto updateCategory(CategoryDto categoryDto) {
+    public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
         return categoryService.updateCategory(categoryDto);
     }
 
