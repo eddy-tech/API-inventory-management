@@ -1,6 +1,6 @@
 package com.inventor.management.validators;
 
-import com.inventor.management.dto.RolesDto;
+import com.inventor.management.core.dto.RolesDto;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;

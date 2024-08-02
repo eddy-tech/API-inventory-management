@@ -1,6 +1,6 @@
 package com.inventor.management.validators;
 
-import com.inventor.management.dto.CustomerOrderDto;
+import com.inventor.management.customerOrder.dto.CustomerOrderDto;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;

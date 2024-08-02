@@ -1,0 +1,11 @@
+package com.inventor.management.customerOrderLine.repository;
+
+import com.inventor.management.customerOrderLine.entity.CustomerOrderLine;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface CustomerOrderLineRepository extends JpaRepository<CustomerOrderLine, Long> {
+    List<CustomerOrderLine> findAllByCustomerOrderId(Long id);
+    List<CustomerOrderLine> findAllByArticleId(Long articleId);
+}

@@ -1,6 +1,6 @@
 package com.inventor.management.validators;
 
-import com.inventor.management.dto.SaleLineDto;
+import com.inventor.management.saleLine.dto.SaleLineDto;
 
 import java.util.ArrayList;
 import java.util.List;

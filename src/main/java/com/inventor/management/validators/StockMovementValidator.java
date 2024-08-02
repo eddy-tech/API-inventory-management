@@ -1,6 +1,6 @@
 package com.inventor.management.validators;
 
-import com.inventor.management.dto.StockMovementDto;
+import com.inventor.management.stockMovement.dto.StockMovementDto;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;

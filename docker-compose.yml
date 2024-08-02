@@ -1,16 +1,21 @@
-version: '3'
+version: '3.8'
 
 services:
-  mysql:
-    image: mysql:latest
-    container_name: inventor-container
+  inventory-management:
+    image: postgres:latest
+    container_name: inventory_management
     environment:
-      MYSQL_ROOT_PASSWORD: mysqlTest
-      MYSQL_DATABASE: inventor-management-db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: upperclasswoman
+      POSTGRES_USER: koko
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: inventory_management
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - ./mysql-data:/var/lib/mysql
-    restart: always
+      - inventory_data:/var/lib/postgresql/data
+
+volumes:
+  inventory_data:
+
+networks:
+  inventory:
+    driver: bridge

@@ -1,0 +1,35 @@
+package com.inventor.management.providerOrderLine.entity;
+
+import com.inventor.management.article.entity.Article;
+import com.inventor.management.core.entities.AbstractEntity;
+import com.inventor.management.providerOrder.entity.ProviderOrder;
+import lombok.*;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "ligneCommandeFournisseurs")
+@EqualsAndHashCode(callSuper = true)
+public class ProviderOrderLine extends AbstractEntity {
+
+    @Column(name = "quantite")
+    private BigDecimal quantity;
+
+    @Column(name = "prix_unitaire") // Prix d'achat d'un article
+    private BigDecimal unitPrice;
+
+    @Column(name = "id_enterprise")
+    private Long id_enterprise;
+
+    @ManyToOne
+    @JoinColumn(name = "id_commande_fournisseur")
+    private ProviderOrder providerOrder;
+
+    @ManyToOne
+    @JoinColumn(name = "id_article")
+    private Article article;
+}

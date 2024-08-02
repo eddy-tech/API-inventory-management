@@ -1,6 +1,6 @@
 package com.inventor.management.validators;
 
-import com.inventor.management.dto.ArticleDto;
+import com.inventor.management.article.dto.ArticleDto;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
