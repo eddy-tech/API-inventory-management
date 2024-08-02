@@ -1,7 +1,7 @@
 package com.inventor.management.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.inventor.management.user.dto.UserDto;
+import com.inventor.management.inventor_management.user.dto.UserDto;
 import lombok.Data;
 
 @Data

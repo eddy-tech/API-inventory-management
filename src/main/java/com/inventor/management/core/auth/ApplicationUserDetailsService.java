@@ -1,10 +1,10 @@
 package com.inventor.management.core.auth;
 
-import com.inventor.management.user.dto.UserDto;
-import com.inventor.management.user.entity.User;
-import com.inventor.management.user.mapper.UserMapper;
+import com.inventor.management.inventor_management.user.dto.UserDto;
+import com.inventor.management.inventor_management.user.entity.User;
+import com.inventor.management.inventor_management.user.mapper.UserMapper;
 import com.inventor.management.core.security.ExtendedUser;
-import com.inventor.management.user.service.UserService;
+import com.inventor.management.inventor_management.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

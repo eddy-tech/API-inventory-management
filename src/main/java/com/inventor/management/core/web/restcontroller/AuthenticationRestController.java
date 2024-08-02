@@ -11,10 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.inventor.management.core.roots.AuthenticationEndPoint.AUTHENTICATION_ENDPOINT;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(AUTHENTICATION_ENDPOINT)
 public class AuthenticationRestController implements AuthenticationApi {
 
     private final AuthenticationManager authenticationManager;
