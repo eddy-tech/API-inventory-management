@@ -2,12 +2,12 @@ package com.inventor.management.inventor_management.article.service.impl;
 
 import com.inventor.management.inventor_management.article.dto.ArticleRequest;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
-import com.inventor.management.inventor_management.customer.mapper.CustomerMapper;
 import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
 import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.article.repository.ArticleRepository;
 import com.inventor.management.inventor_management.article.service.ArticleService;
+import com.inventor.management.inventor_management.customerOrderLine.mapper.CustomerOrderLineMapper;
 import com.inventor.management.inventor_management.provider.mapper.ProviderMapper;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
 import com.inventor.management.inventor_management.sale.mapper.SaleMapper;
@@ -16,13 +16,11 @@ import com.inventor.management.inventor_management.customerOrderLine.entity.Cust
 import com.inventor.management.inventor_management.providerOrderLine.entity.ProviderOrderLine;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
-import com.inventor.management.core.exceptions.InvalidEntityException;
 import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.customerOrderLine.repository.CustomerOrderLineRepository;
 import com.inventor.management.inventor_management.providerOrderLine.repository.ProviderOrderLineRepository;
 import com.inventor.management.inventor_management.saleLine.repository.SaleLineRepository;
 import com.inventor.management.core.exceptions.ErrorCodes;
-import com.inventor.management.core.validators.ArticleValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,7 +43,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final SaleLineRepository saleLineRepository;
     private final ArticleMapper articleMapper;
     private final SaleMapper saleMapper;
-    private final CustomerMapper customerMapper;
+    private final CustomerOrderLineMapper customerOrderLineMapper;
     private final ProviderMapper providerMapper;
 
 
@@ -116,7 +114,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<CustomerOrderLineDto> findHistoryCustomerOrder(Long articleId) {
         return customerOrderLineRepository.findAllByArticleId(articleId).stream()
-                .map(customerMapper::fromCustomerOrderLine)
+                .map(customerOrderLineMapper::fromCustomerOrderLine)
                 .collect(Collectors.toList());
     }
 

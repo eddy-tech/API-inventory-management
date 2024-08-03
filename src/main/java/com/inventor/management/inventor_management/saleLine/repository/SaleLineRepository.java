@@ -9,4 +9,8 @@ import java.util.List;
 public interface SaleLineRepository extends JpaRepository<SaleLine, Long> {
     List<SaleLine> findAllByArticleId (Long articleId);
     List<SaleLine> findAllBySaleId(Long orderId);
+
+    interface RolesRepository extends JpaRepository<Roles, Long> {
+        Roles findByRoleName(String roleName);
+    }
 }
