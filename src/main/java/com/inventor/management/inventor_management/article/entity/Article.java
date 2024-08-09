@@ -1,7 +1,7 @@
 package com.inventor.management.inventor_management.article.entity;
 
 import com.inventor.management.inventor_management.category.entity.Category;
-import com.inventor.management.inventor_management.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import com.inventor.management.inventor_management.providerOrderLine.entity.ProviderOrderLine;
@@ -53,6 +53,5 @@ public class Article extends AbstractEntity {
 
     @OneToMany(mappedBy = "article")
     private List<StockMovement> stockMovements;
-
 
 }

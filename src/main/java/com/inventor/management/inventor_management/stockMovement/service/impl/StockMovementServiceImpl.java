@@ -1,15 +1,13 @@
 package com.inventor.management.inventor_management.stockMovement.service.impl;
 
+import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.article.service.ArticleService;
 import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
 import com.inventor.management.inventor_management.stockMovement.entity.StockMovement;
 import com.inventor.management.inventor_management.stockMovement.mapper.StockMapper;
 import com.inventor.management.inventor_management.stockMovement.repository.StockMovementRepository;
-import com.inventor.management.core.enums.TypeMoveStock;
-import com.inventor.management.core.exceptions.ErrorCodes;
-import com.inventor.management.core.exceptions.InvalidEntityException;
+import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
 import com.inventor.management.inventor_management.stockMovement.service.StockMovementService;
-import com.inventor.management.core.validators.StockMovementValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,9 +23,9 @@ public class StockMovementServiceImpl implements StockMovementService {
     private final StockMovementRepository stockMovementRepository;
     private final ArticleService articleService;
     private final StockMapper stockMapper;
+    private final ObjectValidator validator;
 
-    //compute real stock of each article
-    @Override
+   @Override
     public BigDecimal stockRealArticle(Long articleId) {
         if(articleId == null) {
             log.warn("ID article is NULL");
@@ -40,21 +38,14 @@ public class StockMovementServiceImpl implements StockMovementService {
 
     @Override
     public List<StockMovementDto> listStockMovementArticle(Long articleId) {
-        return stockMovementRepository.findAllByArticleId(articleId).stream()
+        return stockMovementRepository.findAllByArticleId(articleId)
+                .stream()
                 .map(stockMapper::fromStockMovement)
                 .collect(Collectors.toList());
     }
 
-    private void validateStockMovement (StockMovementDto stockMovement){
-        List<String> errors = StockMovementValidator.validate(stockMovement);
-        if(!errors.isEmpty()){
-            log.error("Article is not valid" + stockMovement);
-            throw new InvalidEntityException("Stock movement is invalid", ErrorCodes.STOCK_MOVEMENT_NOT_VALID);
-        }
-    }
-
     private StockMovementDto entrancePositive (StockMovementDto stockMovement, TypeMoveStock typeMoveStock){
-        validateStockMovement(stockMovement);
+        validator.validate(stockMovement);
         stockMovement.setQuantity(BigDecimal.valueOf(Math.abs(stockMovement.getQuantity().doubleValue())));
         stockMovement.setTypeMoveStock(typeMoveStock);
         StockMovement movement = stockMovementRepository.save(stockMapper.fromStockMovementDto(stockMovement));
@@ -63,7 +54,7 @@ public class StockMovementServiceImpl implements StockMovementService {
     }
 
     private StockMovementDto exitNegative (StockMovementDto stockMovement, TypeMoveStock typeMoveStock){
-        validateStockMovement(stockMovement);
+        validator.validate(stockMovement);
         stockMovement.setQuantity(BigDecimal.valueOf(Math.abs(stockMovement.getQuantity().doubleValue() * -1)));
         stockMovement.setTypeMoveStock(typeMoveStock);
         StockMovement movement = stockMovementRepository.save(stockMapper.fromStockMovementDto(stockMovement));

@@ -4,12 +4,14 @@ import com.inventor.management.inventor_management.enterprise.dto.EnterpriseDto;
 import com.inventor.management.inventor_management.enterprise.service.EnterpriseService;
 import com.inventor.management.inventor_management.enterprise.resource.api.EnterpriseApi;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import static com.inventor.management.inventor_management.enterprise.roots.EnterpriseEndPoint.ENTERPRISE_ENDPOINT;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,27 +20,29 @@ public class EnterpriseRestController implements EnterpriseApi {
     private final EnterpriseService enterpriseService;
 
     @Override
-    public EnterpriseDto saveEnterprise(EnterpriseDto enterpriseDto) {
-        return enterpriseService.saveEnterprise(enterpriseDto);
+    public ResponseEntity<EnterpriseDto> saveEnterprise(EnterpriseDto enterpriseDto) {
+        return ResponseEntity.status(CREATED)
+                .body(enterpriseService.saveEnterprise(enterpriseDto));
     }
 
     @Override
-    public EnterpriseDto updateEnterprise(Long enterpriseId, EnterpriseDto enterpriseDto) {
-        return enterpriseService.updateEnterprise(enterpriseDto);
+    public ResponseEntity<EnterpriseDto> updateEnterprise(EnterpriseDto enterpriseDto, Long enterpriseId) {
+        return ResponseEntity.ok(enterpriseService.updateEnterprise(enterpriseDto, enterpriseId));
     }
 
     @Override
-    public EnterpriseDto getEnterprise(Long id) {
-        return enterpriseService.getEnterprise(id);
+    public ResponseEntity<EnterpriseDto> getEnterprise(Long id) {
+        return ResponseEntity.ok(enterpriseService.getEnterprise(id));
     }
 
     @Override
-    public List<EnterpriseDto> listEnterprise() {
-        return enterpriseService.listEnterprise();
+    public ResponseEntity<List<EnterpriseDto>> listEnterprise() {
+        return ResponseEntity.ok(enterpriseService.listEnterprise());
     }
 
     @Override
-    public void deleteEnterprise(Long id) {
-       enterpriseService.deleteEnterprise(id);
+    public ResponseEntity<?> deleteEnterprise(Long id) {
+        enterpriseService.deleteEnterprise(id);
+        return ResponseEntity.noContent().build();
     }
 }

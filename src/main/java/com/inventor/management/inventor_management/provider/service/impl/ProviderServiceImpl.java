@@ -1,24 +1,20 @@
 package com.inventor.management.inventor_management.provider.service.impl;
 
+import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.provider.dto.ProviderDto;
 import com.inventor.management.inventor_management.provider.repository.ProviderRepository;
 import com.inventor.management.inventor_management.provider.entity.Provider;
-import com.inventor.management.inventor_management.providerOrder.entity.ProviderOrder;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
-import com.inventor.management.core.exceptions.InvalidEntityException;
-import com.inventor.management.core.exceptions.ErrorCodes;
 import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.provider.mapper.ProviderMapper;
 import com.inventor.management.inventor_management.providerOrder.repository.ProviderOrderRepository;
 import com.inventor.management.inventor_management.provider.service.ProviderService;
-import com.inventor.management.core.validators.ProviderValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,38 +24,42 @@ public class ProviderServiceImpl implements ProviderService {
     private final ProviderRepository providerRepository;
     private final ProviderOrderRepository providerOrderRepository;
     private final ProviderMapper providerMapper;
+    private final ObjectValidator validator;
 
     private Provider findProvider(Long providerId){
         return providerRepository.findById(providerId)
                 .orElseThrow(()-> new EntityNotFoundException(
-                        "Nothing Provider with ID ="+ providerId + "was found in DataBase",
-                        ErrorCodes.PROVIDER_NOT_FOUND)
+                        "Nothing Provider with ID ="+ providerId + "was found in DataBase")
                 );
     }
 
     @Override
     public ProviderDto saveProvider(ProviderDto providerDto) {
-        List<String> errors = ProviderValidator.validate(providerDto);
-        if(!errors.isEmpty()){
-            log.error("Provider is invalid" + providerDto);
-            throw new InvalidEntityException("Provider is invalid", ErrorCodes.PROVIDER_NOT_VALID,errors);
-        }
+        validator.validate(providerDto);
 
-        Provider provider = providerMapper.fromProviderDto(providerDto);
-        Provider savedProvider = providerRepository.save(provider);
-        return providerMapper.fromProvider(savedProvider);
+        return providerMapper.fromProvider(
+                providerRepository.save(providerMapper.fromProviderDto(providerDto))
+        );
     }
 
     @Override
-    public ProviderDto updateProvider(ProviderDto providerDto) {
-        List<String> errors = ProviderValidator.validate(providerDto);
-        if(!errors.isEmpty()){
-            log.error("Enterprise is invalid" + providerDto);
-            throw new InvalidEntityException("Enterprise is invalid", ErrorCodes.PROVIDER_NOT_VALID,errors);
-        }
+    public ProviderDto updateProvider(ProviderDto providerDto, Long id) {
+        validator.validate(providerDto);
 
-        var updatedProvider = providerRepository.save(providerMapper.fromProviderDto(providerDto));
-        return providerMapper.fromProvider(updatedProvider);
+        var provider = this.getProvider(id);
+        provider.setName(providerDto.getName());
+        provider.setMail(providerDto.getMail());
+        provider.setPicture(providerDto.getPicture());
+        provider.setNumTel(providerDto.getNumTel());
+        provider.setAddressDto(providerDto.getAddressDto());
+        provider.setId_enterprise(providerDto.getId_enterprise());
+        provider.setSurname(provider.getSurname());
+
+        return providerMapper.fromProvider(
+                providerRepository.save(
+                        providerMapper.fromProviderDto(providerDto)
+                )
+        );
     }
 
     @Override
@@ -74,10 +74,10 @@ public class ProviderServiceImpl implements ProviderService {
 
     @Override
     public List<ProviderDto> listProvider() {
-        List<Provider> providerList = providerRepository.findAll();
-
-        return providerList.stream()
-                .map(providerMapper::fromProvider).collect(Collectors.toList());
+        return providerRepository.findAll()
+                .stream()
+                .map(providerMapper::fromProvider)
+                .toList();
     }
 
     @Override
@@ -87,10 +87,9 @@ public class ProviderServiceImpl implements ProviderService {
             return;
         }
 
-        List<ProviderOrder> providerOrders = providerOrderRepository.findAllByProviderId(id);
+        var providerOrders = providerOrderRepository.findAllByProviderId(id);
         if(!providerOrders.isEmpty()){
-            throw new InvalidOperationException("Unable to delete a provider that has already provider orders ",
-                    ErrorCodes.PROVIDER_ALREADY_IN_USE);
+            throw new InvalidOperationException("Unable to delete a provider that has already provider orders");
         }
 
         providerRepository.deleteById(id);

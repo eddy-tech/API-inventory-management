@@ -8,15 +8,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.inventor.management.inventor_management.customer.roots.CustomerEndPoint.*;
+
 public interface CustomerApi {
     @PostMapping(
-            value = CustomerEndPoint.CUSTOMER_ENDPOINT,
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
             summary = "Save customer",
@@ -29,10 +33,11 @@ public interface CustomerApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Customer objet has invalid")
     })
-    CustomerDto saveCustomer (@RequestBody CustomerDto customerDto);
+    ResponseEntity<CustomerDto> saveCustomer (@RequestBody @Valid CustomerDto customerDto);
     @PutMapping(
-            value = CustomerEndPoint.UPDATE_CUSTOMER_ENDPOINT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE
+            value = UPDATE_CUSTOMER_ENDPOINT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
             summary = "Update Customer",
@@ -45,10 +50,13 @@ public interface CustomerApi {
             @ApiResponse(responseCode = "403",description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Customer objet has invalid")
     })
-    CustomerDto updateCustomer (@RequestBody CustomerDto customerDto, @PathVariable(name = "idCustomer") Long customerId);
+    ResponseEntity<CustomerDto> updateCustomer(
+            @RequestBody @Valid CustomerDto customerDto, @PathVariable(name = "idCustomer") Long customerId
+    );
     @GetMapping(
-            value = CustomerEndPoint.FIND_CUSTOMER_BY_ID,
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
+            value = FIND_CUSTOMER_BY_ID,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
             summary = "Find out a customer by ID",
@@ -61,9 +69,9 @@ public interface CustomerApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing customer exist in DB with ID provided")
     })
-    CustomerDto getCustomer (@PathVariable(name = "idCustomer") Long id);
+    ResponseEntity<CustomerDto> getCustomer (@PathVariable(name = "idCustomer") Long id);
     @GetMapping(
-            value = CustomerEndPoint.CUSTOMER_ENDPOINT,
+            value = CUSTOMER_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -85,10 +93,10 @@ public interface CustomerApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<CustomerDto> listCustomer();
+    ResponseEntity<List<CustomerDto>> listCustomer();
 
     @DeleteMapping(
-            value = CustomerEndPoint.DELETE_CUSTOMER,
+            value = DELETE_CUSTOMER,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
@@ -101,5 +109,5 @@ public interface CustomerApi {
             @ApiResponse(responseCode = "200",description = "Customer has been deleted"),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    void deleteCustomer (@PathVariable(name = "idCustomer") Long id);
+    ResponseEntity<?> deleteCustomer (@PathVariable(name = "idCustomer") Long id);
 }

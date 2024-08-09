@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import static com.inventor.management.core.roots.PictureEndPoint.PICTURE_ENDPOINT;
+import static com.inventor.management.inventor_management.core.roots.PictureEndPoint.PICTURE_ENDPOINT;
 
 @RestController
 @RequiredArgsConstructor

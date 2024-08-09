@@ -1,6 +1,6 @@
 package com.inventor.management.inventor_management.sale.entity;
 
-import com.inventor.management.inventor_management.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

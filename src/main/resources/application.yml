@@ -1,3 +1,4 @@
+######################## PostgreSQL Database Config #############################
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/inventory_management
@@ -10,9 +11,34 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+########################## Flyway Database Config ###############################
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+    baseline-description: "init"
+    baseline-version: 0
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+
+########################## Security Config with Keycloak ########################
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${app.keycloak.serverUrl}/realms/${app.keycloak.realm}
+
+app:
+  keycloak:
+    realm: ecommerce
+    serverUrl: http://localhost:9090
+  admin:
+    clientId: admin-cli
+    clientSecret:
 
 server:
   port: 8081
+
 
 flickr:
   apiKey: 95362056e8ece9e2f8899e9d5f88192e

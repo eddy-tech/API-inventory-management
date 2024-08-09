@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +22,6 @@ import static com.inventor.management.inventor_management.article.roots.ArticleE
 
 public interface ArticleApi {
     @PostMapping(
-            value = ARTICLE_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -35,7 +36,7 @@ public interface ArticleApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "400", description = "Article objet has invalid")
     })
-    ArticleDto saveArticle (@RequestBody ArticleRequest articleRequest);
+    ResponseEntity<ArticleDto> saveArticle (@RequestBody @Valid ArticleRequest articleRequest);
 
     @PutMapping(
             value = UPDATE_ARTICLE_ENDPOINT,
@@ -53,7 +54,9 @@ public interface ArticleApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "400", description = "Article objet has invalid")
     })
-    ArticleDto updateArticle (@RequestBody ArticleRequest articleRequest, @PathVariable(name = "idArticle") Long id);
+    ResponseEntity<ArticleDto> updateArticle (
+            @RequestBody @Valid ArticleRequest articleRequest, @PathVariable(name = "idArticle") Long id
+    );
 
     @GetMapping(
             value = FIND_ARTICLE_BY_ID,
@@ -71,7 +74,7 @@ public interface ArticleApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing article exist in DB with ID provided")
     })
-    ArticleDto getArticle (@PathVariable(name = "idArticle") Long id);
+    ResponseEntity<ArticleDto> getArticle (@PathVariable(name = "idArticle") Long id);
 
     @GetMapping(
             value = FIND_ARTICLE_BY_CODE_ARTICLE,
@@ -89,10 +92,9 @@ public interface ArticleApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing article exist in DB with code_article provided")
     })
-    ArticleDto getCodeArticle (@PathVariable(name = "idCodeArticle") String codeArticle);
+    ResponseEntity<ArticleDto> getCodeArticle (@PathVariable(name = "idCodeArticle") String codeArticle);
 
     @GetMapping(
-            value = ARTICLE_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
@@ -113,7 +115,7 @@ public interface ArticleApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<ArticleDto> listArticle ();
+    ResponseEntity<List<ArticleDto>> listArticle();
     @GetMapping(
             value = FIND_HISTORY_SALES,
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -135,7 +137,7 @@ public interface ArticleApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<SaleLineDto> findHistorySales (@PathVariable(name = "idArticle") Long articleId);
+    ResponseEntity<List<SaleLineDto>> findHistorySales (@PathVariable(name = "idArticle") Long articleId);
 
     @GetMapping(
             value = FIND_HISTORY_CUSTOMER_ORDER,
@@ -159,7 +161,7 @@ public interface ArticleApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<CustomerOrderLineDto> findHistoryCustomerOrder (@PathVariable(name = "idArticle")Long articleId);
+    ResponseEntity<List<CustomerOrderLineDto>> findHistoryCustomerOrder(@PathVariable(name = "idArticle")Long articleId);
 
     @GetMapping(
             value = FIND_HISTORY_PROVIDER_ORDER,
@@ -184,7 +186,7 @@ public interface ArticleApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<ProviderOrderLineDto> findHistoryProviderOrder (@PathVariable(name = "idArticle")Long articleId);
+    ResponseEntity<List<ProviderOrderLineDto>> findHistoryProviderOrder (@PathVariable(name = "idArticle")Long articleId);
 
     @GetMapping(
             value = FIND_ALL_ARTICLE_BY_CATEGORY,
@@ -210,7 +212,7 @@ public interface ArticleApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"
             )
     })
-    List<ArticleDto> findAllArticleByCategory (@PathVariable(name = "idCategory")Long categoryId);
+    ResponseEntity<List<ArticleDto>> findAllArticleByCategory (@PathVariable(name = "idCategory")Long categoryId);
 
     @DeleteMapping(value = DELETE_ARTICLE)
     @Operation(
@@ -232,5 +234,5 @@ public interface ArticleApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    void deleteArticle (@PathVariable(name = "idArticle") Long id);
+    ResponseEntity<?> deleteArticle (@PathVariable(name = "idArticle") Long id);
 }

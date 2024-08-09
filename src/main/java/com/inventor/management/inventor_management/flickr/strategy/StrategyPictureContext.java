@@ -2,12 +2,10 @@ package com.inventor.management.inventor_management.flickr.strategy;
 
 import com.flickr4java.flickr.FlickrException;
 import com.inventor.management.inventor_management.article.service.strategy.SaveArticlePicture;
-import com.inventor.management.core.exceptions.ErrorCodes;
 import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.customer.service.strategy.SaveCustomerPicture;
 import com.inventor.management.inventor_management.enterprise.service.strategy.SaveEnterprisePicture;
 import com.inventor.management.inventor_management.provider.service.strategy.SaveProviderPicture;
-import com.inventor.management.inventor_management.user.service.strategy.SaveUserPicture;
 import lombok.Setter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +48,7 @@ public class StrategyPictureContext {
             case "user":
                 beanFactory.getBean(beanName, SaveUserPicture.class);
                 break;
-            default: throw new InvalidOperationException("unknown context for saving picture", ErrorCodes.UNKNOWN_CONTEXT);
+            default: throw new InvalidOperationException("unknown context for saving picture");
         }
     }
 

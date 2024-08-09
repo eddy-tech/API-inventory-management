@@ -2,7 +2,7 @@ package com.inventor.management.inventor_management.category.entity;
 
 import com.inventor.management.inventor_management.article.entity.Article;
 
-import com.inventor.management.inventor_management.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "categories")
 public class Category extends AbstractEntity {
-
     @Column(name = "code_categorie")
     private String codeCategory;
 

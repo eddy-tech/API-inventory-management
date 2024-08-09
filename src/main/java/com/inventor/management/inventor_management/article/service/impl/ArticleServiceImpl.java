@@ -1,5 +1,6 @@
 package com.inventor.management.inventor_management.article.service.impl;
 
+import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.article.dto.ArticleRequest;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
@@ -20,7 +21,6 @@ import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.customerOrderLine.repository.CustomerOrderLineRepository;
 import com.inventor.management.inventor_management.providerOrderLine.repository.ProviderOrderLineRepository;
 import com.inventor.management.inventor_management.saleLine.repository.SaleLineRepository;
-import com.inventor.management.core.exceptions.ErrorCodes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,9 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.inventor.management.core.exceptions.ErrorCodes.ARTICLES_NOT_FOUND;
+import static com.inventor.management.inventor_management.core.utils.Constants.*;
+
 
 @Service
 @Transactional
@@ -45,16 +45,24 @@ public class ArticleServiceImpl implements ArticleService {
     private final SaleMapper saleMapper;
     private final CustomerOrderLineMapper customerOrderLineMapper;
     private final ProviderMapper providerMapper;
+    private final ObjectValidator validator;
 
 
     @Override
     public ArticleDto saveArticle(ArticleRequest articleRequest) {
-        return articleMapper.fromArticleDto(articleRepository.save(articleMapper.fromArticle(articleRequest)));
+        validator.validate(articleRequest);
+        return articleMapper.fromArticleDto(
+                articleRepository.save(
+                        articleMapper.fromArticle(articleRequest)
+                )
+        );
     }
 
     @Override
     public ArticleDto updateArticle(ArticleRequest articleRequest, Long id) {
         var article = this.findById(id);
+        validator.validate(articleRequest);
+
         article.setDesignation(articleRequest.designation());
         article.setRateTax(articleRequest.rateTax());
         article.setUnitPriceHt(articleRequest.unitPriceHt());
@@ -66,8 +74,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     public Article findById (Long id) {
         return articleRepository.findById(id).orElseThrow(()->
-                new EntityNotFoundException(
-                        "Nothing article with ID ="+id+"has been found in DataBase", ARTICLES_NOT_FOUND)
+                new EntityNotFoundException("Nothing article with ID ="+id+"has been found in DataBase")
         );
     }
 
@@ -79,50 +86,44 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDto getCodeArticle(String codeArticle) {
         if(!StringUtils.hasLength(codeArticle))
-            throw new EntityNotFoundException(
-                    "Nothing Article with CODE ="+codeArticle+ "has been found in DataBase",ARTICLES_NOT_FOUND
-            );
+            throw new EntityNotFoundException("Nothing Article with CODE ="+codeArticle+ "has been found in DataBase");
 
        return articleMapper.fromArticleDto(articleRepository.findByCodeArticle(codeArticle));
     }
 
     @Override
     public List<ArticleDto> listArticle() {
-        List<Article> articleList = articleRepository.findAll();
-
-        return articleList.stream()
+        return articleRepository.findAll().stream()
                 .map(articleMapper::fromArticleDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<ArticleDto> findAllArticleByCategory(Long categoryId) {
         return articleRepository.findAllByCategoryId(categoryId).stream()
                 .map(articleMapper::fromArticleDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<SaleLineDto> findHistorySales(Long articleId) {
-        List<SaleLine> saleLineList = saleLineRepository.findAllByArticleId(articleId);
-
-        return saleLineList.stream()
+        return saleLineRepository.findAllByArticleId(articleId).stream()
                 .map(saleMapper::fromSaleLine)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<CustomerOrderLineDto> findHistoryCustomerOrder(Long articleId) {
         return customerOrderLineRepository.findAllByArticleId(articleId).stream()
                 .map(customerOrderLineMapper::fromCustomerOrderLine)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<ProviderOrderLineDto> findHistoryProviderOrder(Long articleId) {
         return providerOrderLineRepository.findAllByArticleId(articleId).stream()
                 .map(providerMapper::fromProviderOrderLine)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -134,26 +135,17 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByArticleId(id);
         if(!customerOrderLineList.isEmpty()){
-            throw new InvalidOperationException(
-                    "Unable to delete an article that already use in customer order",
-                    ErrorCodes.ARTICLE_ALREADY_IN_USE
-            );
+            throw new InvalidOperationException(DELETE_ARTICLE_CUSTOMER_ORDER);
         }
 
         List<ProviderOrderLine> providerOrderLineList = providerOrderLineRepository.findAllByArticleId(id);
         if(!providerOrderLineList.isEmpty()){
-            throw new InvalidOperationException(
-                    "Unable to delete an article that already use in provider order",
-                    ErrorCodes.ARTICLE_ALREADY_IN_USE
-            );
+            throw new InvalidOperationException(DELETE_ARTICLE_PROVIDER_ORDER);
         }
 
         List<SaleLine> saleLineList = saleLineRepository.findAllByArticleId(id);
         if(!saleLineList.isEmpty()){
-            throw new InvalidOperationException(
-                    "Unable to delete an article that already use in sale ",
-                    ErrorCodes.ARTICLE_ALREADY_IN_USE
-            );
+            throw new InvalidOperationException(DELETE_ARTICLE_SALE);
         }
 
         articleRepository.deleteById(id);

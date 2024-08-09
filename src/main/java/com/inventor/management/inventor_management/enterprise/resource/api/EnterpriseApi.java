@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 import static com.inventor.management.inventor_management.enterprise.roots.EnterpriseEndPoint.*;
 
 public interface EnterpriseApi {
-    @PostMapping(value = ENTERPRISE_ENDPOINT)
+    @PostMapping
     @Operation(
             summary = "Save Enterprise",
             description = "This method allow to save an enterprise",
@@ -25,8 +26,8 @@ public interface EnterpriseApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "400", description = "Enterprise objet has invalid")
     })
-    EnterpriseDto saveEnterprise (@RequestBody EnterpriseDto enterpriseDto);
-    @PutMapping(value = UPDATE_ENTERPRISE_ENDPOINT)
+    ResponseEntity<EnterpriseDto> saveEnterprise (@RequestBody EnterpriseDto enterpriseDto);
+    @PutMapping(UPDATE_ENTERPRISE_ENDPOINT)
     @Operation(
             summary = "Update Enterprise",
             description = "This method allow to save an enterprise",
@@ -38,11 +39,11 @@ public interface EnterpriseApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "400", description = "Enterprise objet has invalid")
     })
-    EnterpriseDto updateEnterprise (
-            @PathVariable(name = "idEnterprise") Long enterpriseId,
-            @RequestBody EnterpriseDto enterpriseDto);
+    ResponseEntity<EnterpriseDto> updateEnterprise (
+            @RequestBody EnterpriseDto enterpriseDto, @PathVariable(name = "idEnterprise") Long enterpriseId
+    );
 
-    @GetMapping(value = FIND_ENTERPRISE_BY_ID)
+    @GetMapping(FIND_ENTERPRISE_BY_ID)
     @Operation(
             summary = "Find out an enterprise by ID",
             description = "This method allow to find out an enterprise with ID",
@@ -54,8 +55,8 @@ public interface EnterpriseApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing enterprise exist in DB with ID provided")
     })
-    EnterpriseDto getEnterprise (@PathVariable(name = "idEnterprise") Long id);
-    @GetMapping(value = ENTERPRISE_ENDPOINT)
+    ResponseEntity<EnterpriseDto> getEnterprise (@PathVariable(name = "idEnterprise") Long id);
+    @GetMapping(ENTERPRISE_ENDPOINT)
     @Operation(
             summary = "Return list of enterprises",
             description = "This method allow to research and return all enterprises that exist in DB"
@@ -74,8 +75,8 @@ public interface EnterpriseApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<EnterpriseDto> listEnterprise ();
-    @DeleteMapping(value = DELETE_ENTERPRISE)
+    ResponseEntity<List<EnterpriseDto>> listEnterprise();
+    @DeleteMapping(DELETE_ENTERPRISE)
     @Operation(
             summary = "Delete an enterprise",
             description = "This method allow to delete an enterprise by ID",
@@ -86,5 +87,5 @@ public interface EnterpriseApi {
             @ApiResponse(responseCode = "200",description = "Enterprise has been deleted"),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    void deleteEnterprise (@PathVariable(name = "idEnterprise") Long id);
+    ResponseEntity<?> deleteEnterprise (@PathVariable(name = "idEnterprise") Long id);
 }

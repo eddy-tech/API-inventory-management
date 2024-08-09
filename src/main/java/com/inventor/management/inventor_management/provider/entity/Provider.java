@@ -1,7 +1,7 @@
 package com.inventor.management.inventor_management.provider.entity;
 
-import com.inventor.management.inventor_management.domains.AbstractEntity;
-import com.inventor.management.inventor_management.domains.Address;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.domains.Address;
 import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import com.inventor.management.inventor_management.providerOrder.entity.ProviderOrder;
 import jakarta.persistence.*;

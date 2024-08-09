@@ -2,8 +2,8 @@ package com.inventor.management.inventor_management.customerOrder.entity;
 
 import com.inventor.management.inventor_management.customer.entity.Customer;
 import com.inventor.management.inventor_management.customerOrderLine.entity.CustomerOrderLine;
-import com.inventor.management.core.enums.StateOrder;
-import com.inventor.management.inventor_management.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.enums.StateOrder;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "commandeClients")
 public class CustomerOrder extends AbstractEntity {
-
     @Column(name = "code_commande_client")
     private String codeCustomerOrder;
 

@@ -1,43 +1,48 @@
 package com.inventor.management.inventor_management.sale.resource.restcontroller;
 
 import com.inventor.management.inventor_management.sale.dto.SaleDto;
-import com.inventor.management.inventor_management.sale.roots.SaleEndPoint;
 import com.inventor.management.inventor_management.sale.service.SaleService;
 import com.inventor.management.inventor_management.sale.resource.api.SaleApi;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.inventor.management.inventor_management.sale.roots.SaleEndPoint.SALE_ENDPOINT;
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(SaleEndPoint.SALE_ENDPOINT)
+@RequestMapping(SALE_ENDPOINT)
 public class SaleRestController implements SaleApi {
     private final SaleService saleService;
 
     @Override
-    public SaleDto saveSale(SaleDto saleDto) {
-        return saleService.saveSale(saleDto);
+    public ResponseEntity<SaleDto> saveSale(SaleDto saleDto) {
+        return ResponseEntity.status(CREATED)
+                .body(saleService.saveSale(saleDto));
     }
     @Override
-    public SaleDto updateSale(Long saleId, SaleDto saleDto) {
-        return saleService.updateSale(saleDto);
+    public ResponseEntity<SaleDto> updateSale(Long saleId, SaleDto saleDto) {
+        return ResponseEntity.ok(saleService.updateSale(saleDto));
     }
     @Override
-    public SaleDto getSale(Long id) {
-        return saleService.getSale(id);
+    public ResponseEntity<SaleDto> getSale(Long id) {
+        return ResponseEntity.ok(saleService.getSale(id));
     }
     @Override
-    public SaleDto getCodeSale(String codeSale) {
-        return saleService.getCodeSale(codeSale);
+    public ResponseEntity<SaleDto> getCodeSale(String codeSale) {
+        return ResponseEntity.ok(saleService.getCodeSale(codeSale));
     }
     @Override
-    public List<SaleDto> listSale() {
-        return saleService.listSale();
+    public ResponseEntity<List<SaleDto>> listSale() {
+        return ResponseEntity.ok(saleService.listSale());
     }
     @Override
-    public void deleteSale(Long id) {
+    public ResponseEntity<?> deleteSale(Long id) {
         saleService.deleteSale(id);
+        return ResponseEntity.noContent().build();
     }
 }

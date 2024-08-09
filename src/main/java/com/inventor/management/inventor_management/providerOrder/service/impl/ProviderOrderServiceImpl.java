@@ -1,18 +1,18 @@
 package com.inventor.management.inventor_management.providerOrder.service.impl;
 
+import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.article.repository.ArticleRepository;
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderDto;
 import com.inventor.management.inventor_management.providerOrder.repository.ProviderOrderRepository;
-import com.inventor.management.core.enums.SourceStockMovement;
-import com.inventor.management.core.enums.StateOrder;
-import com.inventor.management.core.enums.TypeMoveStock;
+import com.inventor.management.inventor_management.core.enums.SourceStockMovement;
+import com.inventor.management.inventor_management.core.enums.StateOrder;
+import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.core.exceptions.InvalidEntityException;
 import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.provider.mapper.ProviderMapper;
-import com.inventor.management.inventor_management.provider.dto.ProviderDto;
 import com.inventor.management.inventor_management.provider.entity.Provider;
 import com.inventor.management.inventor_management.providerOrder.entity.ProviderOrder;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
@@ -22,9 +22,7 @@ import com.inventor.management.inventor_management.provider.repository.ProviderR
 import com.inventor.management.inventor_management.providerOrder.service.ProviderOrderService;
 import com.inventor.management.inventor_management.stockMovement.service.StockMovementService;
 import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
-import com.inventor.management.core.validators.ArticleValidator;
-import com.inventor.management.core.validators.ProviderOrderValidator;
-import com.inventor.management.core.exceptions.ErrorCodes;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,8 +33,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -50,37 +46,33 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     private final StockMovementService stockMovementService;
     private final ProviderMapper providerMapper;
     private final ArticleMapper articleMapper;
+    private final ObjectValidator validator;
 
     private void checkIdOrder (Long orderId){
         if(orderId == null) {
             log.error("provider order ID is null");
-            throw new InvalidOperationException(
-                    "Unable to edit quantity ordered with null ID", ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE
-            );
+            throw new InvalidOperationException("Unable to edit quantity ordered with null ID");
         }
     }
 
     private void checkIdOrderLine (Long orderLineId) {
         if(orderLineId == null) {
             log.error("provider order Line ID is null");
-            throw new InvalidOperationException(
-                    "Unable to edit quantity ordered with null order line", ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE
-            );
+            throw new InvalidOperationException("Unable to edit quantity ordered with null order line");
         }
     }
 
     private void checkIdArticle (Long idArticle){
         if(idArticle == null){
             log.error("ID of"+"new"+"is NULL");
-            throw new InvalidOperationException("Unable to edit state order with a" + "new" + "article ID null",
-                    ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
+            throw new InvalidOperationException("Unable to edit state order with a" + "new" + "article ID null");
         }
     }
 
     private ProviderOrderDto checkStateOrder(Long orderId){
         var providerOrder = getProviderOrder(orderId);
-        if(providerOrder.isOrderDelivered()) throw new InvalidOperationException("Unable to edit state order with null ID",
-                ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+        if(providerOrder.isOrderDelivered())
+            throw new InvalidOperationException("Unable to edit state order with null ID");
 
         return providerOrder;
     }
@@ -88,43 +80,36 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     private ProviderOrderLine findProviderOrderLine (Long orderLineId){
         return providerOrderLineRepository.findById(orderLineId)
                 .orElseThrow(()->new EntityNotFoundException(
-                        "Nothing customer order line has been found with ID ="+orderLineId,
-                        ErrorCodes.CUSTOMER_NOT_FOUND)
+                        "Nothing customer order line has been found with ID ="+ orderLineId)
                 );
     }
 
     private Provider findProvider (Long providerId){
         return providerRepository.findById(providerId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+providerId,
-                        ErrorCodes.PROVIDER_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+providerId));
     }
 
     private Article findArticle (Long articleId){
         return  articleRepository.findById(articleId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId,
-                        ErrorCodes.ARTICLES_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId));
     }
 
     private ProviderOrder findProviderOrder (Long providerOrderId){
         return providerOrderRepository.findById(providerOrderId)
                 .orElseThrow(()->new EntityNotFoundException(
-                        "Nothing Provider order with ID="+ providerOrderId +"was found in database",
-                        ErrorCodes.PROVIDER_ORDER_NOT_FOUND)
+                        "Nothing Provider order with ID="+ providerOrderId +"was found in database")
                 );
     }
 
     @Override
     public ProviderOrderDto saveProviderOrder(ProviderOrderDto providerOrderDto) {
-        List<String> errors = ProviderOrderValidator.validate(providerOrderDto);
-        if(!errors.isEmpty()){
-            log.error("Provider Order is invalid");
-            throw new InvalidEntityException("Provider Order is invalid", ErrorCodes.PROVIDER_ORDER_NOT_VALID);
-        }
+        this.validator.validate(providerOrderDto);
 
         providerRepository.findById(providerOrderDto.getProviderDto().getId())
                 .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="
                          +providerOrderDto.getProviderDto().getId() +
-                        "was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+                        "was found in database")
+                );
 
         List<String> articleErrors = new ArrayList<>();
 
@@ -143,7 +128,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
         if(!articleErrors.isEmpty()){
             log.warn("");
-            throw new InvalidEntityException("Article not exist in database",ErrorCodes.ARTICLES_NOT_FOUND,articleErrors);
+            throw new InvalidEntityException("Article not exist in database");
         }
 
         var providerOrder = providerMapper.fromProviderOrderDto(providerOrderDto);
@@ -161,18 +146,14 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
     @Override
     public ProviderOrderDto updateProviderOrder(ProviderOrderDto providerOrderDto) {
-        List<String> errors = ProviderOrderValidator.validate(providerOrderDto);
-        if(!errors.isEmpty()){
-            log.error("Provider order is invalid" + providerOrderDto);
-            throw new InvalidEntityException("Provider order is invalid",ErrorCodes.PROVIDER_ORDER_NOT_FOUND,errors);
-        }
+        validator.validate(providerOrderDto);
 
         providerRepository.findById(providerOrderDto.getProviderDto().getId())
-                .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="+providerOrderDto.getProviderDto().getId()+
-                        "was found in database",ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="+
+                        providerOrderDto.getProviderDto().getId()+ "was found in database"));
 
         if(providerOrderDto.getId() != null && providerOrderDto.isOrderDelivered())
-            throw new InvalidOperationException("Unable to update provider order", ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
+            throw new InvalidOperationException("Unable to update provider order");
 
         List<String> articleErrors = new ArrayList<>();
 
@@ -191,7 +172,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
         if(!articleErrors.isEmpty()){
             log.warn("");
-            throw new EntityNotFoundException("Article not exist in database",ErrorCodes.ARTICLES_NOT_FOUND);
+            throw new EntityNotFoundException("Article not exist in database");
         }
 
         var updateProviderOrder = providerOrderRepository.save(providerMapper.fromProviderOrderDto(providerOrderDto));
@@ -212,7 +193,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
         if(!StringUtils.hasLength(String.valueOf(stateOrder))) {
             log.error("provider state order is NULL");
-            throw new InvalidOperationException("Unable to edit state order with state NULL", ErrorCodes.PROVIDER_ORDER_NOT_MODIFIABLE);
+            throw new InvalidOperationException("Unable to edit state order with state NULL");
         }
 
         var orderDto = checkStateOrder(orderId);
@@ -221,7 +202,8 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         var savedProviderOrder = providerOrderRepository.save(providerOrder);
         // MAKE THE STOCK OUT ONLY WHEN PROVIDER ORDER IS DELIVERED
         if(orderDto.isOrderDelivered()){
-        updateStockMovementProvider(orderId); // METTRE A JOUR L'ETAT DE STOCK DU FOURNISSEUR
+        // METTRE A JOUR L'ETAT DE STOCK DU FOURNISSEUR
+        updateStockMovementProvider(orderId);
         }
 
         return providerMapper.fromProviderOrder(savedProviderOrder);
@@ -233,8 +215,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         this.checkIdOrderLine(orderLineId);
         if(quantity == null || quantity.compareTo(BigDecimal.ZERO) == 0) {
             log.error("quantity of customer order is null");
-            throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0",
-                    ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+            throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0");
         }
 
         var providerOrder = checkStateOrder(orderId);
@@ -251,8 +232,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         this.checkIdOrder(orderId);
         if(providerId == null) {
             log.error("customer ID is null");
-            throw new InvalidOperationException("Unable to edit state order with null ID",
-                    ErrorCodes.CUSTOMER_ORDER_NOT_MODIFIABLE);
+            throw new InvalidOperationException("Unable to edit state order with null ID");
         }
 
         var providerOrder = checkStateOrder(orderId);
@@ -273,7 +253,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         var providerOrder = checkStateOrder(orderId);
         var providerOrderLine = findProviderOrderLine(orderLineId);
         var articleOptional = findArticle(articleId);
-//
+
 //        List<String> errors = ArticleValidator.validate(articleMapper.fromArticle(articleOptional));
 //        if(!errors.isEmpty()) throw new InvalidEntityException("Article invalid", ErrorCodes.ARTICLE_NOT_VALID,errors);
 
@@ -298,8 +278,9 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     public ProviderOrderDto getCodeProviderOrder(String codeProviderOrder) {
         if(!StringUtils.hasLength(codeProviderOrder)){
             log.error("Provider Order is NULL");
-            throw new InvalidEntityException("Nothing provider order with code ="+codeProviderOrder+"was found in database",
-                    ErrorCodes.PROVIDER_ORDER_NOT_FOUND);
+            throw new InvalidEntityException("Nothing provider order with code ="+codeProviderOrder+
+                    "was found in database"
+            );
         }
 
         var providerOrder = providerOrderRepository.findByCodeProviderOrder(codeProviderOrder);
@@ -312,7 +293,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
         return providerOrdersList.stream()
                 .map(providerMapper::fromProviderOrder)
-                    .collect(Collectors.toList());
+                    .toList();
     }
 
     @Override
@@ -321,7 +302,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
         return providerOrderLineList.stream()
                 .map(providerMapper::fromProviderOrderLine)
-                    .collect(Collectors.toList());
+                    .toList();
     }
 
     @Override
@@ -333,12 +314,11 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
         List<ProviderOrderLine> providerOrderLineList = providerOrderLineRepository.findAllByProviderOrderId(id);
         if(!providerOrderLineList.isEmpty()){
-            throw new InvalidOperationException("Unable to delete provider order that has already provider order line",
-                    ErrorCodes.PROVIDER_ORDER_ALREADY_IN_USE);
+            throw new InvalidOperationException("Unable to delete provider order that has already provider order line"
+            );
         }
 
         providerOrderRepository.deleteById(id);
-
     }
 
     @Override
@@ -355,7 +335,6 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
     public void updateStockMovementProvider (Long orderId){
         providerOrderLineRepository.findAllByProviderOrderId(orderId)
-
                 .forEach(providerOrderLine -> {
             var stockMovement = new StockMovementDto();
             stockMovement.setArticleDto(articleMapper.fromArticleDto(providerOrderLine.getArticle()));

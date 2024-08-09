@@ -2,7 +2,7 @@ package com.inventor.management.inventor_management.providerOrder.resource.api;
 
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderDto;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
-import com.inventor.management.core.enums.StateOrder;
+import com.inventor.management.inventor_management.core.enums.StateOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,7 +18,7 @@ import java.util.List;
 import static com.inventor.management.inventor_management.providerOrder.roots.ProviderOrderEndPoint.*;
 
 public interface ProviderOrderApi {
-    @PostMapping(value = PROVIDER_ORDER_ENDPOINT)
+    @PostMapping
     @Operation(
             summary = "Save provider order",
             description = "This method allow to save provider order",
@@ -31,7 +31,7 @@ public interface ProviderOrderApi {
             @ApiResponse(responseCode = "404",description = "Provider Order objet has invalid")
     })
     ResponseEntity<ProviderOrderDto> saveProviderOrder (@RequestBody ProviderOrderDto providerOrderDto);
-    @PutMapping(value = UPDATE_PROVIDER_ORDER_ENDPOINT)
+    @PutMapping(UPDATE_PROVIDER_ORDER_ENDPOINT)
     @Operation(
             summary = "Update Provider Order",
             description = "This method allow to update provider order",
@@ -47,7 +47,7 @@ public interface ProviderOrderApi {
             @PathVariable(name = "idProviderOrder") Long providerOrderId,
             @RequestBody ProviderOrderDto providerOrderDto
     );
-    @PatchMapping(value = UPDATE_STATE_ORDER)
+    @PatchMapping(UPDATE_STATE_ORDER)
     @Operation(
             summary = "Updater State Order",
             description = "This method allow to update state order provider",
@@ -63,7 +63,7 @@ public interface ProviderOrderApi {
             @PathVariable(name = "idOrder") Long orderId,
             @PathVariable(name = "stateOrder") StateOrder stateOrder
     );
-    @PatchMapping(value = UPDATE_QUANTITY_ORDER)
+    @PatchMapping(UPDATE_QUANTITY_ORDER)
     @Operation(
             summary = "Update State Order",
             description = "This method allow to update state order provider",
@@ -80,7 +80,7 @@ public interface ProviderOrderApi {
             @PathVariable(name = "idOrderLine")Long orderLineId,
             @PathVariable(name = "quantity") BigDecimal quantity
     );
-    @PatchMapping(value = UPDATE_PROVIDER)
+    @PatchMapping(UPDATE_PROVIDER)
     @Operation(
             summary = "Update State provider",
             description = "This method allow to update state provider",
@@ -96,7 +96,7 @@ public interface ProviderOrderApi {
             @PathVariable(name = "idOrder") Long orderId,
             @PathVariable(name = "idCustomer") Long customerId
     );
-    @PatchMapping(value = UPDATE_ARTICLE)
+    @PatchMapping(UPDATE_ARTICLE)
     @Operation(
             summary = "Update State article",
             description = "This method allow to update state article",
@@ -113,7 +113,7 @@ public interface ProviderOrderApi {
             @PathVariable(name = "idOrderLine")Long orderLineId,
             @PathVariable(name = "idArticle")Long articleId
     );
-    @GetMapping(value = FIND_PROVIDER_ORDER_BY_ID)
+    @GetMapping(FIND_PROVIDER_ORDER_BY_ID)
     @Operation(
             summary = "Find out a provider order by ID",
             description = "This method allow to find out a provider order with ID",
@@ -126,7 +126,7 @@ public interface ProviderOrderApi {
             @ApiResponse(responseCode = "404", description = "Nothing provider order exist in DB with ID provided")
     })
     ResponseEntity<ProviderOrderDto> getProviderOrder (@PathVariable(name = "idProviderOrder") Long id);
-    @GetMapping(value = FIND_PROVIDER_ORDER_BY_CODE_PROVIDER_ORDER)
+    @GetMapping(FIND_PROVIDER_ORDER_BY_CODE_PROVIDER_ORDER)
     @Operation(
             summary = "Find out a provider order by code_article",
             description = "This method allow to find out a provider order order with code_provider_order",
@@ -139,7 +139,7 @@ public interface ProviderOrderApi {
             @ApiResponse(responseCode = "404", description = "Nothing provider order exist in DB with code_provider_order provider order")
     })
     ResponseEntity<ProviderOrderDto> getCodeProviderOrder (@PathVariable(name = "codeOrder")String codeProviderOrder);
-    @GetMapping(value = FIND_PROVIDER_ORDER_LINE_BY_PROVIDER_ORDER_ID)
+    @GetMapping(FIND_PROVIDER_ORDER_LINE_BY_PROVIDER_ORDER_ID)
     @Operation(
             summary = "Return list of customers orders line with provider order id",
             description = "This method allow to research and return all providers orders that exist in DB"
@@ -161,7 +161,7 @@ public interface ProviderOrderApi {
     ResponseEntity<List<ProviderOrderLineDto>> findAllProviderOrdersLinesByProviderOrderId(
             @PathVariable(name = "idOrder") Long orderId
     );
-    @GetMapping(value = PROVIDER_ORDER_ENDPOINT)
+    @GetMapping
     @Operation(
             summary = "Return list of providers orders",
             description = "This method allow to research and return all providers orders that exist in DB"
@@ -181,7 +181,7 @@ public interface ProviderOrderApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
     ResponseEntity<List<ProviderOrderDto>> listProviderOrder ();
-    @DeleteMapping(value = DELETE_PROVIDER_ORDER)
+    @DeleteMapping(DELETE_PROVIDER_ORDER)
     @Operation(
             summary = "Delete a provider order",
             description = "This method allow to delete a provider order by ID",
@@ -192,8 +192,8 @@ public interface ProviderOrderApi {
             @ApiResponse(responseCode = "200",description = "Provider Order has been deleted"),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    ResponseEntity deleteProviderOrder (@PathVariable(name = "idProviderOrder") Long id);
-    @DeleteMapping(value = DELETE_ARTICLE)
+    ResponseEntity<?> deleteProviderOrder (@PathVariable(name = "idProviderOrder") Long id);
+    @DeleteMapping(DELETE_ARTICLE)
     @Operation(
             summary = "Delete a provider order article line",
             description = "This method allow to delete a provider order article line by ID",
@@ -204,7 +204,7 @@ public interface ProviderOrderApi {
             @ApiResponse(responseCode = "200",description = "Provider order article line has been deleted"),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    ResponseEntity<ProviderOrderDto> deleteArticle (
+    ResponseEntity<?> deleteArticle (
             @PathVariable(name = "idOrder")Long orderId,
             @PathVariable(name = "idOrderLine")Long orderLineId
     );

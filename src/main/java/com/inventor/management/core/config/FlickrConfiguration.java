@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 
 @Configuration
 public class FlickrConfiguration {
-
     @Value("${flickr.apiKey}")
     private String apiKey;
 

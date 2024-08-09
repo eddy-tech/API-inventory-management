@@ -1,12 +1,11 @@
 package com.inventor.management.inventor_management.category.roots;
 
-import com.inventor.management.core.utils.Constants;
+import static com.inventor.management.inventor_management.core.utils.Constants.API_ROOT;
 
 public interface CategoryEndPoint {
-
-    String CATEGORY_ENDPOINT = Constants.API_ROOT + "/categories";
-    String UPDATE_CATEGORY_ENDPOINT = Constants.API_ROOT + "/categories/{idCategory}";
-    String FIND_CATEGORY_BY_ID = CATEGORY_ENDPOINT + "/id/{idCategory}";
-    String FIND_CATEGORY_BY_CODE_CATEGORY = CATEGORY_ENDPOINT  + "/filter/{idCodeCategory}";
+    String CATEGORY_ENDPOINT = API_ROOT + "/categories";
+    String UPDATE_CATEGORY_ENDPOINT = "/categories/{idCategory}";
+    String FIND_CATEGORY_BY_ID = "/id/{idCategory}";
+    String FIND_CATEGORY_BY_CODE_CATEGORY = "/filter/{idCodeCategory}";
     String DELETE_CATEGORY = FIND_CATEGORY_BY_ID;
 }

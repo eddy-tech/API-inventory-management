@@ -3,7 +3,7 @@ package com.inventor.management.inventor_management.providerOrder.resource.restc
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderDto;
 import com.inventor.management.inventor_management.providerOrder.resource.api.ProviderOrderApi;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
-import com.inventor.management.core.enums.StateOrder;
+import com.inventor.management.inventor_management.core.enums.StateOrder;
 import com.inventor.management.inventor_management.providerOrder.service.ProviderOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -72,13 +72,14 @@ public class ProviderOrderRestController implements ProviderOrderApi {
     }
 
     @Override
-    public ResponseEntity deleteProviderOrder(Long id) {
+    public ResponseEntity<?> deleteProviderOrder(Long id) {
         providerOrderService.deleteProviderOrder(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<ProviderOrderDto> deleteArticle(Long orderId, Long orderLineId) {
-        return ResponseEntity.ok(providerOrderService.deleteArticle(orderId,orderLineId));
+    public ResponseEntity<?> deleteArticle(Long orderId, Long orderLineId) {
+        providerOrderService.deleteArticle(orderId,orderLineId);
+        return ResponseEntity.noContent().build();
     }
 }

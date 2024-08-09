@@ -1,17 +1,17 @@
 package com.inventor.management.inventor_management.user.service;
 
-import com.inventor.management.core.dto.ChangePasswordUserDto;
-import com.inventor.management.core.dto.RolesDto;
-import com.inventor.management.inventor_management.user.dto.UserDto;
+import com.inventor.management.inventor_management.core.domains.User;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.GroupRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 
 import java.util.List;
 
 public interface UserService {
-    UserDto saveUser (UserDto userDto);
-    UserDto updateUser (UserDto userDto);
-    UserDto loadUserByMail (String email);
-    UserDto getUser (Long id);
-    List<UserDto> listUsers ();
-    void deleteUser (Long id);
-
+    void createUser(User user);
+    void sendVerificationEmail(String userId);
+    void deleteUser(String userId);
+    void forgotPassword(String username);
+    UserResource getUser(String userId);
+    List<RoleRepresentation> getUserRoles(String userId);
 }

@@ -2,7 +2,6 @@ package com.inventor.management.inventor_management.enterprise.mapper;
 
 import com.inventor.management.inventor_management.enterprise.dto.EnterpriseDto;
 import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
-import com.inventor.management.inventor_management.user.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +17,5 @@ public class EnterpriseMapper {
         Enterprise enterprise = new Enterprise();
         BeanUtils.copyProperties(enterpriseDto,enterprise);
         return enterprise;
-    }
-
-    public UserDto fromEnterpriseUser (EnterpriseDto enterpriseDto){
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(enterpriseDto,userDto);
-        return userDto;
     }
 }

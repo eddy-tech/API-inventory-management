@@ -3,10 +3,9 @@ package com.inventor.management.inventor_management.customerOrder.resource.restc
 import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderDto;
 import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderRequest;
 import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
-import com.inventor.management.core.enums.StateOrder;
+import com.inventor.management.inventor_management.core.enums.StateOrder;
 import com.inventor.management.inventor_management.customerOrder.service.CustomerOrderService;
 import com.inventor.management.inventor_management.customerOrder.resource.api.CustomerOrderApi;
-import com.inventor.management.inventor_management.customerOrder.roots.CustomerOrderEndPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.inventor.management.inventor_management.customerOrder.roots.CustomerOrderEndPoint.CUSTOMER_ORDER_ENDPOINT;
+
 @RestController
-@RequestMapping(CustomerOrderEndPoint.CUSTOMER_ORDER_ENDPOINT)
+@RequestMapping(CUSTOMER_ORDER_ENDPOINT)
 @RequiredArgsConstructor
 public class CustomerOrderRestController implements CustomerOrderApi {
     private final CustomerOrderService customerOrderService;
@@ -74,9 +75,9 @@ public class CustomerOrderRestController implements CustomerOrderApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteCustomerOrder(Long id) {
+    public ResponseEntity<?> deleteCustomerOrder(Long id) {
         customerOrderService.deleteCustomerOrder(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Override

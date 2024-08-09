@@ -2,7 +2,6 @@ package com.inventor.management.inventor_management.enterprise.service.strategy;
 
 import com.flickr4java.flickr.FlickrException;
 import com.inventor.management.inventor_management.enterprise.dto.EnterpriseDto;
-import com.inventor.management.core.exceptions.ErrorCodes;
 import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.enterprise.service.EnterpriseService;
 import com.inventor.management.inventor_management.flickr.service.FlickrService;
@@ -23,10 +22,10 @@ public class SaveEnterprisePicture implements Strategy<EnterpriseDto> {
 
     @Override
     public EnterpriseDto savePicture(Long id,InputStream picture, String title) throws FlickrException {
-        EnterpriseDto enterprise = enterpriseService.getEnterprise(id);
+        var enterprise = enterpriseService.getEnterprise(id);
         String urlPicture = flickrService.savePicture(picture,title);
         if(!StringUtils.hasLength(urlPicture))
-            throw new InvalidOperationException("Error saving picture of enterprise", ErrorCodes.UPDATE_PICTURE_EXCEPTION);
+            throw new InvalidOperationException("Error saving picture of enterprise");
         enterprise.setPicture(urlPicture);
 
         return enterpriseService.saveEnterprise(enterprise);

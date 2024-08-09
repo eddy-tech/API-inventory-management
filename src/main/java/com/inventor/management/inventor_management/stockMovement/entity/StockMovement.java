@@ -1,9 +1,9 @@
 package com.inventor.management.inventor_management.stockMovement.entity;
 
 import com.inventor.management.inventor_management.article.entity.Article;
-import com.inventor.management.inventor_management.domains.AbstractEntity;
-import com.inventor.management.core.enums.SourceStockMovement;
-import com.inventor.management.core.enums.TypeMoveStock;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.enums.SourceStockMovement;
+import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -5,7 +5,6 @@ import com.inventor.management.inventor_management.sale.dto.SaleDto;
 import java.util.List;
 
 public interface SaleService {
-
     SaleDto saveSale (SaleDto saleDto);
     SaleDto updateSale (SaleDto saleDto);
     SaleDto getSale (Long id);

@@ -1,7 +1,7 @@
 package com.inventor.management.inventor_management.providerOrderLine.entity;
 
 import com.inventor.management.inventor_management.article.entity.Article;
-import com.inventor.management.inventor_management.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import com.inventor.management.inventor_management.providerOrder.entity.ProviderOrder;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Table(name = "ligneCommandeFournisseurs")
 public class ProviderOrderLine extends AbstractEntity {
-
     @Column(name = "quantite")
     private BigDecimal quantity;
 

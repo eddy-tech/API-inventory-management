@@ -1,5 +1,6 @@
 package com.inventor.management.inventor_management.sale.service.impl;
 
+import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.article.repository.ArticleRepository;
@@ -9,16 +10,14 @@ import com.inventor.management.inventor_management.sale.mapper.SaleMapper;
 import com.inventor.management.inventor_management.sale.service.SaleService;
 import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
-import com.inventor.management.core.enums.SourceStockMovement;
-import com.inventor.management.core.enums.TypeMoveStock;
+import com.inventor.management.inventor_management.core.enums.SourceStockMovement;
+import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.core.exceptions.InvalidEntityException;
 import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.saleLine.repository.SaleLineRepository;
 import com.inventor.management.inventor_management.sale.repository.SaleRepository;
 import com.inventor.management.inventor_management.stockMovement.service.StockMovementService;
-import com.inventor.management.core.validators.SaleValidator;
-import com.inventor.management.core.exceptions.ErrorCodes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,16 +41,12 @@ public class SaleServiceImpl implements SaleService {
     private final StockMovementService stockMovementService;
     private final SaleMapper saleMapper;
     private final ArticleMapper articleMapper;
+    private final ObjectValidator validator;
 
 
     @Override
     public SaleDto saveSale(SaleDto saleDto) {
-        List<String> errors = SaleValidator.validate(saleDto);
-        if(!errors.isEmpty()){
-            log.error("Sale is invalid");
-            throw new InvalidEntityException("Sale objet is invalid", ErrorCodes.SALE_NOT_VALID, errors);
-        }
-
+        validator.validate(saleDto);
         List<String> articleError = new ArrayList<>();
 
         saleDto.getSaleLines().forEach(saleLine -> {
@@ -62,8 +57,8 @@ public class SaleServiceImpl implements SaleService {
         });
 
         if(!articleError.isEmpty()){
-            log.error("One or more articles were not found in the database," + errors);
-            throw new InvalidEntityException("One or more articles were not found in database",ErrorCodes.SALE_NOT_VALID,errors);
+            log.error("One or more articles were not found in the database");
+            throw new InvalidEntityException("One or more articles were not found in database");
         }
 
         Sale savedSale = saleRepository.save(saleMapper.fromSaleDto(saleDto));
@@ -80,12 +75,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public SaleDto updateSale(SaleDto saleDto) {
-        List<String> errors = SaleValidator.validate(saleDto);
-        if(!errors.isEmpty()){
-            log.error("Sale is invalid" + saleDto);
-            throw new InvalidEntityException("Sale is invalid",ErrorCodes.SALE_NOT_VALID,errors);
-        }
-
+        validator.validate(saleDto);
         List<String> articleErrors = new ArrayList<>();
 
         if(saleDto.getSaleLines()!= null){
@@ -100,10 +90,8 @@ public class SaleServiceImpl implements SaleService {
         }
 
         if(!articleErrors.isEmpty()){
-            log.error("One or more articles were not found in database" + errors);
-            throw new InvalidEntityException(
-                    "One or more articles were not found in database", ErrorCodes.SALE_NOT_VALID, articleErrors
-            );
+            log.error("One or more articles were not found in database");
+            throw new InvalidEntityException("One or more articles were not found in database", articleErrors);
         }
 
         Sale updatedSale = saleRepository.save(saleMapper.fromSaleDto(saleDto));
@@ -125,8 +113,7 @@ public class SaleServiceImpl implements SaleService {
             return null;
         }
         var sale = saleRepository.findById(id)
-                .orElseThrow(()->new EntityNotFoundException("Nothing Sale was found with ID ="+id+"in database",
-                        ErrorCodes.SALE_NOT_FOUND));
+                .orElseThrow(()->new EntityNotFoundException("Nothing Sale was found with ID ="+id+"in database"));
 
         return saleMapper.fromSale(sale);
     }
@@ -136,7 +123,7 @@ public class SaleServiceImpl implements SaleService {
         if(!StringUtils.hasLength(codeSale)){
             log.error("code Sale is invalid");
             throw new EntityNotFoundException(
-                    "Nothing code sale with ID ="+codeSale+"was found in database", ErrorCodes.SALE_NOT_FOUND
+                    "Nothing code sale with ID ="+codeSale+"was found in database"
             );
         }
 
@@ -145,9 +132,8 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<SaleDto> listSale() {
-        List<Sale> saleList = saleRepository.findAll();
-
-        return saleList.stream()
+        return saleRepository.findAll()
+                .stream()
                 .map(saleMapper::fromSale)
                     .collect(Collectors.toList());
     }
@@ -159,23 +145,21 @@ public class SaleServiceImpl implements SaleService {
             return;
         }
 
-        List<Article>articleList = articleRepository.findAllByCategoryId(id);
+        var articleList = articleRepository.findAllByCategoryId(id);
         if(!articleList.isEmpty()){
-            throw new InvalidOperationException("Unable to delete sale that has already using article",
-                    ErrorCodes.SALE_ALREADY_IN_USE);
+            throw new InvalidOperationException("Unable to delete sale that has already using article");
         }
 
-        List<SaleLine> saleLineList = saleLineRepository.findAllBySaleId(id);
+        var saleLineList = saleLineRepository.findAllBySaleId(id);
         if(!saleLineList.isEmpty()){
-            throw new InvalidOperationException("Unable to delete sale that has already using sale line",
-                    ErrorCodes.SALE_ALREADY_IN_USE);
+            throw new InvalidOperationException("Unable to delete sale that has already using sale line");
         }
 
         saleRepository.deleteById(id);
     }
 
     private void updateStockMovementSale (SaleLine saleLine){
-            StockMovementDto stock = new StockMovementDto();
+            var stock = new StockMovementDto();
             stock.setArticleDto(articleMapper.fromArticleDto(saleLine.getArticle()));
             stock.setDateMovement(Instant.now());
             stock.setTypeMoveStock(TypeMoveStock.EXIT);

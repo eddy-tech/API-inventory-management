@@ -2,10 +2,9 @@ package com.inventor.management.inventor_management.enterprise.entity;
 
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.customer.entity.Customer;
-import com.inventor.management.inventor_management.domains.AbstractEntity;
-import com.inventor.management.inventor_management.domains.Address;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.domains.Address;
 import com.inventor.management.inventor_management.provider.entity.Provider;
-import com.inventor.management.inventor_management.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "entreprises")
 public class Enterprise extends AbstractEntity {
-
     @Column(name = "nom_enterprise")
     private String name;
 
@@ -41,9 +39,6 @@ public class Enterprise extends AbstractEntity {
 
     @Column(name = "site_web")
     private String siteWeb;
-
-    @OneToMany(mappedBy = "enterprise")
-    private List<User> users;
 
     @OneToMany(mappedBy = "enterprise")
     private List<Article> articles;

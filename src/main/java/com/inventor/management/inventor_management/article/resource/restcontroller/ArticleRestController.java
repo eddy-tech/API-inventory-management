@@ -8,11 +8,13 @@ import com.inventor.management.inventor_management.saleLine.dto.SaleLineDto;
 import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.article.resource.api.ArticleApi;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static com.inventor.management.inventor_management.article.roots.ArticleEndPoint.ARTICLE_ENDPOINT;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,53 +23,55 @@ public class ArticleRestController implements ArticleApi {
     private final ArticleService articleService;
 
     @Override
-    public ArticleDto saveArticle(ArticleRequest articleRequest) {
-        return articleService.saveArticle(articleRequest);
+    public ResponseEntity<ArticleDto> saveArticle(ArticleRequest articleRequest) {
+        return ResponseEntity.status(CREATED)
+                .body(articleService.saveArticle(articleRequest));
     }
 
     @Override
-    public ArticleDto updateArticle(ArticleRequest articleRequest, Long id) {
-        return articleService.updateArticle(articleRequest, id);
+    public ResponseEntity<ArticleDto> updateArticle(ArticleRequest articleRequest, Long id) {
+        return ResponseEntity.ok(articleService.updateArticle(articleRequest, id));
     }
 
     @Override
-    public ArticleDto getArticle(Long id) {
-        return articleService.getArticle(id);
+    public ResponseEntity<ArticleDto> getArticle(Long id) {
+        return ResponseEntity.ok(articleService.getArticle(id));
     }
 
     @Override
-    public ArticleDto getCodeArticle(String codeArticle) {
-        return articleService.getCodeArticle(codeArticle);
+    public ResponseEntity<ArticleDto> getCodeArticle(String codeArticle) {
+        return ResponseEntity.ok(articleService.getCodeArticle(codeArticle));
     }
 
     @Override
-    public List<ArticleDto> listArticle() {
-        return articleService.listArticle();
+    public ResponseEntity<List<ArticleDto> >listArticle() {
+        return ResponseEntity.ok(articleService.listArticle());
     }
 
     @Override
-    public List<SaleLineDto> findHistorySales(Long articleId) {
-        return articleService.findHistorySales(articleId);
+    public ResponseEntity<List<SaleLineDto>> findHistorySales(Long articleId) {
+        return ResponseEntity.ok(articleService.findHistorySales(articleId));
     }
 
     @Override
-    public List<CustomerOrderLineDto> findHistoryCustomerOrder(Long articleId) {
-        return articleService.findHistoryCustomerOrder(articleId);
+    public ResponseEntity<List<CustomerOrderLineDto>> findHistoryCustomerOrder(Long articleId) {
+        return ResponseEntity.ok(articleService.findHistoryCustomerOrder(articleId));
     }
 
     @Override
-    public List<ProviderOrderLineDto> findHistoryProviderOrder(Long articleId) {
-        return articleService.findHistoryProviderOrder(articleId);
+    public ResponseEntity<List<ProviderOrderLineDto>> findHistoryProviderOrder(Long articleId) {
+        return ResponseEntity.ok(articleService.findHistoryProviderOrder(articleId));
     }
 
     @Override
-    public List<ArticleDto> findAllArticleByCategory(Long categoryId) {
-        return articleService.findAllArticleByCategory(categoryId);
+    public ResponseEntity<List<ArticleDto>> findAllArticleByCategory(Long categoryId) {
+        return ResponseEntity.ok(articleService.findAllArticleByCategory(categoryId));
     }
 
     @Override
-    public void deleteArticle(Long id) {
-         articleService.deleteArticle(id);
+    public ResponseEntity<?> deleteArticle(Long id) {
+        articleService.deleteArticle(id);
+        return ResponseEntity.noContent().build();
     }
 }
 

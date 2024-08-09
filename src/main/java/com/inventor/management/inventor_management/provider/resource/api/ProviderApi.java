@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +18,6 @@ import static com.inventor.management.inventor_management.provider.roots.Provide
 
 public interface ProviderApi {
     @PostMapping(
-            value = PROVIDER_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -31,7 +32,7 @@ public interface ProviderApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Provider objet has invalid")
     })
-    ProviderDto saveProvider (@RequestBody ProviderDto providerDto);
+    ResponseEntity<ProviderDto> saveProvider (@RequestBody @Valid ProviderDto providerDto);
     @PutMapping(
             value = UPDATE_PROVIDER_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -48,9 +49,9 @@ public interface ProviderApi {
             @ApiResponse(responseCode = "403",description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Provider objet has invalid")
     })
-    ProviderDto updateProvider (
+    ResponseEntity<ProviderDto> updateProvider (
             @PathVariable(name = "idProvider") Long providerId,
-            @RequestBody ProviderDto providerDto
+            @RequestBody @Valid ProviderDto providerDto
     );
 
     @GetMapping(
@@ -69,9 +70,8 @@ public interface ProviderApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing provider exist in DB with ID provided")
     })
-    ProviderDto getProvider (@PathVariable(name = "idProvider") Long id);
+    ResponseEntity<ProviderDto> getProvider (@PathVariable(name = "idProvider") Long id);
     @GetMapping(
-            value = PROVIDER_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -93,7 +93,7 @@ public interface ProviderApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<ProviderDto> listProviders ();
+    ResponseEntity<List<ProviderDto>> listProviders();
     @DeleteMapping(
             value = DELETE_PROVIDER,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -109,5 +109,5 @@ public interface ProviderApi {
             @ApiResponse(responseCode = "200",description = "Provider has been deleted"),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    void deleteProvider (@PathVariable(name = "idProvider") Long id);
+    ResponseEntity<?> deleteProvider (@PathVariable(name = "idProvider") Long id);
 }

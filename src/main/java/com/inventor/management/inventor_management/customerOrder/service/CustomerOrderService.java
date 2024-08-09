@@ -3,7 +3,7 @@ package com.inventor.management.inventor_management.customerOrder.service;
 import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderDto;
 import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderRequest;
 import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
-import com.inventor.management.core.enums.StateOrder;
+import com.inventor.management.inventor_management.core.enums.StateOrder;
 
 import java.math.BigDecimal;
 import java.util.List;

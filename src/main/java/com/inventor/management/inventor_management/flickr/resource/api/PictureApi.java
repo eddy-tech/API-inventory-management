@@ -1,7 +1,7 @@
 package com.inventor.management.inventor_management.flickr.resource.api;
 
 import com.flickr4java.flickr.FlickrException;
-import com.inventor.management.core.roots.PictureEndPoint;
+import com.inventor.management.inventor_management.core.roots.PictureEndPoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

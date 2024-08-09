@@ -1,7 +1,7 @@
 package com.inventor.management.inventor_management.saleLine.entity;
 
 import com.inventor.management.inventor_management.article.entity.Article;
-import com.inventor.management.inventor_management.domains.AbstractEntity;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import com.inventor.management.inventor_management.sale.entity.Sale;
 import jakarta.persistence.*;
 import lombok.*;

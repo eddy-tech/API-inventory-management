@@ -1,17 +1,19 @@
 package com.inventor.management.inventor_management.providerOrder.roots;
 
-import com.inventor.management.core.utils.Constants;
+import com.inventor.management.inventor_management.core.utils.Constants;
+
+import static com.inventor.management.inventor_management.core.utils.Constants.API_ROOT;
 
 public interface ProviderOrderEndPoint {
-    String PROVIDER_ORDER_ENDPOINT = Constants.API_ROOT + "/providerOrder";
-    String UPDATE_PROVIDER_ORDER_ENDPOINT = Constants.API_ROOT + "/providerOrder/{idProviderOrder}";
-    String UPDATE_STATE_ORDER = PROVIDER_ORDER_ENDPOINT + "/stateOrder/{idOrder}/{stateOrder}";
-    String UPDATE_PROVIDER = PROVIDER_ORDER_ENDPOINT + "/update/provider/{idOrder}/{idProvider}";
-    String UPDATE_ARTICLE = PROVIDER_ORDER_ENDPOINT + "/update/article/{idOrder}/{idOrderLine}/{idArticle}";
-    String UPDATE_QUANTITY_ORDER = PROVIDER_ORDER_ENDPOINT + "/update/quantityOrder/{idOrder}/{idOrderLine}/{quantity}";
-    String FIND_PROVIDER_ORDER_BY_ID = PROVIDER_ORDER_ENDPOINT + "/id/{idProviderOrder}";
-    String FIND_PROVIDER_ORDER_BY_CODE_PROVIDER_ORDER = PROVIDER_ORDER_ENDPOINT  + "/filter/{codeOrder}";
-    String FIND_PROVIDER_ORDER_LINE_BY_PROVIDER_ORDER_ID = PROVIDER_ORDER_ENDPOINT  + "/filter/providerOrderLine/{idOrder}";
+    String PROVIDER_ORDER_ENDPOINT = API_ROOT + "/providerOrder";
+    String UPDATE_PROVIDER_ORDER_ENDPOINT ="/{idProviderOrder}";
+    String UPDATE_STATE_ORDER ="/stateOrder/{idOrder}/{stateOrder}";
+    String UPDATE_PROVIDER ="/update/provider/{idOrder}/{idProvider}";
+    String UPDATE_ARTICLE ="/update/article/{idOrder}/{idOrderLine}/{idArticle}";
+    String UPDATE_QUANTITY_ORDER ="/update/quantityOrder/{idOrder}/{idOrderLine}/{quantity}";
+    String FIND_PROVIDER_ORDER_BY_ID ="/id/{idProviderOrder}";
+    String FIND_PROVIDER_ORDER_BY_CODE_PROVIDER_ORDER ="/filter/{codeOrder}";
+    String FIND_PROVIDER_ORDER_LINE_BY_PROVIDER_ORDER_ID ="/filter/providerOrderLine/{idOrder}";
     String DELETE_PROVIDER_ORDER = FIND_PROVIDER_ORDER_BY_ID;
-    String DELETE_ARTICLE = PROVIDER_ORDER_ENDPOINT + "/{idOrder}/{idOrderLine}";
+    String DELETE_ARTICLE ="/{idOrder}/{idOrderLine}";
 }

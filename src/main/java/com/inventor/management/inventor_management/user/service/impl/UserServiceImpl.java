@@ -1,93 +1,99 @@
 package com.inventor.management.inventor_management.user.service.impl;
 
-
-import com.inventor.management.core.dto.ChangePasswordUserDto;
-import com.inventor.management.core.dto.RolesDto;
-import com.inventor.management.inventor_management.user.dto.UserDto;
-import com.inventor.management.inventor_management.user.entity.User;
-import com.inventor.management.inventor_management.user.mapper.UserMapper;
-import com.inventor.management.core.exceptions.EntityNotFoundException;
-import com.inventor.management.core.exceptions.InvalidEntityException;
-import com.inventor.management.core.exceptions.ErrorCodes;
-import com.inventor.management.core.exceptions.InvalidOperationException;
-import com.inventor.management.inventor_management.saleLine.repository.SaleLineRepository;
-import com.inventor.management.inventor_management.user.repository.UserRepository;
+import com.inventor.management.inventor_management.core.domains.User;
 import com.inventor.management.inventor_management.user.service.UserService;
-import com.inventor.management.core.validators.UserValidator;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+
+import static org.keycloak.representations.idm.CredentialRepresentation.PASSWORD;
 
 @Service
-@Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+    private final Keycloak keycloak;
+    @Value("${app.keycloak.realm}")
+    private String realm;
+    @Override
+    public void createUser(User user) {
+        var representation = getUserRepresentation(user);
 
+        var usersResource = this.getUsersResource();
+        var response = usersResource.create(representation);
+        log.info("Status code:" + response.getStatus());
 
-    private void validateUser (UserDto userDto){
-        List<String> errors = UserValidator.validate(userDto);
-        if(!errors.isEmpty()){
-            log.error("User is invalid" + userDto);
-            throw new InvalidEntityException("User is invalid", ErrorCodes.USER_NOT_VALID,errors);
+        if(!Objects.equals(201, response.getStatus())) {
+            throw new RuntimeException("Status code " + response.getStatus());
         }
-    }
-    @Override
-    public UserDto saveUser(UserDto userDto) {
-        this.validateUser(userDto);
-        var savedUser = userRepository.save(userMapper.fromUserDto(userDto));
-        return userMapper.fromUser(savedUser);
-    }
+        log.info("User created successfully");
 
-    @Override
-    public UserDto updateUser(UserDto userDto) {
-        validateUser(userDto);
-        var updatedUser = userRepository.save(userMapper.fromUserDto(userDto));
-        return userMapper.fromUser(updatedUser);
+        var usersList = usersResource.searchByUsername(user.username(), true);
+        var userRepresentation = usersList.getFirst();
+        sendVerificationEmail(userRepresentation.getId());
     }
 
     @Override
-    public UserDto loadUserByMail(String email) {
-        var user = userRepository.findByMail(email)
-                .orElseThrow(()-> new EntityNotFoundException("Nothing user with mail ="+ email +"was found in database",
-                        ErrorCodes.USER_NOT_FOUND));
-
-        return userMapper.fromUser(user);
+    public void sendVerificationEmail(String userId) {
+        var usersResource = this.getUsersResource();
+        usersResource.get(userId).sendVerifyEmail();
     }
 
     @Override
-    public UserDto getUser(Long id) {
-        if(id == null) {
-            log.error("User ID is null");
-            return null;
-        }
-
-        var user = userRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("Nothing User with ID ="+ id + "was found in DataBase",
-                        ErrorCodes.USER_NOT_FOUND));
-        return userMapper.fromUser(user);
+    public void deleteUser(String userId) {
+        var usersResource = this.getUsersResource();
+        usersResource.delete(userId);
     }
 
     @Override
-    public List<UserDto> listUsers() {
-        return userRepository.findAll().stream()
-                .map(userMapper::fromUser)
-                .collect(Collectors.toList());
+    public void forgotPassword(String username) {
+        var usersResource = this.getUsersResource();
+        var usersList = usersResource.searchByUsername(username, true);
+        var userRepresentation = usersList.getFirst();
+
+        var userResource = usersResource.get(userRepresentation.getId());
+        userResource.executeActionsEmail(List.of("UPDATE_PASSWORD"));
     }
 
     @Override
-    public void deleteUser(Long id) {
-        if(id == null){
-            log.error("id is invalid");
-            return;
-        }
-        userRepository.deleteById(id);
+    public UserResource getUser(String userId) {
+        var usersResource = this.getUsersResource();
+        return usersResource.get(userId);
+    }
+
+    @Override
+    public List<RoleRepresentation> getUserRoles(String userId) {
+        return getUser(userId).roles().realmLevel().listAll();
+    }
+
+    private static UserRepresentation getUserRepresentation(User user) {
+        var representation = new UserRepresentation();
+        representation.setEnabled(false);
+        representation.setUsername(user.username());
+        representation.setFirstName(user.firstName());
+        representation.setLastName(user.lastName());
+        representation.setEmail(user.email());
+        representation.setEmailVerified(false);
+
+        var credential = new CredentialRepresentation();
+        credential.setValue(user.password());
+        credential.setType(PASSWORD);
+
+        representation.setCredentials(List.of(credential));
+        return representation;
+    }
+
+    private UsersResource getUsersResource(){
+        return keycloak.realm(realm).users();
     }
 }

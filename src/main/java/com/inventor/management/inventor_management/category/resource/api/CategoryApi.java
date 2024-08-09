@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +19,8 @@ import static com.inventor.management.inventor_management.category.roots.Categor
 
 public interface CategoryApi {
     @PostMapping(
-            path = CATEGORY_ENDPOINT,
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
             summary = "Save Category",
@@ -31,11 +33,12 @@ public interface CategoryApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Category objet has invalid")
     })
-    CategoryDto saveCategory (@RequestBody CategoryRequest categoryRequest);
+    ResponseEntity<CategoryDto> saveCategory (@RequestBody @Valid CategoryRequest categoryRequest);
 
     @PutMapping(
             path = UPDATE_CATEGORY_ENDPOINT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
             summary = "Update Category",
@@ -47,7 +50,9 @@ public interface CategoryApi {
             @ApiResponse(responseCode = "403",description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Catgeory objet has invalid")
     })
-    CategoryDto updateCategory (@RequestBody CategoryRequest categoryRequest, @PathVariable(name = "idCategory") Long id);
+    ResponseEntity<CategoryDto> updateCategory(
+            @RequestBody @Valid CategoryRequest categoryRequest, @PathVariable(name = "idCategory") Long id
+    );
 
     @GetMapping(
             path = FIND_CATEGORY_BY_ID,
@@ -65,7 +70,7 @@ public interface CategoryApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing category exist in DB with ID provided")
     })
-    CategoryDto getCategory (@PathVariable(name = "idCategory") Long id);
+    ResponseEntity<CategoryDto> getCategory (@PathVariable(name = "idCategory") Long id);
 
     @GetMapping(
             path = FIND_CATEGORY_BY_CODE_CATEGORY,
@@ -81,11 +86,11 @@ public interface CategoryApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing category exist in DB with code_category provided")
     })
-    CategoryDto getCodeCategory (@PathVariable(name = "idCodeCategory") String codeCategory);
+    ResponseEntity<CategoryDto> getCodeCategory (@PathVariable(name = "idCodeCategory") String codeCategory);
 
     @GetMapping(
-            path = CATEGORY_ENDPOINT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
             summary = "Return list of categories",
@@ -105,11 +110,12 @@ public interface CategoryApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<CategoryDto> listCategory ();
+    ResponseEntity<List<CategoryDto>> listCategory();
 
     @DeleteMapping(
             path = DELETE_CATEGORY,
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     @Operation(
             summary = "Delete a category",
@@ -121,5 +127,5 @@ public interface CategoryApi {
             @ApiResponse(responseCode = "200",description = "Category has been deleted"),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    void deleteCategory (@PathVariable(name = "idCategory") Long id);
+    ResponseEntity<?> deleteCategory (@PathVariable(name = "idCategory") Long id);
 }

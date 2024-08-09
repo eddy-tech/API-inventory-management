@@ -8,12 +8,16 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.inventor.management.inventor_management.sale.roots.SaleEndPoint.*;
+
 public interface SaleApi {
-    @PostMapping(value = SaleEndPoint.SALE_ENDPOINT)
+    @PostMapping
     @Operation(
             summary = "Save Sale",
             description = "This method allow to save sale",
@@ -25,8 +29,8 @@ public interface SaleApi {
             @ApiResponse(responseCode = "403",description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Sale objet has invalid")
     })
-    SaleDto saveSale (@RequestBody SaleDto saleDto);
-    @PutMapping(value = SaleEndPoint.UPDATE_SALE_ENDPOINT)
+    ResponseEntity<SaleDto> saveSale (@RequestBody @Valid SaleDto saleDto);
+    @PutMapping(UPDATE_SALE_ENDPOINT)
     @Operation(
             summary = "Update Sale",
             description = "This method allow to update sale",
@@ -38,8 +42,10 @@ public interface SaleApi {
             @ApiResponse(responseCode = "403",description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Sale objet has invalid")
     })
-    SaleDto updateSale (@PathVariable(name = "idSale") Long saleId, @RequestBody SaleDto saleDto);
-    @GetMapping(value = SaleEndPoint.FIND_SALE_BY_ID)
+    ResponseEntity<SaleDto> updateSale (
+            @PathVariable(name = "idSale") Long saleId, @RequestBody @Valid SaleDto saleDto
+    );
+    @GetMapping(FIND_SALE_BY_ID)
     @Operation(
             summary = "Find out a sale by ID",
             description = "This method allow to find out a sale with ID",
@@ -51,8 +57,8 @@ public interface SaleApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing sale exist in DB with ID provided")
     })
-    SaleDto getSale (@PathVariable(name = "idSale") Long id);
-    @GetMapping(value = SaleEndPoint.FIND_SALE_BY_CODE_SALE)
+    ResponseEntity<SaleDto> getSale (@PathVariable(name = "idSale") Long id);
+    @GetMapping(FIND_SALE_BY_CODE_SALE)
     @Operation(
             summary = "Find out a sale by code_category",
             description = "This method allow to find out a sale with code_sale",
@@ -64,8 +70,8 @@ public interface SaleApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404", description = "Nothing sale exist in DB with code_sale provided")
     })
-    SaleDto getCodeSale (@PathVariable(name = "idCodeSale") String codeSale);
-    @GetMapping(value = SaleEndPoint.SALE_ENDPOINT)
+    ResponseEntity<SaleDto> getCodeSale (@PathVariable(name = "idCodeSale") String codeSale);
+    @GetMapping
     @Operation(
             summary = "Return list of sales",
             description = "This method allow to research and return all sales that exist in DB"
@@ -84,8 +90,8 @@ public interface SaleApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    List<SaleDto> listSale ();
-    @DeleteMapping(value = SaleEndPoint.DELETE_SALE)
+    ResponseEntity<List<SaleDto>> listSale();
+    @DeleteMapping(DELETE_SALE)
     @Operation(
             summary = "Delete a sale",
             description = "This method allow to delete a sale by ID",
@@ -96,5 +102,5 @@ public interface SaleApi {
             @ApiResponse(responseCode = "200",description = "Sale has been deleted"),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    void deleteSale (@PathVariable(name = "idSale") Long id);
+    ResponseEntity<?> deleteSale (@PathVariable(name = "idSale") Long id);
 }

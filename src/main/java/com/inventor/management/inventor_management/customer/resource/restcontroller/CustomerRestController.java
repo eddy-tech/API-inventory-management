@@ -3,41 +3,46 @@ package com.inventor.management.inventor_management.customer.resource.restcontro
 import com.inventor.management.inventor_management.customer.dto.CustomerDto;
 import com.inventor.management.inventor_management.customer.service.CustomerService;
 import com.inventor.management.inventor_management.customer.resource.api.CustomerApi;
-import com.inventor.management.inventor_management.customer.roots.CustomerEndPoint;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.inventor.management.inventor_management.customer.roots.CustomerEndPoint.CUSTOMER_ENDPOINT;
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
-@AllArgsConstructor
-@RequestMapping(CustomerEndPoint.CUSTOMER_ENDPOINT)
+@RequiredArgsConstructor
+@RequestMapping(CUSTOMER_ENDPOINT)
 public class CustomerRestController implements CustomerApi {
     private final CustomerService customerService;
 
     @Override
-    public CustomerDto saveCustomer(CustomerDto customerDto) {
-        return customerService.saveCustomer(customerDto);
+    public ResponseEntity<CustomerDto> saveCustomer(CustomerDto customerDto) {
+        return ResponseEntity.status(CREATED)
+                .body(customerService.saveCustomer(customerDto));
     }
 
     @Override
-    public CustomerDto updateCustomer(CustomerDto customerDto, Long customerId) {
-        return customerService.updateCustomer(customerDto, customerId);
+    public ResponseEntity<CustomerDto> updateCustomer(CustomerDto customerDto, Long customerId) {
+        return ResponseEntity.ok(customerService.updateCustomer(customerDto, customerId));
     }
 
     @Override
-    public CustomerDto getCustomer(Long id) {
-        return customerService.getCustomer(id);
+    public ResponseEntity<CustomerDto> getCustomer(Long id) {
+        return ResponseEntity.ok(customerService.getCustomer(id));
     }
 
     @Override
-    public List<CustomerDto> listCustomer() {
-        return customerService.listCustomer();
+    public ResponseEntity<List<CustomerDto>> listCustomer() {
+        return ResponseEntity.ok(customerService.listCustomer());
     }
 
     @Override
-    public void deleteCustomer(Long id) {
+    public ResponseEntity<?> deleteCustomer(Long id) {
         customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
     }
 }

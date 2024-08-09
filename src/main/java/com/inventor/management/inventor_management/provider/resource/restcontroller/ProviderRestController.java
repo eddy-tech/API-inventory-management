@@ -4,12 +4,14 @@ import com.inventor.management.inventor_management.provider.dto.ProviderDto;
 import com.inventor.management.inventor_management.provider.service.ProviderService;
 import com.inventor.management.inventor_management.provider.resource.api.ProviderApi;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import static com.inventor.management.inventor_management.provider.roots.ProviderEndPoint.PROVIDER_ENDPOINT;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,27 +20,29 @@ public class ProviderRestController implements ProviderApi {
     private final ProviderService providerService;
 
     @Override
-    public ProviderDto saveProvider(ProviderDto providerDto) {
-        return providerService.saveProvider(providerDto);
+    public ResponseEntity<ProviderDto> saveProvider(ProviderDto providerDto) {
+        return ResponseEntity.status(CREATED)
+                .body(providerService.saveProvider(providerDto));
     }
 
     @Override
-    public ProviderDto updateProvider(Long providerId, ProviderDto providerDto) {
-        return providerService.updateProvider(providerDto);
+    public ResponseEntity<ProviderDto> updateProvider(Long providerId, ProviderDto providerDto) {
+        return ResponseEntity.ok(providerService.updateProvider(providerDto, providerId));
     }
 
     @Override
-    public ProviderDto getProvider(Long id) {
-        return providerService.getProvider(id);
+    public ResponseEntity<ProviderDto> getProvider(Long id) {
+        return ResponseEntity.ok(providerService.getProvider(id));
     }
 
     @Override
-    public List<ProviderDto> listProviders() {
-        return providerService.listProvider();
+    public ResponseEntity<List<ProviderDto>> listProviders() {
+        return ResponseEntity.ok(providerService.listProvider());
     }
 
     @Override
-    public void deleteProvider(Long id) {
-         providerService.deleteProvider(id);
+    public ResponseEntity<?> deleteProvider(Long id) {
+        providerService.deleteProvider(id);
+        return ResponseEntity.noContent().build();
     }
 }
