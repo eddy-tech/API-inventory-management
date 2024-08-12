@@ -1,6 +1,6 @@
 package com.inventor.management.inventor_management.user.resource.restcontroller;
 
-import com.inventor.management.inventor_management.core.domains.User;
+import com.inventor.management.inventor_management.user.dto.User;
 import com.inventor.management.inventor_management.user.resource.api.UserApi;
 import com.inventor.management.inventor_management.user.service.UserService;
 import lombok.RequiredArgsConstructor;

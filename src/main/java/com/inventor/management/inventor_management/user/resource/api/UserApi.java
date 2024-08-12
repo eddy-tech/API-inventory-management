@@ -1,6 +1,6 @@
 package com.inventor.management.inventor_management.user.resource.api;
 
-import com.inventor.management.inventor_management.core.domains.User;
+import com.inventor.management.inventor_management.user.dto.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

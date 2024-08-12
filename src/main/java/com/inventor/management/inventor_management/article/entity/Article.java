@@ -9,6 +9,7 @@ import com.inventor.management.inventor_management.stockMovement.entity.StockMov
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,8 +17,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor @AllArgsConstructor
 @Table(name = "articles")
+@SuperBuilder
+@NoArgsConstructor @AllArgsConstructor
 public class Article extends AbstractEntity {
     @Column(name = "code_articles")
     private String codeArticle;

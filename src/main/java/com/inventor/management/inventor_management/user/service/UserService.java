@@ -1,8 +1,7 @@
 package com.inventor.management.inventor_management.user.service;
 
-import com.inventor.management.inventor_management.core.domains.User;
+import com.inventor.management.inventor_management.user.dto.User;
 import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
 import java.util.List;

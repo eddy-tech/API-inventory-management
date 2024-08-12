@@ -1,47 +1,12 @@
-######################## PostgreSQL Database Config #############################
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/inventory_management
-    username: koko
-    password: password123
-    driver-class-name: org.postgresql.Driver
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 50MB
   jpa:
-    hibernate:
-      ddl-auto: update
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
 
-########################## Flyway Database Config ###############################
-  flyway:
-    baseline-on-migrate: true
-    enabled: true
-    baseline-description: "init"
-    baseline-version: 0
-    user: ${spring.datasource.username}
-    password: ${spring.datasource.password}
+springdoc:
+  default-produces-media-type: application/json
 
-########################## Security Config with Keycloak ########################
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${app.keycloak.serverUrl}/realms/${app.keycloak.realm}
-
-app:
-  keycloak:
-    realm: ecommerce
-    serverUrl: http://localhost:9090
-  admin:
-    clientId: admin-cli
-    clientSecret:
-
-server:
-  port: 8081
-
-
-flickr:
-  apiKey: 95362056e8ece9e2f8899e9d5f88192e
-  apiSecret: 7689372e2653c903
-  appKey: 72157720847629347-c584f0411627be1b
-  appSecret: 8e2081bcba21c5db

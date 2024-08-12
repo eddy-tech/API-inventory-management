@@ -10,6 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
+@Builder
 public class Address implements Serializable {
     @Column(name = "adresse_1")
     private String address1;

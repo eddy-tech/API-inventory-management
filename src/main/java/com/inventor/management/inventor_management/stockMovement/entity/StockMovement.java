@@ -17,7 +17,6 @@ import java.time.Instant;
 @AllArgsConstructor
 @Table(name = "mouvementStock")
 public class StockMovement extends AbstractEntity {
-
     @Column(name = "date_mouvement")
     private Instant dateMovement;
 

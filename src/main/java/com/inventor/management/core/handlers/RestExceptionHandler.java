@@ -37,6 +37,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(NOT_FOUND).body(representation);
     }
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ExceptionRepresentation> handleBusinessException (BusinessException exception) {
+        var representation = ExceptionRepresentation.builder()
+                .errorMessage(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(NOT_FOUND).body(representation);
+    }
+
     @ExceptionHandler(FlickrException.class)
     public ResponseEntity<ExceptionRepresentation> handleFlickrException (FlickrException exception){
         var representation = ExceptionRepresentation.builder()

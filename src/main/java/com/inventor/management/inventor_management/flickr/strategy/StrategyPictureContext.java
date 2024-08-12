@@ -45,9 +45,6 @@ public class StrategyPictureContext {
             case "provider":
                 beanFactory.getBean(beanName, SaveProviderPicture.class);
                 break;
-            case "user":
-                beanFactory.getBean(beanName, SaveUserPicture.class);
-                break;
             default: throw new InvalidOperationException("unknown context for saving picture");
         }
     }

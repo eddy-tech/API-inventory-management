@@ -5,6 +5,7 @@ import com.inventor.management.inventor_management.customer.entity.Customer;
 import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import com.inventor.management.inventor_management.core.domains.Address;
 import com.inventor.management.inventor_management.provider.entity.Provider;
+import com.inventor.management.inventor_management.sale.entity.Sale;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "entreprises")
+@Builder
 public class Enterprise extends AbstractEntity {
     @Column(name = "nom_enterprise")
     private String name;
@@ -48,4 +50,7 @@ public class Enterprise extends AbstractEntity {
 
     @OneToMany(mappedBy = "enterprise")
     private List<Provider> providers;
+
+    @OneToMany(mappedBy = "enterprise")
+    private List<Sale> sales;
 }

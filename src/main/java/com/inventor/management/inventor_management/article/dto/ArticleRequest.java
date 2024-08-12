@@ -14,5 +14,7 @@ public record ArticleRequest(
         @NotNull(message = "Unity price all taxes include is required")
         BigDecimal unitPriceTtc,
         @NotNull(message = "You have to provide at leas one picture")
-        String picture
+        String picture,
+        @NotNull(message = "You have to provide a category of article")
+        String codeCategory
 ) {}

@@ -1,8 +1,11 @@
 package com.inventor.management.inventor_management.article.service.impl;
 
+import com.inventor.management.core.exceptions.BusinessException;
 import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.article.dto.ArticleRequest;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
+import com.inventor.management.inventor_management.category.entity.Category;
+import com.inventor.management.inventor_management.category.repository.CategoryRepository;
 import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
 import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.article.entity.Article;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
 import java.util.List;
 
 import static com.inventor.management.inventor_management.core.utils.Constants.*;
@@ -38,6 +42,7 @@ import static com.inventor.management.inventor_management.core.utils.Constants.*
 @Slf4j
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
+    private final CategoryRepository categoryRepository;
     private final CustomerOrderLineRepository customerOrderLineRepository;
     private final ProviderOrderLineRepository providerOrderLineRepository;
     private final SaleLineRepository saleLineRepository;
@@ -51,9 +56,12 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDto saveArticle(ArticleRequest articleRequest) {
         validator.validate(articleRequest);
+
+        var category = this.getCategory(articleRequest.codeCategory());
+
         return articleMapper.fromArticleDto(
                 articleRepository.save(
-                        articleMapper.fromArticle(articleRequest)
+                        articleMapper.fromArticle(articleRequest, category)
                 )
         );
     }
@@ -63,10 +71,14 @@ public class ArticleServiceImpl implements ArticleService {
         var article = this.findById(id);
         validator.validate(articleRequest);
 
+        var category = this.getCategory(articleRequest.codeCategory());
+
         article.setDesignation(articleRequest.designation());
         article.setRateTax(articleRequest.rateTax());
         article.setUnitPriceHt(articleRequest.unitPriceHt());
         article.setUnitPriceTtc(articleRequest.unitPriceTtc());
+        article.setLastModifiedTime(Instant.now());
+        article.setCategory(category);
         article.setPicture(articleRequest.picture());
 
         return articleMapper.fromArticleDto(articleRepository.save(article));
@@ -149,5 +161,14 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         articleRepository.deleteById(id);
+    }
+
+    private Category getCategory (String code) {
+        var category = categoryRepository.findByCodeCategory(code);
+        if(category == null){
+            throw new BusinessException("Invalid category");
+        }
+
+        return category;
     }
 }

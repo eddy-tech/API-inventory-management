@@ -1,6 +1,6 @@
 package com.inventor.management.inventor_management.user.service.impl;
 
-import com.inventor.management.inventor_management.core.domains.User;
+import com.inventor.management.inventor_management.user.dto.User;
 import com.inventor.management.inventor_management.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

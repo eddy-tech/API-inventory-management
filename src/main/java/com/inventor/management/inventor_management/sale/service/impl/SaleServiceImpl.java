@@ -165,7 +165,6 @@ public class SaleServiceImpl implements SaleService {
             stock.setTypeMoveStock(TypeMoveStock.EXIT);
             stock.setQuantity(saleLine.getQuantity());
             stock.setSourceStockMovement(SourceStockMovement.SALE);
-            stock.setId_enterprise(saleLine.getId_enterprise());
 
             stockMovementService.exitStock(stock);
     }
