@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 import static com.inventor.management.inventor_management.core.utils.Constants.DELETE_CATEGORY;
+import static com.inventor.management.inventor_management.core.utils.RandomGenerator.generateRandomCode;
 
 @Service
 @Transactional
@@ -33,11 +34,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto saveCategory(CategoryRequest categoryRequest) {
         validator.validate(categoryRequest);
-        return categoryMapper.fromCategoryDto(
-                categoryRepository.save(
-                        categoryMapper.fromCategory(categoryRequest)
-                )
-        );
+
+        var category = categoryMapper.fromCategory(categoryRequest);
+        category.setCodeCategory(generateRandomCode(4));
+
+        return categoryMapper.fromCategoryDto(categoryRepository.save(category));
     }
 
     @Override

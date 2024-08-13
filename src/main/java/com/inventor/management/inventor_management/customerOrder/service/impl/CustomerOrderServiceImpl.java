@@ -2,20 +2,16 @@ package com.inventor.management.inventor_management.customerOrder.service.impl;
 
 import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.article.entity.Article;
-import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.article.repository.ArticleRepository;
 import com.inventor.management.inventor_management.customer.mapper.CustomerMapper;
 import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderRequest;
 import com.inventor.management.inventor_management.customerOrder.mapper.CustomerOrderMapper;
 import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
 import com.inventor.management.inventor_management.customerOrderLine.mapper.CustomerOrderLineMapper;
-import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
 import com.inventor.management.inventor_management.customer.entity.Customer;
 import com.inventor.management.inventor_management.customerOrder.entity.CustomerOrder;
 import com.inventor.management.inventor_management.customerOrderLine.entity.CustomerOrderLine;
-import com.inventor.management.inventor_management.core.enums.SourceStockMovement;
 import com.inventor.management.inventor_management.core.enums.StateOrder;
-import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.core.exceptions.InvalidEntityException;
 import com.inventor.management.core.exceptions.InvalidOperationException;
@@ -23,6 +19,7 @@ import com.inventor.management.inventor_management.customerOrderLine.repository.
 import com.inventor.management.inventor_management.customerOrder.repository.CustomerOrderRepository;
 import com.inventor.management.inventor_management.customer.repository.CustomerRepository;
 import com.inventor.management.inventor_management.customerOrder.service.CustomerOrderService;
+import com.inventor.management.inventor_management.stockMovement.dto.StockMovementRequest;
 import com.inventor.management.inventor_management.stockMovement.service.StockMovementService;
 import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderDto;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.inventor.management.inventor_management.core.enums.SourceStockMovement.CUSTOMER_ORDER;
+import static com.inventor.management.inventor_management.core.enums.TypeMoveStock.EXIT;
 import static com.inventor.management.inventor_management.core.utils.Constants.EDIT_STATE_ORDER;
+import static com.inventor.management.inventor_management.core.utils.RandomGenerator.generateRandomCode;
 
 @Service
 @Transactional
@@ -52,7 +52,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     private final StockMovementService stockMovementService;
     private final CustomerOrderMapper customerOrderMapper;
     private final CustomerOrderLineMapper customerOrderLineMapper;
-    private final ArticleMapper articleMapper;
     private final CustomerMapper customerMapper;
     private final ObjectValidator validator;
 
@@ -93,7 +92,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     @Override
     public CustomerOrderDto saveCustomerOrder(CustomerOrderRequest customerOrderRequest) {
         validator.validate(customerOrderRequest);
-        customerRepository.findById(customerOrderRequest.customerId())
+        var customer = customerRepository.findById(customerOrderRequest.customerId())
                 .orElseThrow(()-> new EntityNotFoundException(
                         "Nothing customer order with ID ="+ customerOrderRequest.customerId() +
                         "has been found in database")
@@ -116,14 +115,18 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             log.warn("");
             throw new InvalidEntityException("Article not exist in DataBase");
         }
+        var customerOrder = customerOrderMapper.fromCustomerOrderDto(customerOrderRequest, customer);
+        customerOrder.setCodeCustomerOrder(generateRandomCode(8));
 
-        var savedCustomerOrder = customerOrderRepository.save(
-                customerOrderMapper.fromCustomerOrderDto(customerOrderRequest)
-        );
+        var savedCustomerOrder = customerOrderRepository.save(customerOrder);
 
-        if(customerOrderRequest.customerOrderLinesDto() != null){
+        if (customerOrderRequest.customerOrderLinesDto() != null) {
             customerOrderRequest.customerOrderLinesDto().forEach(customerOrderLine->{
-                CustomerOrderLine customerOrderLines = customerOrderLineMapper.fromCustomerOrderLineDto(customerOrderLine);
+                var customerOrderLines = customerOrderLineMapper.fromCustomerOrderLine(
+                        customerOrderLine,
+                        findArticle(customerOrderLine.getArticleDto().getId()),
+                        findCustomerOrder(customerOrderLine.getCustomerOrder().getId())
+                );
 //ASSIGN CUSTOMER ORDER SAVE IN EACH CUSTOMER ORDER LINE BECAUSE WE DON'T SAVE CUSTOMER ORDER LINE WITHOUT CUSTOMER ORDER
                 customerOrderLines.setCustomerOrder(savedCustomerOrder);
                 customerOrderLineRepository.save(customerOrderLines);
@@ -136,7 +139,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     @Override
     public CustomerOrderDto updateCustomerOrder(CustomerOrderRequest customerOrderRequest, Long id) {
         validator.validate(customerOrderRequest);
-        customerRepository.findById(customerOrderRequest.customerId())
+        var customer = customerRepository.findById(customerOrderRequest.customerId())
                 .orElseThrow(()->new EntityNotFoundException(
                         "Nothing customer with ID ="+ customerOrderRequest.customerId() + "has been found in database")
                 );
@@ -161,12 +164,16 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         }
 
         var updateCustomerOrder = customerOrderRepository.save(
-                customerOrderMapper.fromCustomerOrderDto(customerOrderRequest)
+                customerOrderMapper.fromCustomerOrderDto(customerOrderRequest, customer)
         );
 
         if(customerOrderRequest.customerOrderLinesDto()!= null){
             customerOrderRequest.customerOrderLinesDto().forEach(customerOrderLineDto -> {
-                var customerOrderLine = customerOrderLineMapper.fromCustomerOrderLineDto(customerOrderLineDto);
+                var customerOrderLine = customerOrderLineMapper.fromCustomerOrderLine(
+                        customerOrderLineDto,
+                        findArticle(customerOrderLineDto.getArticleDto().getId()),
+                        findCustomerOrder(customerOrderLineDto.getCustomerOrder().getId())
+                );
                 customerOrderLine.setCustomerOrder(updateCustomerOrder);
                 customerOrderLineRepository.save(customerOrderLine);
             });
@@ -198,9 +205,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateQuantityOrdered(Long orderId, Long orderLineId, BigDecimal quantity) {
-        checkOrderId(orderId);
-        checkOrderLineId(orderLineId);
-      if(quantity == null || quantity.compareTo(BigDecimal.ZERO) == 0) {
+        this.checkOrderId(orderId);
+        this.checkOrderLineId(orderLineId);
+
+         if(quantity == null || quantity.compareTo(BigDecimal.ZERO) == 0) {
             log.error("quantity of customer order is null");
             throw new InvalidOperationException("Unable to edit quantity ordered with null quantity or 0");
         }
@@ -217,16 +225,18 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateStateOrder(Long orderId, StateOrder stateOrder) {
-        checkOrderId(orderId);
+        this.checkOrderId(orderId);
 
         if(!StringUtils.hasLength(String.valueOf(stateOrder))) {
             log.error("customer state order is NULL");
             throw new InvalidOperationException("Unable to edit state order with state NULL");
         }
 
-        var orderDto = checkStateOrder(orderId);
+        var orderDto = this.checkStateOrder(orderId);
         orderDto.setStateOrder(stateOrder);
-        var customerOrder = customerOrderRepository.save(customerOrderMapper.toCustomerOrder(orderDto));
+        var customerOrder = customerOrderRepository.save(
+                customerOrderMapper.toCustomerOrder(orderDto)
+        );
 
         // Carry out the release of stock when the customer order is delivered: Important!!!
         if(orderDto.isOrderDelivered()){
@@ -238,7 +248,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateCustomer(Long orderId, Long customerId) {
-        checkOrderId(orderId);
+       this.checkOrderId(orderId);
 
        if(customerId == null) {
             log.error("customer ID is null");
@@ -260,16 +270,16 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateArticle(Long orderId, Long orderLineId, Long articleId) {
-        checkOrderId(orderId);
-        checkOrderLineId(orderLineId);
-        checkArticleId(articleId);
+        this.checkOrderId(orderId);
+        this.checkOrderLineId(orderLineId);
+        this.checkArticleId(articleId);
         var customerOrder = checkStateOrder(orderId);
         var customerOrderLine = findCustomerOrderLine(orderLineId);
         var articleOptional = findArticle(articleId);
 
         validator.validate(articleOptional);
 
-        CustomerOrderLine customerOrderLineToSaved = customerOrderLine.get();
+        var customerOrderLineToSaved = customerOrderLine.get();
         customerOrderLineToSaved.setArticle(articleOptional);
         customerOrderLineRepository.save(customerOrderLineToSaved);
 
@@ -309,8 +319,9 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public List<CustomerOrderLineDto> findAllCustomerOrdersLinesByCustomerOrderId(Long orderId) {
-        return customerOrderLineRepository.findAllByCustomerOrderId(orderId).stream()
-                .map(customerOrderLineMapper::fromCustomerOrderLine)
+        return customerOrderLineRepository.findAllByCustomerOrderId(orderId)
+                .stream()
+                .map(customerOrderLineMapper::fromCustomerOrderLineDto)
                  .toList();
     }
 
@@ -322,7 +333,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             return;
         }
 
-        List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(id);
+        var customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(id);
         if(!customerOrderLineList.isEmpty()){
             throw new InvalidOperationException("Unable to delete customer order that has already customer order line");
         }
@@ -343,16 +354,16 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     }
 
     private void updateStockMovementCustomer (Long orderId){
-        List<CustomerOrderLine> customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(orderId);
+        var customerOrderLineList = customerOrderLineRepository.findAllByCustomerOrderId(orderId);
 
         customerOrderLineList.forEach(customerOrderLine -> {
-            StockMovementDto stockMovement = new StockMovementDto();
-            stockMovement.setArticleDto(articleMapper.fromArticleDto(customerOrderLine.getArticle()));
-            stockMovement.setDateMovement(Instant.now());
-            stockMovement.setTypeMoveStock(TypeMoveStock.EXIT);
-            stockMovement.setSourceStockMovement(SourceStockMovement.CUSTOMER_ORDER);
-            stockMovement.setQuantity(customerOrderLine.getQuantity());
-            stockMovement.setId_enterprise(customerOrderLine.getArticle().getEnterprise().getId());
+            var stockMovement = StockMovementRequest.builder()
+                    .articleId(customerOrderLine.getArticle().getId())
+                    .dateMovement(Instant.now())
+                    .typeMoveStock(EXIT)
+                    .sourceStockMovement(CUSTOMER_ORDER)
+                    .quantity(customerOrderLine.getQuantity())
+                    .build();
 
             stockMovementService.exitStock(stockMovement);
         });

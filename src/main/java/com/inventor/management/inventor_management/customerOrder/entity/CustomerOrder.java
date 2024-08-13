@@ -6,6 +6,7 @@ import com.inventor.management.inventor_management.core.enums.StateOrder;
 import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "commandeClients")
+@SuperBuilder
 public class CustomerOrder extends AbstractEntity {
     @Column(name = "code_commande_client")
     private String codeCustomerOrder;

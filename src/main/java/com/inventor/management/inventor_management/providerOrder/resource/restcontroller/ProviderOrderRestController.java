@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.providerOrder.resource.restcontroller;
 
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderDto;
+import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderRequest;
 import com.inventor.management.inventor_management.providerOrder.resource.api.ProviderOrderApi;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
 import com.inventor.management.inventor_management.core.enums.StateOrder;
@@ -22,13 +23,15 @@ public class ProviderOrderRestController implements ProviderOrderApi {
     private final ProviderOrderService providerOrderService;
 
     @Override
-    public ResponseEntity<ProviderOrderDto> saveProviderOrder(ProviderOrderDto providerOrderDto) {
-        return ResponseEntity.ok(providerOrderService.saveProviderOrder(providerOrderDto));
+    public ResponseEntity<ProviderOrderDto> saveProviderOrder(ProviderOrderRequest providerOrderRequest) {
+        return ResponseEntity.ok(providerOrderService.saveProviderOrder(providerOrderRequest));
     }
 
     @Override
-    public ResponseEntity<ProviderOrderDto> updateProviderOrder(Long providerOrderId, ProviderOrderDto providerOrderDto) {
-        return ResponseEntity.ok(providerOrderService.updateProviderOrder(providerOrderDto));
+    public ResponseEntity<ProviderOrderDto> updateProviderOrder(
+            Long providerOrderId, ProviderOrderRequest providerOrderRequest
+    ) {
+        return ResponseEntity.ok(providerOrderService.updateProviderOrder(providerOrderRequest, providerOrderId));
     }
 
     @Override

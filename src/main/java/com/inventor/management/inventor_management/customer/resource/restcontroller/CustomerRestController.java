@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.customer.resource.restcontroller;
 
 import com.inventor.management.inventor_management.customer.dto.CustomerDto;
+import com.inventor.management.inventor_management.customer.dto.CustomerRequest;
 import com.inventor.management.inventor_management.customer.service.CustomerService;
 import com.inventor.management.inventor_management.customer.resource.api.CustomerApi;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +21,14 @@ public class CustomerRestController implements CustomerApi {
     private final CustomerService customerService;
 
     @Override
-    public ResponseEntity<CustomerDto> saveCustomer(CustomerDto customerDto) {
+    public ResponseEntity<CustomerDto> saveCustomer(CustomerRequest customerRequest) {
         return ResponseEntity.status(CREATED)
-                .body(customerService.saveCustomer(customerDto));
+                .body(customerService.saveCustomer(customerRequest));
     }
 
     @Override
-    public ResponseEntity<CustomerDto> updateCustomer(CustomerDto customerDto, Long customerId) {
-        return ResponseEntity.ok(customerService.updateCustomer(customerDto, customerId));
+    public ResponseEntity<CustomerDto> updateCustomer(CustomerRequest customerRequest, Long customerId) {
+        return ResponseEntity.ok(customerService.updateCustomer(customerRequest, customerId));
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import com.inventor.management.inventor_management.providerOrder.entity.ProviderOrder;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "fournisseurs")
+@SuperBuilder
 public class Provider extends AbstractEntity {
     @Column(name = "nom")
     private String name;

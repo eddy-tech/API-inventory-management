@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.sale.resource.api;
 
 import com.inventor.management.inventor_management.sale.dto.SaleDto;
+import com.inventor.management.inventor_management.sale.dto.SaleRequest;
 import com.inventor.management.inventor_management.sale.roots.SaleEndPoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -29,7 +30,7 @@ public interface SaleApi {
             @ApiResponse(responseCode = "403",description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Sale objet has invalid")
     })
-    ResponseEntity<SaleDto> saveSale (@RequestBody @Valid SaleDto saleDto);
+    ResponseEntity<SaleDto> saveSale (@RequestBody @Valid SaleRequest saleRequest);
     @PutMapping(UPDATE_SALE_ENDPOINT)
     @Operation(
             summary = "Update Sale",
@@ -43,7 +44,7 @@ public interface SaleApi {
             @ApiResponse(responseCode = "404",description = "Sale objet has invalid")
     })
     ResponseEntity<SaleDto> updateSale (
-            @PathVariable(name = "idSale") Long saleId, @RequestBody @Valid SaleDto saleDto
+            @PathVariable(name = "idSale") Long saleId, @RequestBody @Valid SaleRequest saleRequest
     );
     @GetMapping(FIND_SALE_BY_ID)
     @Operation(

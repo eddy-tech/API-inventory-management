@@ -10,7 +10,7 @@ public interface ProviderOrderEndPoint {
     String UPDATE_STATE_ORDER ="/stateOrder/{idOrder}/{stateOrder}";
     String UPDATE_PROVIDER ="/update/provider/{idOrder}/{idProvider}";
     String UPDATE_ARTICLE ="/update/article/{idOrder}/{idOrderLine}/{idArticle}";
-    String UPDATE_QUANTITY_ORDER ="/update/quantityOrder/{idOrder}/{idOrderLine}/{quantity}";
+    String UPDATE_QUANTITY_ORDER ="/update/quantityOrder/{idOrder}/{idOrderLine}";
     String FIND_PROVIDER_ORDER_BY_ID ="/id/{idProviderOrder}";
     String FIND_PROVIDER_ORDER_BY_CODE_PROVIDER_ORDER ="/filter/{codeOrder}";
     String FIND_PROVIDER_ORDER_LINE_BY_PROVIDER_ORDER_ID ="/filter/providerOrderLine/{idOrder}";

@@ -3,6 +3,7 @@ package com.inventor.management.inventor_management.customer.service.strategy;
 import com.flickr4java.flickr.FlickrException;
 import com.inventor.management.inventor_management.customer.dto.CustomerDto;
 import com.inventor.management.core.exceptions.InvalidOperationException;
+import com.inventor.management.inventor_management.customer.mapper.CustomerMapper;
 import com.inventor.management.inventor_management.customer.service.CustomerService;
 import com.inventor.management.inventor_management.flickr.service.FlickrService;
 import com.inventor.management.inventor_management.flickr.strategy.Strategy;
@@ -21,6 +22,7 @@ import static com.inventor.management.inventor_management.core.utils.Constants.P
 public class SaveCustomerPicture implements Strategy<CustomerDto> {
     private final CustomerService customerService;
     private final FlickrService flickrService;
+    private final CustomerMapper customerMapper;
 
     @Override
     public CustomerDto savePicture(Long id,InputStream picture, String title) throws FlickrException {
@@ -30,6 +32,6 @@ public class SaveCustomerPicture implements Strategy<CustomerDto> {
             throw new InvalidOperationException(PICTURE_CUSTOMER);
         customer.setPicture(urlPicture);
 
-        return customerService.saveCustomer(customer);
+        return customerService.saveCustomer(customerMapper.toCustomerRequest(customer));
     }
 }

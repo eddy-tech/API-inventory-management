@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.provider.resource.restcontroller;
 
 import com.inventor.management.inventor_management.provider.dto.ProviderDto;
+import com.inventor.management.inventor_management.provider.dto.ProviderRequest;
 import com.inventor.management.inventor_management.provider.service.ProviderService;
 import com.inventor.management.inventor_management.provider.resource.api.ProviderApi;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +21,14 @@ public class ProviderRestController implements ProviderApi {
     private final ProviderService providerService;
 
     @Override
-    public ResponseEntity<ProviderDto> saveProvider(ProviderDto providerDto) {
+    public ResponseEntity<ProviderDto> saveProvider(ProviderRequest providerRequest) {
         return ResponseEntity.status(CREATED)
-                .body(providerService.saveProvider(providerDto));
+                .body(providerService.saveProvider(providerRequest));
     }
 
     @Override
-    public ResponseEntity<ProviderDto> updateProvider(Long providerId, ProviderDto providerDto) {
-        return ResponseEntity.ok(providerService.updateProvider(providerDto, providerId));
+    public ResponseEntity<ProviderDto> updateProvider(Long providerId, ProviderRequest providerRequest) {
+        return ResponseEntity.ok(providerService.updateProvider(providerRequest, providerId));
     }
 
     @Override

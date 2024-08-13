@@ -1,22 +1,22 @@
 package com.inventor.management.inventor_management.sale.service.impl;
 
+import com.inventor.management.core.exceptions.BusinessException;
 import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.article.entity.Article;
-import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.article.repository.ArticleRepository;
+import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
+import com.inventor.management.inventor_management.enterprise.repository.EnterpriseRepository;
 import com.inventor.management.inventor_management.sale.dto.SaleDto;
-import com.inventor.management.inventor_management.sale.entity.Sale;
+import com.inventor.management.inventor_management.sale.dto.SaleRequest;
 import com.inventor.management.inventor_management.sale.mapper.SaleMapper;
 import com.inventor.management.inventor_management.sale.service.SaleService;
-import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
-import com.inventor.management.inventor_management.core.enums.SourceStockMovement;
-import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.core.exceptions.InvalidEntityException;
 import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.saleLine.repository.SaleLineRepository;
 import com.inventor.management.inventor_management.sale.repository.SaleRepository;
+import com.inventor.management.inventor_management.stockMovement.dto.StockMovementRequest;
 import com.inventor.management.inventor_management.stockMovement.service.StockMovementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.inventor.management.inventor_management.core.enums.SourceStockMovement.SALE;
+import static com.inventor.management.inventor_management.core.enums.TypeMoveStock.EXIT;
+import static com.inventor.management.inventor_management.core.utils.RandomGenerator.generateRandomCode;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -37,22 +41,23 @@ import java.util.stream.Collectors;
 public class SaleServiceImpl implements SaleService {
     private final ArticleRepository articleRepository;
     private final SaleRepository saleRepository;
+    private final EnterpriseRepository enterpriseRepository;
     private final SaleLineRepository saleLineRepository;
     private final StockMovementService stockMovementService;
     private final SaleMapper saleMapper;
-    private final ArticleMapper articleMapper;
     private final ObjectValidator validator;
 
 
     @Override
-    public SaleDto saveSale(SaleDto saleDto) {
-        validator.validate(saleDto);
+    public SaleDto saveSale(SaleRequest saleRequest) {
+        validator.validate(saleRequest);
         List<String> articleError = new ArrayList<>();
+        var enterprise = this.getEnterprise(saleRequest.id_enterprise());
 
-        saleDto.getSaleLines().forEach(saleLine -> {
+        saleRequest.saleLines().forEach(saleLine -> {
             Optional<Article> article = articleRepository.findById(saleLine.getArticle().getId());
             if(article.isEmpty()){
-                articleError.add("Nothing article with ID ="+saleLine.getArticle().getId()+"was found in database");
+                articleError.add("Nothing article with ID ="+ saleLine.getArticle().getId() + "was found in database");
             }
         });
 
@@ -60,30 +65,36 @@ public class SaleServiceImpl implements SaleService {
             log.error("One or more articles were not found in the database");
             throw new InvalidEntityException("One or more articles were not found in database");
         }
+        var sale = saleMapper.fromSaleRequest(saleRequest, enterprise);
+        sale.setCodeSale(generateRandomCode(8));
 
-        Sale savedSale = saleRepository.save(saleMapper.fromSaleDto(saleDto));
+        var saveSale = saleRepository.save(sale);
 
-        saleDto.getSaleLines().forEach(saleLine -> {
-            SaleLine saleLines = saleMapper.fromSaleLineDto(saleLine);
-            saleLines.setSale(savedSale);
+        saleRequest.saleLines().forEach(saleLine -> {
+            var article = articleRepository.findById(saleLine.getArticle().getId()).get();
+            var saleLines = saleMapper.fromSaleLineDto(saleMapper.fromSaleLine(saleLine), article, saveSale);
+            saleLines.setSale(saveSale);
             saleLineRepository.save(saleLines);
-            updateStockMovementSale(saleLine); // METTRE A JOUR STOCK DE VENTE
+            updateStockMovementSale(saleLine);
         });
 
-        return saleMapper.fromSale(savedSale);
+        return saleMapper.fromSale(saveSale);
     }
 
     @Override
-    public SaleDto updateSale(SaleDto saleDto) {
-        validator.validate(saleDto);
+    public SaleDto updateSale(SaleRequest saleRequest, Long id) {
+        validator.validate(saleRequest);
         List<String> articleErrors = new ArrayList<>();
+        var enterprise = this.getEnterprise(saleRequest.id_enterprise());
 
-        if(saleDto.getSaleLines()!= null){
-            saleDto.getSaleLines().forEach(saleLine -> {
+        if(saleRequest.saleLines()!= null){
+            saleRequest.saleLines().forEach(saleLine -> {
                 if(saleLine.getArticle() != null){
                     Optional<Article> article = articleRepository.findById(saleLine.getArticle().getId());
                     if(article.isEmpty()){
-                        articleErrors.add("Nothing article with ID ="+saleLine.getArticle().getId()+"was found in database");
+                        articleErrors.add("Nothing article with ID ="+ saleLine.getArticle().getId() +
+                                "was found in database"
+                        );
                     }
                 }
             });
@@ -94,11 +105,12 @@ public class SaleServiceImpl implements SaleService {
             throw new InvalidEntityException("One or more articles were not found in database", articleErrors);
         }
 
-        Sale updatedSale = saleRepository.save(saleMapper.fromSaleDto(saleDto));
+        var updatedSale = saleRepository.save(saleMapper.fromSaleRequest(saleRequest, enterprise));
 
-        if(saleDto.getSaleLines() != null){
-            saleDto.getSaleLines().forEach(saleLine -> {
-                SaleLine saveSaleLine = saleMapper.fromSaleLineDto(saleLine);
+        if(saleRequest.saleLines() != null){
+            saleRequest.saleLines().forEach(saleLine -> {
+                var article = articleRepository.findById(saleLine.getArticle().getId()).get();
+                var saveSaleLine = saleMapper.fromSaleLineDto(saleMapper.fromSaleLine(saleLine), article, updatedSale);
                 saveSaleLine.setSale(updatedSale);
                 saleLineRepository.save(saveSaleLine);
             });
@@ -159,13 +171,19 @@ public class SaleServiceImpl implements SaleService {
     }
 
     private void updateStockMovementSale (SaleLine saleLine){
-            var stock = new StockMovementDto();
-            stock.setArticleDto(articleMapper.fromArticleDto(saleLine.getArticle()));
-            stock.setDateMovement(Instant.now());
-            stock.setTypeMoveStock(TypeMoveStock.EXIT);
-            stock.setQuantity(saleLine.getQuantity());
-            stock.setSourceStockMovement(SourceStockMovement.SALE);
+            var stock = StockMovementRequest.builder()
+                    .articleId(saleLine.getArticle().getId())
+                    .typeMoveStock(EXIT)
+                    .sourceStockMovement(SALE)
+                    .dateMovement(Instant.now())
+                    .quantity(saleLine.getQuantity())
+                    .build();
 
             stockMovementService.exitStock(stock);
+    }
+
+    private Enterprise getEnterprise(Long id) {
+        return enterpriseRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Enterprise not found"));
     }
 }

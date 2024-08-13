@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.sale.resource.restcontroller;
 
 import com.inventor.management.inventor_management.sale.dto.SaleDto;
+import com.inventor.management.inventor_management.sale.dto.SaleRequest;
 import com.inventor.management.inventor_management.sale.service.SaleService;
 import com.inventor.management.inventor_management.sale.resource.api.SaleApi;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,13 @@ public class SaleRestController implements SaleApi {
     private final SaleService saleService;
 
     @Override
-    public ResponseEntity<SaleDto> saveSale(SaleDto saleDto) {
+    public ResponseEntity<SaleDto> saveSale(SaleRequest saleRequest) {
         return ResponseEntity.status(CREATED)
-                .body(saleService.saveSale(saleDto));
+                .body(saleService.saveSale(saleRequest));
     }
     @Override
-    public ResponseEntity<SaleDto> updateSale(Long saleId, SaleDto saleDto) {
-        return ResponseEntity.ok(saleService.updateSale(saleDto));
+    public ResponseEntity<SaleDto> updateSale(Long saleId, SaleRequest saleRequest) {
+        return ResponseEntity.ok(saleService.updateSale(saleRequest, saleId));
     }
     @Override
     public ResponseEntity<SaleDto> getSale(Long id) {

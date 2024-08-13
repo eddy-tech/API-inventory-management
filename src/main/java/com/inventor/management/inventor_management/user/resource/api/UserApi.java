@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public interface UserApi {
                     @ApiResponse(responseCode = "403",description = "Unauthorized access for this objet"),
                     @ApiResponse(responseCode = "404",description = "User objet has invalid")
             })
-    ResponseEntity<?> createUser(@RequestBody User user);
+    ResponseEntity<?> createUser(@RequestBody @Valid User user);
 
     @PutMapping(VERIFY_EMAIL_ENDPOINT)
     @Operation(

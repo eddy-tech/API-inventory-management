@@ -30,6 +30,8 @@ public class ArticleMapper {
 
     public ArticleDto fromArticleDto (Article article){
         return ArticleDto.builder()
+                .id(article.getId())
+                .codeArticle(article.getCodeArticle())
                 .designation(article.getDesignation())
                 .rateTax(article.getRateTax())
                 .unitPriceHt(article.getUnitPriceHt())

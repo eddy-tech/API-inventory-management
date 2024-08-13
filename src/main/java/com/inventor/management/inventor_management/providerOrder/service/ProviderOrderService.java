@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.providerOrder.service;
 
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderDto;
+import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderRequest;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
 import com.inventor.management.inventor_management.core.enums.StateOrder;
 
@@ -8,8 +9,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProviderOrderService {
-    ProviderOrderDto saveProviderOrder (ProviderOrderDto providerOrderDto);
-    ProviderOrderDto updateProviderOrder (ProviderOrderDto providerOrderDto);
+    ProviderOrderDto saveProviderOrder (ProviderOrderRequest providerOrderRequest);
+    ProviderOrderDto updateProviderOrder (ProviderOrderRequest providerOrderRequest, Long id);
     ProviderOrderDto updateStateOrder (Long orderId, StateOrder stateOrder);
     ProviderOrderDto updateQuantityOrdered (Long orderId, Long orderLineId, BigDecimal quantity);
     ProviderOrderDto updateProvider (Long orderId, Long providerId);

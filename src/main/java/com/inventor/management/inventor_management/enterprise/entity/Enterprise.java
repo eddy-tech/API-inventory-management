@@ -8,6 +8,7 @@ import com.inventor.management.inventor_management.provider.entity.Provider;
 import com.inventor.management.inventor_management.sale.entity.Sale;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Table(name = "entreprises")
-@Builder
+@SuperBuilder
 public class Enterprise extends AbstractEntity {
     @Column(name = "nom_enterprise")
     private String name;

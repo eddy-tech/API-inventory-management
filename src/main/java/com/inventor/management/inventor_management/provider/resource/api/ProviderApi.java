@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.provider.resource.api;
 
 import com.inventor.management.inventor_management.provider.dto.ProviderDto;
+import com.inventor.management.inventor_management.provider.dto.ProviderRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,7 +33,7 @@ public interface ProviderApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Provider objet has invalid")
     })
-    ResponseEntity<ProviderDto> saveProvider (@RequestBody @Valid ProviderDto providerDto);
+    ResponseEntity<ProviderDto> saveProvider (@RequestBody @Valid ProviderRequest providerRequest);
     @PutMapping(
             value = UPDATE_PROVIDER_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -51,7 +52,7 @@ public interface ProviderApi {
     })
     ResponseEntity<ProviderDto> updateProvider (
             @PathVariable(name = "idProvider") Long providerId,
-            @RequestBody @Valid ProviderDto providerDto
+            @RequestBody @Valid ProviderRequest providerRequest
     );
 
     @GetMapping(

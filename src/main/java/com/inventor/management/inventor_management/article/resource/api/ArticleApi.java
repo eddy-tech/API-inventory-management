@@ -161,7 +161,9 @@ public interface ArticleApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    ResponseEntity<List<CustomerOrderLineDto>> findHistoryCustomerOrder(@PathVariable(name = "idArticle")Long articleId);
+    ResponseEntity<List<CustomerOrderLineDto>> findHistoryCustomerOrder(
+            @PathVariable(name = "idArticle")Long articleId
+    );
 
     @GetMapping(
             value = FIND_HISTORY_PROVIDER_ORDER,

@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.providerOrder.resource.api;
 
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderDto;
+import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderRequest;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
 import com.inventor.management.inventor_management.core.enums.StateOrder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +32,7 @@ public interface ProviderOrderApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Provider Order objet has invalid")
     })
-    ResponseEntity<ProviderOrderDto> saveProviderOrder (@RequestBody ProviderOrderDto providerOrderDto);
+    ResponseEntity<ProviderOrderDto> saveProviderOrder (@RequestBody @Valid ProviderOrderRequest providerOrderRequest);
     @PutMapping(UPDATE_PROVIDER_ORDER_ENDPOINT)
     @Operation(
             summary = "Update Provider Order",
@@ -45,7 +47,7 @@ public interface ProviderOrderApi {
     })
     ResponseEntity<ProviderOrderDto> updateProviderOrder (
             @PathVariable(name = "idProviderOrder") Long providerOrderId,
-            @RequestBody ProviderOrderDto providerOrderDto
+            @RequestBody @Valid ProviderOrderRequest providerOrderRequest
     );
     @PatchMapping(UPDATE_STATE_ORDER)
     @Operation(
@@ -78,7 +80,7 @@ public interface ProviderOrderApi {
     ResponseEntity<ProviderOrderDto> updateQuantityOrdered (
             @PathVariable(name = "idOrder") Long orderId,
             @PathVariable(name = "idOrderLine")Long orderLineId,
-            @PathVariable(name = "quantity") BigDecimal quantity
+            @RequestParam BigDecimal quantity
     );
     @PatchMapping(UPDATE_PROVIDER)
     @Operation(
@@ -94,7 +96,7 @@ public interface ProviderOrderApi {
     })
     ResponseEntity<ProviderOrderDto> updateProvider (
             @PathVariable(name = "idOrder") Long orderId,
-            @PathVariable(name = "idCustomer") Long customerId
+            @PathVariable(name = "idProvider") Long customerId
     );
     @PatchMapping(UPDATE_ARTICLE)
     @Operation(

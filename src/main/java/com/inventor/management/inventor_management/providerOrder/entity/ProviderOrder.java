@@ -6,6 +6,7 @@ import com.inventor.management.inventor_management.core.enums.StateOrder;
 import com.inventor.management.inventor_management.provider.entity.Provider;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "commandeFournisseurs")
+@SuperBuilder
 public class ProviderOrder extends AbstractEntity {
     @Column(name = "code_commande_fournisseur")
     private String codeProviderOrder;

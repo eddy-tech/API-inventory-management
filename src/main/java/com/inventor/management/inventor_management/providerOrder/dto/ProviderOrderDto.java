@@ -5,12 +5,14 @@ import com.inventor.management.inventor_management.providerOrderLine.dto.Provide
 import com.inventor.management.inventor_management.core.enums.StateOrder;
 import com.inventor.management.inventor_management.provider.dto.ProviderDto;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
 import java.util.List;
 
 @Data
+@Builder
 public class ProviderOrderDto {
     private Long id;
     private String codeProviderOrder;
@@ -23,7 +25,6 @@ public class ProviderOrderDto {
 
     @JsonIgnore
     private List<ProviderOrderLineDto> providerOrderLinesDto;
-
     public boolean isOrderDelivered() {
         return stateOrder.equals(this.stateOrder);
     }

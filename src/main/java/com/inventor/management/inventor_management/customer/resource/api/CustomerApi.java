@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.customer.resource.api;
 
 import com.inventor.management.inventor_management.customer.dto.CustomerDto;
+import com.inventor.management.inventor_management.customer.dto.CustomerRequest;
 import com.inventor.management.inventor_management.customer.roots.CustomerEndPoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -33,7 +34,7 @@ public interface CustomerApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "Customer objet has invalid")
     })
-    ResponseEntity<CustomerDto> saveCustomer (@RequestBody @Valid CustomerDto customerDto);
+    ResponseEntity<CustomerDto> saveCustomer (@RequestBody @Valid CustomerRequest customerRequest);
     @PutMapping(
             value = UPDATE_CUSTOMER_ENDPOINT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -51,7 +52,7 @@ public interface CustomerApi {
             @ApiResponse(responseCode = "404",description = "Customer objet has invalid")
     })
     ResponseEntity<CustomerDto> updateCustomer(
-            @RequestBody @Valid CustomerDto customerDto, @PathVariable(name = "idCustomer") Long customerId
+            @RequestBody @Valid CustomerRequest customerRequest, @PathVariable(name = "idCustomer") Long customerId
     );
     @GetMapping(
             value = FIND_CUSTOMER_BY_ID,

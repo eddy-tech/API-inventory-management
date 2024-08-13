@@ -19,6 +19,6 @@ public interface ArticleService {
     List<CustomerOrderLineDto> findHistoryCustomerOrder (Long articleId);
     List<ProviderOrderLineDto> findHistoryProviderOrder (Long articleId);
     List<ArticleDto> findAllArticleByCategory (Long categoryId);
-    public Article findById (Long id);
+    Article findById (Long id);
     void deleteArticle (Long id);
 }

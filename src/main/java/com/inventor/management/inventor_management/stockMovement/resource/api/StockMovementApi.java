@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.stockMovement.resource.api;
 
 import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
+import com.inventor.management.inventor_management.stockMovement.dto.StockMovementRequest;
 import com.inventor.management.inventor_management.stockMovement.roots.StockMovementEndPoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -68,7 +69,7 @@ public interface StockMovementApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "stock article objet has invalid")
     })
-    ResponseEntity<StockMovementDto> entranceStock (@RequestBody StockMovementDto stockMovement);
+    ResponseEntity<StockMovementDto> entranceStock (@RequestBody StockMovementRequest stockMovement);
     @PostMapping(EXIT_STOCK)
     @Operation(
             summary = "Get Real stock article", description = "This method allow to calculate an article real stock",
@@ -79,7 +80,7 @@ public interface StockMovementApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "stock article objet has invalid")
     })
-    ResponseEntity<StockMovementDto> exitStock (@RequestBody StockMovementDto stockMovement);
+    ResponseEntity<StockMovementDto> exitStock (@RequestBody StockMovementRequest stockMovement);
     @PostMapping(STOCK_CORRECTION_POSITIVE)
     @Operation(
             summary = "Get Real stock article",
@@ -92,7 +93,7 @@ public interface StockMovementApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "stock article objet has invalid")
     })
-    ResponseEntity<StockMovementDto> correctionStockPositive (@RequestBody StockMovementDto stockMovement);
+    ResponseEntity<StockMovementDto> correctionStockPositive (@RequestBody StockMovementRequest stockMovement);
     @PostMapping(STOCK_CORRECTION_NEGATIVE)
     @Operation(
             summary = "Get Real stock article",
@@ -105,5 +106,5 @@ public interface StockMovementApi {
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet"),
             @ApiResponse(responseCode = "404",description = "stock article objet has invalid")
     })
-    ResponseEntity<StockMovementDto> correctionStockNegative (@RequestBody StockMovementDto stockMovement);
+    ResponseEntity<StockMovementDto> correctionStockNegative (@RequestBody StockMovementRequest stockMovement);
 }

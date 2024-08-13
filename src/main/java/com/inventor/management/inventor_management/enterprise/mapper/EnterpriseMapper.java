@@ -6,12 +6,15 @@ import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 public class EnterpriseMapper {
     private final AddressMapper addressMapper;
     public EnterpriseDto fromEnterprise (Enterprise enterprise){
         return EnterpriseDto.builder()
+                .id(enterprise.getId())
                 .name(enterprise.getName())
                 .description(enterprise.getDescription())
                 .addressDto(addressMapper.fromAddress(enterprise.getAddress()))
@@ -33,6 +36,7 @@ public class EnterpriseMapper {
                 .mail(enterpriseDto.getMail())
                 .numTel(enterpriseDto.getNumTel())
                 .siteWeb(enterpriseDto.getSiteWeb())
+                .creationTime(Instant.now())
                 .build();
     }
 }

@@ -6,6 +6,7 @@ import com.inventor.management.inventor_management.core.enums.SourceStockMovemen
 import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,6 +17,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "mouvementStock")
+@SuperBuilder
 public class StockMovement extends AbstractEntity {
     @Column(name = "date_mouvement")
     private Instant dateMovement;

@@ -1,6 +1,7 @@
 package com.inventor.management.inventor_management.stockMovement.resource.restcontroller;
 
 import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
+import com.inventor.management.inventor_management.stockMovement.dto.StockMovementRequest;
 import com.inventor.management.inventor_management.stockMovement.resource.api.StockMovementApi;
 import com.inventor.management.inventor_management.stockMovement.service.StockMovementService;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +29,19 @@ public class StockMovementRestController implements StockMovementApi {
         return ResponseEntity.ok(stockMovementService.listStockMovementArticle(articleId));
     }
     @Override
-    public ResponseEntity<StockMovementDto> entranceStock(StockMovementDto stockMovement) {
+    public ResponseEntity<StockMovementDto> entranceStock(StockMovementRequest stockMovement) {
         return ResponseEntity.ok(stockMovementService.entranceStock(stockMovement));
     }
     @Override
-    public ResponseEntity<StockMovementDto> exitStock(StockMovementDto stockMovement) {
+    public ResponseEntity<StockMovementDto> exitStock(StockMovementRequest stockMovement) {
         return ResponseEntity.ok(stockMovementService.exitStock(stockMovement));
     }
     @Override
-    public ResponseEntity<StockMovementDto> correctionStockPositive(StockMovementDto stockMovement) {
+    public ResponseEntity<StockMovementDto> correctionStockPositive(StockMovementRequest stockMovement) {
         return ResponseEntity.ok(stockMovementService.correctionStockPositive(stockMovement));
     }
     @Override
-    public ResponseEntity<StockMovementDto> correctionStockNegative(StockMovementDto stockMovement) {
+    public ResponseEntity<StockMovementDto> correctionStockNegative(StockMovementRequest stockMovement) {
         return ResponseEntity.ok(stockMovementService.correctionStockNegative(stockMovement));
     }
 }

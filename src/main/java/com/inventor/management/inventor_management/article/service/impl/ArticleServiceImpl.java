@@ -6,11 +6,11 @@ import com.inventor.management.inventor_management.article.dto.ArticleRequest;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.category.entity.Category;
 import com.inventor.management.inventor_management.category.repository.CategoryRepository;
-import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
 import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.article.repository.ArticleRepository;
 import com.inventor.management.inventor_management.article.service.ArticleService;
+import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
 import com.inventor.management.inventor_management.customerOrderLine.mapper.CustomerOrderLineMapper;
 import com.inventor.management.inventor_management.provider.mapper.ProviderMapper;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
@@ -34,6 +34,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static com.inventor.management.inventor_management.core.utils.Constants.*;
+import static com.inventor.management.inventor_management.core.utils.RandomGenerator.generateRandomCode;
 
 
 @Service
@@ -58,12 +59,10 @@ public class ArticleServiceImpl implements ArticleService {
         validator.validate(articleRequest);
 
         var category = this.getCategory(articleRequest.codeCategory());
+        var article = articleMapper.fromArticle(articleRequest, category);
+        article.setCodeArticle(generateRandomCode(8));
 
-        return articleMapper.fromArticleDto(
-                articleRepository.save(
-                        articleMapper.fromArticle(articleRequest, category)
-                )
-        );
+        return articleMapper.fromArticleDto(articleRepository.save(article));
     }
 
     @Override
@@ -126,8 +125,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<CustomerOrderLineDto> findHistoryCustomerOrder(Long articleId) {
-        return customerOrderLineRepository.findAllByArticleId(articleId).stream()
-                .map(customerOrderLineMapper::fromCustomerOrderLine)
+        return customerOrderLineRepository.findAllByArticleId(articleId)
+                .stream()
+                .map(customerOrderLineMapper::fromCustomerOrderLineDto)
                 .toList();
     }
 

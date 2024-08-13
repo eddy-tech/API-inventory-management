@@ -2,13 +2,11 @@ package com.inventor.management.inventor_management.providerOrder.service.impl;
 
 import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.inventor_management.article.entity.Article;
-import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.article.repository.ArticleRepository;
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderDto;
+import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderRequest;
 import com.inventor.management.inventor_management.providerOrder.repository.ProviderOrderRepository;
-import com.inventor.management.inventor_management.core.enums.SourceStockMovement;
 import com.inventor.management.inventor_management.core.enums.StateOrder;
-import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.core.exceptions.InvalidEntityException;
 import com.inventor.management.core.exceptions.InvalidOperationException;
@@ -20,8 +18,8 @@ import com.inventor.management.inventor_management.providerOrderLine.entity.Prov
 import com.inventor.management.inventor_management.providerOrderLine.repository.ProviderOrderLineRepository;
 import com.inventor.management.inventor_management.provider.repository.ProviderRepository;
 import com.inventor.management.inventor_management.providerOrder.service.ProviderOrderService;
+import com.inventor.management.inventor_management.stockMovement.dto.StockMovementRequest;
 import com.inventor.management.inventor_management.stockMovement.service.StockMovementService;
-import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +32,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.inventor.management.inventor_management.core.enums.SourceStockMovement.PROVIDER_ORDER;
+import static com.inventor.management.inventor_management.core.enums.TypeMoveStock.ENTRANCE;
+import static com.inventor.management.inventor_management.core.utils.RandomGenerator.generateRandomCode;
+
 @Service
 @Transactional
 @Slf4j
@@ -45,7 +47,6 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     private final ProviderOrderLineRepository providerOrderLineRepository;
     private final StockMovementService stockMovementService;
     private final ProviderMapper providerMapper;
-    private final ArticleMapper articleMapper;
     private final ObjectValidator validator;
 
     private void checkIdOrder (Long orderId){
@@ -102,23 +103,25 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     }
 
     @Override
-    public ProviderOrderDto saveProviderOrder(ProviderOrderDto providerOrderDto) {
-        this.validator.validate(providerOrderDto);
+    public ProviderOrderDto saveProviderOrder(ProviderOrderRequest providerOrderRequest) {
+        this.validator.validate(providerOrderRequest);
 
-        providerRepository.findById(providerOrderDto.getProviderDto().getId())
+        var provider = providerRepository.findById(providerOrderRequest.providerId())
                 .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="
-                         +providerOrderDto.getProviderDto().getId() +
+                         + providerOrderRequest.providerId() +
                         "was found in database")
                 );
 
         List<String> articleErrors = new ArrayList<>();
 
-        if(providerOrderDto.getProviderOrderLinesDto() != null){
-            providerOrderDto.getProviderOrderLinesDto().forEach(providerOrderLineDto -> {
+        if(providerOrderRequest.providerOrderLineDto() != null){
+            providerOrderRequest.providerOrderLineDto().forEach(providerOrderLineDto -> {
                 if(providerOrderLineDto.getArticleDto() != null){
                     var articleDto = articleRepository.findById(providerOrderLineDto.getArticleDto().getId());
                     if(articleDto.isEmpty()){
-                        articleErrors.add("Article with ID ="+providerOrderLineDto.getArticleDto().getId()+"not exist in database");
+                        articleErrors.add(
+                                "Article with ID ="+providerOrderLineDto.getArticleDto().getId()+"not exist in database"
+                        );
                     } else {
                         articleErrors.add("Unable to save provider order with an article null");
                     }
@@ -131,12 +134,17 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             throw new InvalidEntityException("Article not exist in database");
         }
 
-        var providerOrder = providerMapper.fromProviderOrderDto(providerOrderDto);
+        var providerOrder = providerMapper.fromProviderOrderRequest(providerOrderRequest, provider);
+        providerOrder.setCodeProviderOrder(generateRandomCode(8));
         var savedProviderOrder = providerOrderRepository.save(providerOrder);
 
-        if(providerOrderDto.getProviderOrderLinesDto() != null){
-            providerOrderDto.getProviderOrderLinesDto().forEach(providerOrderLineDto -> {
-                var providerOrderLine = providerMapper.fromProviderOrderLineDto(providerOrderLineDto);
+        if(providerOrderRequest.providerOrderLineDto() != null){
+            providerOrderRequest.providerOrderLineDto().forEach(providerOrderLineDto -> {
+                var providerOrderLine = providerMapper.fromProviderOrderLineDto(
+                        providerOrderLineDto,
+                        findArticle(providerOrderLineDto.getArticleDto().getId()),
+                        findProviderOrder(providerOrderLineDto.getProviderOrderDto().getId())
+                );
                 providerOrderLine.setProviderOrder(savedProviderOrder);
                 providerOrderLineRepository.save(providerOrderLine);
             });
@@ -145,24 +153,27 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     }
 
     @Override
-    public ProviderOrderDto updateProviderOrder(ProviderOrderDto providerOrderDto) {
-        validator.validate(providerOrderDto);
+    public ProviderOrderDto updateProviderOrder(ProviderOrderRequest providerOrderRequest, Long id) {
+        validator.validate(providerOrderRequest);
 
-        providerRepository.findById(providerOrderDto.getProviderDto().getId())
+        var provider = providerRepository.findById(providerOrderRequest.providerId())
                 .orElseThrow(()->new EntityNotFoundException("Nothing provider order with ID ="+
-                        providerOrderDto.getProviderDto().getId()+ "was found in database"));
+                        providerOrderRequest.providerId() + "was found in database"));
 
-        if(providerOrderDto.getId() != null && providerOrderDto.isOrderDelivered())
+        if(id != null && providerOrderRequest.isOrderDelivered())
             throw new InvalidOperationException("Unable to update provider order");
 
         List<String> articleErrors = new ArrayList<>();
 
-        if(providerOrderDto.getProviderOrderLinesDto() != null){
-            providerOrderDto.getProviderOrderLinesDto().forEach(providerOrderLineDto -> {
+        if(providerOrderRequest.providerId() != null){
+            providerOrderRequest.providerOrderLineDto().forEach(providerOrderLineDto -> {
                 if(providerOrderLineDto.getArticleDto() != null){
                     var article = articleRepository.findById(providerOrderLineDto.getArticleDto().getId());
                     if(article.isEmpty()){
-                        articleErrors.add("Article with ID ="+providerOrderLineDto.getArticleDto().getId()+"was not exit in database");
+                        articleErrors.add(
+                                "Article with ID ="+ providerOrderLineDto.getArticleDto().getId() +
+                                        "was not exit in database"
+                        );
                     } else {
                         articleErrors.add("Impossible to save Provider with an article NULL");
                     }
@@ -175,11 +186,16 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             throw new EntityNotFoundException("Article not exist in database");
         }
 
-        var updateProviderOrder = providerOrderRepository.save(providerMapper.fromProviderOrderDto(providerOrderDto));
+        var updateProviderOrder = providerOrderRepository.save(
+                providerMapper.fromProviderOrderRequest(providerOrderRequest, provider));
 
-        if(providerOrderDto.getProviderOrderLinesDto() != null){
-            providerOrderDto.getProviderOrderLinesDto().forEach(providerOrderLineDto -> {
-                var providerOrderLine = providerMapper.fromProviderOrderLineDto(providerOrderLineDto);
+        if(providerOrderRequest.providerOrderLineDto() != null){
+            providerOrderRequest.providerOrderLineDto().forEach(providerOrderLineDto -> {
+                var providerOrderLine = providerMapper.fromProviderOrderLineDto(
+                        providerOrderLineDto,
+                        findArticle(providerOrderLineDto.getArticleDto().getId()),
+                        findProviderOrder(providerOrderLineDto.getProviderOrderDto().getId())
+                );
                 providerOrderLine.setProviderOrder(updateProviderOrder);
                 providerOrderLineRepository.save(providerOrderLine);
             });
@@ -196,13 +212,13 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             throw new InvalidOperationException("Unable to edit state order with state NULL");
         }
 
-        var orderDto = checkStateOrder(orderId);
+        ProviderOrderDto orderDto = checkStateOrder(orderId);
         orderDto.setStateOrder(stateOrder);
-        var providerOrder = providerMapper.fromProviderOrderDto(orderDto);
+        var providerOrder = providerMapper.toProviderOrder(orderDto);
         var savedProviderOrder = providerOrderRepository.save(providerOrder);
         // MAKE THE STOCK OUT ONLY WHEN PROVIDER ORDER IS DELIVERED
         if(orderDto.isOrderDelivered()){
-        // METTRE A JOUR L'ETAT DE STOCK DU FOURNISSEUR
+        // Update the stock state of provider
         updateStockMovementProvider(orderId);
         }
 
@@ -238,10 +254,14 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         var providerOrder = checkStateOrder(orderId);
         var providerOptional = findProvider(providerId);
         var provider = providerMapper.fromProvider(providerOptional);
+
         providerOrder.setProviderDto(provider);
 
-        var savedProviderOrder = providerOrderRepository.save(providerMapper.fromProviderOrderDto(providerOrder));
-        return providerMapper.fromProviderOrder(savedProviderOrder);
+        return providerMapper.fromProviderOrder(
+                providerOrderRepository.save(
+                        providerMapper.toProviderOrder(providerOrder)
+                )
+        );
     }
 
     @Override
@@ -336,13 +356,14 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     public void updateStockMovementProvider (Long orderId){
         providerOrderLineRepository.findAllByProviderOrderId(orderId)
                 .forEach(providerOrderLine -> {
-            var stockMovement = new StockMovementDto();
-            stockMovement.setArticleDto(articleMapper.fromArticleDto(providerOrderLine.getArticle()));
-            stockMovement.setDateMovement(Instant.now());
-            stockMovement.setTypeMoveStock(TypeMoveStock.ENTRANCE);
-            stockMovement.setQuantity(providerOrderLine.getQuantity());
-            stockMovement.setSourceStockMovement(SourceStockMovement.PROVIDER_ORDER);
-            stockMovement.setId_enterprise(providerOrderLine.getArticle().getEnterprise().getId());
+
+            var stockMovement = StockMovementRequest.builder()
+                    .articleId(providerOrderLine.getArticle().getId())
+                    .dateMovement(Instant.now())
+                    .typeMoveStock(ENTRANCE)
+                    .quantity(providerOrderLine.getQuantity())
+                    .sourceStockMovement(PROVIDER_ORDER)
+                            .build();
 
             stockMovementService.entranceStock(stockMovement);
         });

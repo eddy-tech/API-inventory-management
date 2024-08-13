@@ -5,6 +5,7 @@ import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import com.inventor.management.inventor_management.customerOrder.entity.CustomerOrder;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ligneCommandeClients")
+@SuperBuilder
 public class CustomerOrderLine extends AbstractEntity {
     @Column(name = "quantite")
     private BigDecimal quantity;

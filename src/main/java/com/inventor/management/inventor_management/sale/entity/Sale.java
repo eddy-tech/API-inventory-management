@@ -5,6 +5,7 @@ import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ventes")
+@SuperBuilder
 public class Sale extends AbstractEntity {
     @Column(name = "code_vente")
     private String codeSale;

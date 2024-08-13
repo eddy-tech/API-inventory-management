@@ -1,7 +1,12 @@
 package com.inventor.management.inventor_management.provider.service.impl;
 
+import com.inventor.management.core.exceptions.BusinessException;
 import com.inventor.management.core.validator.ObjectValidator;
+import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
+import com.inventor.management.inventor_management.enterprise.mapper.EnterpriseMapper;
+import com.inventor.management.inventor_management.enterprise.repository.EnterpriseRepository;
 import com.inventor.management.inventor_management.provider.dto.ProviderDto;
+import com.inventor.management.inventor_management.provider.dto.ProviderRequest;
 import com.inventor.management.inventor_management.provider.repository.ProviderRepository;
 import com.inventor.management.inventor_management.provider.entity.Provider;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
@@ -23,7 +28,9 @@ import java.util.List;
 public class ProviderServiceImpl implements ProviderService {
     private final ProviderRepository providerRepository;
     private final ProviderOrderRepository providerOrderRepository;
+    private final EnterpriseRepository enterpriseRepository;
     private final ProviderMapper providerMapper;
+    private final EnterpriseMapper enterpriseMapper;
     private final ObjectValidator validator;
 
     private Provider findProvider(Long providerId){
@@ -34,30 +41,34 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
-    public ProviderDto saveProvider(ProviderDto providerDto) {
-        validator.validate(providerDto);
+    public ProviderDto saveProvider(ProviderRequest providerRequest) {
+        validator.validate(providerRequest);
+        var enterprise = this.getEnterprise(providerRequest.id_enterprise());
 
         return providerMapper.fromProvider(
-                providerRepository.save(providerMapper.fromProviderDto(providerDto))
+                providerRepository.save(
+                        providerMapper.fromProviderRequest(providerRequest, enterprise)
+                )
         );
     }
 
     @Override
-    public ProviderDto updateProvider(ProviderDto providerDto, Long id) {
-        validator.validate(providerDto);
-
+    public ProviderDto updateProvider(ProviderRequest providerRequest, Long id) {
+        validator.validate(providerRequest);
         var provider = this.getProvider(id);
-        provider.setName(providerDto.getName());
-        provider.setMail(providerDto.getMail());
-        provider.setPicture(providerDto.getPicture());
-        provider.setNumTel(providerDto.getNumTel());
-        provider.setAddressDto(providerDto.getAddressDto());
-        provider.setId_enterprise(providerDto.getId_enterprise());
+        var enterprise = this.getEnterprise(providerRequest.id_enterprise());
+
+        provider.setName(providerRequest.name());
+        provider.setMail(providerRequest.mail());
+        provider.setPicture(providerRequest.picture());
+        provider.setNumTel(providerRequest.numTel());
+        provider.setAddressDto(providerRequest.addressDto());
+        provider.setId_enterprise(enterpriseMapper.fromEnterprise(enterprise));
         provider.setSurname(provider.getSurname());
 
         return providerMapper.fromProvider(
                 providerRepository.save(
-                        providerMapper.fromProviderDto(providerDto)
+                        providerMapper.fromProviderRequest(providerRequest, enterprise)
                 )
         );
     }
@@ -93,5 +104,10 @@ public class ProviderServiceImpl implements ProviderService {
         }
 
         providerRepository.deleteById(id);
+    }
+
+    private Enterprise getEnterprise(Long id) {
+        return enterpriseRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Enterprise not found"));
     }
 }
