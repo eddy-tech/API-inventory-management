@@ -3,10 +3,6 @@ package com.inventor.management.inventor_management.provider.mapper;
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.core.mapper.AddressMapper;
-import com.inventor.management.inventor_management.customer.dto.CustomerDto;
-import com.inventor.management.inventor_management.customer.entity.Customer;
-import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderDto;
-import com.inventor.management.inventor_management.customerOrder.entity.CustomerOrder;
 import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import com.inventor.management.inventor_management.enterprise.mapper.EnterpriseMapper;
 import com.inventor.management.inventor_management.provider.dto.ProviderDto;
@@ -18,7 +14,6 @@ import com.inventor.management.inventor_management.provider.entity.Provider;
 import com.inventor.management.inventor_management.providerOrder.entity.ProviderOrder;
 import com.inventor.management.inventor_management.providerOrderLine.entity.ProviderOrderLine;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

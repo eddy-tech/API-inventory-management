@@ -1,7 +1,6 @@
 package com.inventor.management.inventor_management.customerOrderLine.dto;
 import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderDto;
-import com.inventor.management.inventor_management.customerOrder.entity.CustomerOrder;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;

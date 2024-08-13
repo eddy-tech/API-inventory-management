@@ -9,7 +9,6 @@ import com.inventor.management.inventor_management.sale.dto.SaleDto;
 import com.inventor.management.inventor_management.saleLine.dto.SaleLineDto;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

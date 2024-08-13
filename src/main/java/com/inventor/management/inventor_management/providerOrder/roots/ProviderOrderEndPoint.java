@@ -1,7 +1,5 @@
 package com.inventor.management.inventor_management.providerOrder.roots;
 
-import com.inventor.management.inventor_management.core.utils.Constants;
-
 import static com.inventor.management.inventor_management.core.utils.Constants.API_ROOT;
 
 public interface ProviderOrderEndPoint {

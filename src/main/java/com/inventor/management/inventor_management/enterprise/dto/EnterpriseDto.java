@@ -1,6 +1,5 @@
 package com.inventor.management.inventor_management.enterprise.dto;
 
-import com.inventor.management.inventor_management.core.domains.AbstractEntity;
 import com.inventor.management.inventor_management.core.dto.AddressDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

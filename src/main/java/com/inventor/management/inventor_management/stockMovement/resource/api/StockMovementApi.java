@@ -2,14 +2,12 @@ package com.inventor.management.inventor_management.stockMovement.resource.api;
 
 import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
 import com.inventor.management.inventor_management.stockMovement.dto.StockMovementRequest;
-import com.inventor.management.inventor_management.stockMovement.roots.StockMovementEndPoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

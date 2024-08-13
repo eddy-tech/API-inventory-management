@@ -5,7 +5,6 @@ import com.inventor.management.inventor_management.category.dto.CategoryRequest;
 import com.inventor.management.inventor_management.category.entity.Category;
 import com.inventor.management.inventor_management.enterprise.mapper.EnterpriseMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

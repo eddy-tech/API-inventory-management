@@ -6,6 +6,7 @@ import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.customer.service.strategy.SaveCustomerPicture;
 import com.inventor.management.inventor_management.enterprise.service.strategy.SaveEnterprisePicture;
 import com.inventor.management.inventor_management.provider.service.strategy.SaveProviderPicture;
+import lombok.AllArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,10 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 
 @Service
+@AllArgsConstructor
 public class StrategyPictureContext {
     private Strategy strategy;
     private final BeanFactory beanFactory;
-    @Setter
-    private String context;
 
     @Autowired
     public StrategyPictureContext(BeanFactory beanFactory){

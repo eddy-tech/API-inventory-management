@@ -6,7 +6,6 @@ import com.inventor.management.inventor_management.stockMovement.dto.StockMoveme
 import com.inventor.management.inventor_management.stockMovement.entity.StockMovement;
 import com.inventor.management.inventor_management.stockMovement.dto.StockMovementDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

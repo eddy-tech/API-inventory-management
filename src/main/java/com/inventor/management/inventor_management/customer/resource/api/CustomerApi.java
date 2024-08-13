@@ -2,7 +2,6 @@ package com.inventor.management.inventor_management.customer.resource.api;
 
 import com.inventor.management.inventor_management.customer.dto.CustomerDto;
 import com.inventor.management.inventor_management.customer.dto.CustomerRequest;
-import com.inventor.management.inventor_management.customer.roots.CustomerEndPoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

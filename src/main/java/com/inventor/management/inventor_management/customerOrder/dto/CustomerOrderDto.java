@@ -2,7 +2,6 @@ package com.inventor.management.inventor_management.customerOrder.dto;
 
 import com.inventor.management.inventor_management.customer.dto.CustomerDto;
 import com.inventor.management.inventor_management.core.enums.StateOrder;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 

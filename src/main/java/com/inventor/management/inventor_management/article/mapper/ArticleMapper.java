@@ -3,11 +3,9 @@ package com.inventor.management.inventor_management.article.mapper;
 import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.article.dto.ArticleRequest;
 import com.inventor.management.inventor_management.article.entity.Article;
-import com.inventor.management.inventor_management.category.dto.CategoryDto;
 import com.inventor.management.inventor_management.category.entity.Category;
 import com.inventor.management.inventor_management.category.mapper.CategoryMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
