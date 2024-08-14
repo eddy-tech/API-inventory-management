@@ -20,7 +20,7 @@ public class CustomerOrderDto {
 
     // METHOD TO CHECK IF ORDER STATE HAS BEEN DELIVERED OR NO
     public boolean isOrderDelivered() {
-        return stateOrder.equals(this.stateOrder);
+        return StateOrder.DELIVERED.equals(this.stateOrder);
     }
 
 }

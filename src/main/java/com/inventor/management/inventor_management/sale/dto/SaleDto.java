@@ -2,6 +2,7 @@ package com.inventor.management.inventor_management.sale.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
+import com.inventor.management.inventor_management.saleLine.dto.SaleLineDto;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,8 @@ public class SaleDto {
     private String codeSale;
     private Instant dateSale;
     private String comments;
-    private Enterprise id_enterprise;
+//    private Enterprise id_enterprise;
 
     @JsonIgnore
-    private List<SaleLine> saleLines;
+    private List<SaleLineDto> saleLines;
 }

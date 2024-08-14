@@ -1,7 +1,6 @@
 package com.inventor.management.inventor_management.sale.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
+import com.inventor.management.inventor_management.saleLine.dto.SaleLineRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -14,6 +13,6 @@ public record SaleRequest(
         Instant dateSale,
         String comments,
         Long id_enterprise,
-        @JsonIgnore
-        List<SaleLine> saleLines
+        @NotNull(message = "Sale lines must not be null or empty")
+        List<SaleLineRequest> saleLines
 ) {}

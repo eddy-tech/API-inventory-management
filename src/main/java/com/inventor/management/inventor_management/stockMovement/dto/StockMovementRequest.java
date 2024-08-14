@@ -18,10 +18,8 @@ public class StockMovementRequest {
         @NotNull(message = "quantity is required")
         private BigDecimal quantity;
         @NotNull(message = "move stock type is required")
-        @NotBlank(message = "move stock type is required")
         private TypeMoveStock typeMoveStock;
         @NotNull(message = "source stock movement is required")
-        @NotBlank(message = "source stock movement is required")
         private SourceStockMovement sourceStockMovement;
         private Long articleId;
 }

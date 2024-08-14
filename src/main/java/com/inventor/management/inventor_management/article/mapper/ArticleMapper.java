@@ -5,6 +5,8 @@ import com.inventor.management.inventor_management.article.dto.ArticleRequest;
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.category.entity.Category;
 import com.inventor.management.inventor_management.category.mapper.CategoryMapper;
+import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
+import com.inventor.management.inventor_management.enterprise.mapper.EnterpriseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,8 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class ArticleMapper {
     private final CategoryMapper categoryMapper;
-    public Article fromArticle (ArticleRequest articleRequest, Category category){
+    private final EnterpriseMapper enterpriseMapper;
+    public Article fromArticle (ArticleRequest articleRequest, Category category, Enterprise enterprise){
         return Article.builder()
                 .designation(articleRequest.designation())
                 .rateTax(articleRequest.rateTax())
@@ -22,6 +25,7 @@ public class ArticleMapper {
                 .unitPriceTtc(articleRequest.unitPriceTtc())
                 .picture(articleRequest.picture())
                 .category(category)
+                .enterprise(enterprise)
                 .creationTime(Instant.now())
                 .build();
     }
@@ -36,6 +40,7 @@ public class ArticleMapper {
                 .unitPriceTtc(article.getUnitPriceTtc())
                 .picture(article.getPicture())
                 .categoryDto(categoryMapper.fromCategoryDto(article.getCategory()))
+                .enterpriseDto(enterpriseMapper.fromEnterprise(article.getEnterprise()))
                 .build();
     }
 }

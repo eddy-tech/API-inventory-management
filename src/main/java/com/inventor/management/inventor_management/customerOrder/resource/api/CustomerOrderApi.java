@@ -63,7 +63,7 @@ public interface CustomerOrderApi {
     })
     ResponseEntity<CustomerOrderDto> updateStateOrder (
             @PathVariable(name = "idOrder") Long orderId,
-            @PathVariable(name = "stateOrder") StateOrder stateOrder
+            @RequestParam StateOrder stateOrder
     );
     @PatchMapping(UPDATE_QUANTITY_ORDER)
     @Operation(
@@ -80,7 +80,7 @@ public interface CustomerOrderApi {
     ResponseEntity<CustomerOrderDto> updateQuantityOrdered (
             @PathVariable(name = "idOrder") Long orderId,
             @PathVariable(name = "idOrderLine")Long orderLineId,
-            @PathVariable(name = "quantity") BigDecimal quantity
+            @RequestParam BigDecimal quantity
     );
     @PatchMapping(UPDATE_CUSTOMER)
     @Operation(
@@ -180,7 +180,9 @@ public interface CustomerOrderApi {
             ),
             @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
     })
-    ResponseEntity<List<CustomerOrderLineDto>> findAllCustomerOrdersLinesByCustomerOrderId (@PathVariable(name = "idOrder") Long orderId);
+    ResponseEntity<List<CustomerOrderLineDto>> findAllCustomerOrdersLinesByCustomerOrderId (
+            @PathVariable(name = "idOrder") Long orderId
+    );
     @DeleteMapping(DELETE_CUSTOMER_ORDER)
     @Operation(
             summary = "Delete a customer order",

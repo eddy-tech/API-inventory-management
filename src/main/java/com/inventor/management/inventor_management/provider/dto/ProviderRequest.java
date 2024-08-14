@@ -15,10 +15,8 @@ public record ProviderRequest(
         @NotBlank(message = "Surname is required")
         String surname,
         @NotNull(message = "Address is required")
-        @NotBlank(message = "Address is required")
         AddressDto addressDto,
         String picture,
-
         @NotNull(message = "Email is required")
         @Email(message = "Provider Email is not a valid email address")
         String mail,

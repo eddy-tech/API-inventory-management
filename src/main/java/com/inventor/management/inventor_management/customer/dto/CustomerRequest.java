@@ -15,7 +15,6 @@ public record CustomerRequest (
         @NotBlank(message = "Surname is required")
         String surname,
         @NotNull(message = "Address is required")
-        @NotBlank(message = "Address is required")
         AddressDto addressDto,
         String picture,
         @NotNull(message = "Email is required")

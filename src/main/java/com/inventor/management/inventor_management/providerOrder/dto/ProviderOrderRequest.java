@@ -20,6 +20,6 @@ public record ProviderOrderRequest(
         List<ProviderOrderLineDto> providerOrderLineDto
 ) {
     public boolean isOrderDelivered() {
-        return stateOrder.equals(this.stateOrder);
+        return StateOrder.DELIVERED.equals(this.stateOrder);
     }
 }

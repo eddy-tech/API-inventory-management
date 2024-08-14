@@ -1,8 +1,7 @@
 package com.inventor.management.inventor_management.providerOrder.service.impl;
 
 import com.inventor.management.core.validator.ObjectValidator;
-import com.inventor.management.inventor_management.article.entity.Article;
-import com.inventor.management.inventor_management.article.repository.ArticleRepository;
+import com.inventor.management.inventor_management.article.service.ArticleService;
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderDto;
 import com.inventor.management.inventor_management.providerOrder.dto.ProviderOrderRequest;
 import com.inventor.management.inventor_management.providerOrder.repository.ProviderOrderRepository;
@@ -42,7 +41,7 @@ import static com.inventor.management.inventor_management.core.utils.RandomGener
 @RequiredArgsConstructor
 public class ProviderOrderServiceImpl implements ProviderOrderService {
     private final ProviderOrderRepository providerOrderRepository;
-    private final ArticleRepository articleRepository;
+    private final ArticleService articleService;
     private final ProviderRepository providerRepository;
     private final ProviderOrderLineRepository providerOrderLineRepository;
     private final StockMovementService stockMovementService;
@@ -90,11 +89,6 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
                 .orElseThrow(()->new EntityNotFoundException("Nothing customer was found with ID ="+providerId));
     }
 
-    private Article findArticle (Long articleId){
-        return  articleRepository.findById(articleId)
-                .orElseThrow(()->new EntityNotFoundException("Nothing article was found with ID ="+articleId));
-    }
-
     private ProviderOrder findProviderOrder (Long providerOrderId){
         return providerOrderRepository.findById(providerOrderId)
                 .orElseThrow(()->new EntityNotFoundException(
@@ -117,8 +111,8 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         if(providerOrderRequest.providerOrderLineDto() != null){
             providerOrderRequest.providerOrderLineDto().forEach(providerOrderLineDto -> {
                 if(providerOrderLineDto.getArticleDto() != null){
-                    var articleDto = articleRepository.findById(providerOrderLineDto.getArticleDto().getId());
-                    if(articleDto.isEmpty()){
+                    var article = articleService.findById(providerOrderLineDto.getArticleDto().getId());
+                    if(article == null){
                         articleErrors.add(
                                 "Article with ID ="+providerOrderLineDto.getArticleDto().getId()+"not exist in database"
                         );
@@ -142,7 +136,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             providerOrderRequest.providerOrderLineDto().forEach(providerOrderLineDto -> {
                 var providerOrderLine = providerMapper.fromProviderOrderLineDto(
                         providerOrderLineDto,
-                        findArticle(providerOrderLineDto.getArticleDto().getId()),
+                        articleService.findById(providerOrderLineDto.getArticleDto().getId()),
                         findProviderOrder(providerOrderLineDto.getProviderOrderDto().getId())
                 );
                 providerOrderLine.setProviderOrder(savedProviderOrder);
@@ -168,8 +162,8 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         if(providerOrderRequest.providerId() != null){
             providerOrderRequest.providerOrderLineDto().forEach(providerOrderLineDto -> {
                 if(providerOrderLineDto.getArticleDto() != null){
-                    var article = articleRepository.findById(providerOrderLineDto.getArticleDto().getId());
-                    if(article.isEmpty()){
+                    var article = articleService.findById(providerOrderLineDto.getArticleDto().getId());
+                    if(article == null){
                         articleErrors.add(
                                 "Article with ID ="+ providerOrderLineDto.getArticleDto().getId() +
                                         "was not exit in database"
@@ -193,7 +187,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             providerOrderRequest.providerOrderLineDto().forEach(providerOrderLineDto -> {
                 var providerOrderLine = providerMapper.fromProviderOrderLineDto(
                         providerOrderLineDto,
-                        findArticle(providerOrderLineDto.getArticleDto().getId()),
+                        articleService.findById(providerOrderLineDto.getArticleDto().getId()),
                         findProviderOrder(providerOrderLineDto.getProviderOrderDto().getId())
                 );
                 providerOrderLine.setProviderOrder(updateProviderOrder);
@@ -272,7 +266,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
 
         var providerOrder = checkStateOrder(orderId);
         var providerOrderLine = findProviderOrderLine(orderLineId);
-        var articleOptional = findArticle(articleId);
+        var articleOptional = articleService.findById(articleId);
 
 //        List<String> errors = ArticleValidator.validate(articleMapper.fromArticle(articleOptional));
 //        if(!errors.isEmpty()) throw new InvalidEntityException("Article invalid", ErrorCodes.ARTICLE_NOT_VALID,errors);

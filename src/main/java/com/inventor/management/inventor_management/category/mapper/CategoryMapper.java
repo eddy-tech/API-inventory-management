@@ -26,7 +26,6 @@ public class CategoryMapper {
                 .codeCategory(category.getCodeCategory())
                 .designation(category.getDesignation())
                 .codeCategory(category.getCodeCategory())
-                .id_enterprise(enterpriseMapper.fromEnterprise(category.getEnterprise()))
                 .build();
     }
 }

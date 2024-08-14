@@ -26,6 +26,6 @@ public class ProviderOrderDto {
     @JsonIgnore
     private List<ProviderOrderLineDto> providerOrderLinesDto;
     public boolean isOrderDelivered() {
-        return stateOrder.equals(this.stateOrder);
+        return StateOrder.DELIVERED.equals(this.stateOrder);
     }
 }

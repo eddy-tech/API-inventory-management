@@ -1,5 +1,6 @@
 package com.inventor.management.inventor_management.provider.mapper;
 
+import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.core.mapper.AddressMapper;
@@ -23,7 +24,6 @@ import java.time.Instant;
 public class ProviderMapper {
     private final EnterpriseMapper enterpriseMapper;
     private final AddressMapper addressMapper;
-    private final ProviderMapper providerMapper;
     private final ArticleMapper articleMapper;
 
     public Provider fromProviderRequest (ProviderRequest providerRequest, Enterprise enterprise){
@@ -91,7 +91,7 @@ public class ProviderMapper {
                 .codeProviderOrder(providerOrder.getCodeProviderOrder())
                 .dateOrdering(providerOrder.getDateOrdering())
                 .stateOrder(providerOrder.getStateOrder())
-                .providerDto(providerMapper.fromProvider(providerOrder.getProvider()))
+                .providerDto(this.fromProvider(providerOrder.getProvider()))
                 .id_enterprise(providerOrder.getProvider().getEnterprise().getId())
                 .build();
     }
@@ -100,7 +100,7 @@ public class ProviderMapper {
         return ProviderOrder.builder()
                 .dateOrdering(providerOrderDto.getDateOrdering())
                 .stateOrder(providerOrderDto.getStateOrder())
-                .provider(providerMapper.toProvider(providerOrderDto.getProviderDto()))
+                .provider(this.toProvider(providerOrderDto.getProviderDto()))
                 .creationTime(Instant.now())
                 .build();
     }

@@ -56,39 +56,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     private final ObjectValidator validator;
 
 
-    private void checkArticleId (Long idArticle){
-        if(idArticle == null){
-            log.error("ID of new is NULL");
-            throw new InvalidOperationException(EDIT_STATE_ORDER);
-        }
-    }
-
-    private Optional<CustomerOrderLine> findCustomerOrderLine (Long orderLineId){
-        return Optional.ofNullable(customerOrderLineRepository.findById(orderLineId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Nothing customer order line has been found with ID =" + orderLineId)
-                ));
-    }
-
-    private Customer findCustomer (Long customerId){
-        return customerRepository.findById(customerId)
-                .orElseThrow(()->new EntityNotFoundException(
-                        "Nothing customer has been found with ID =" +customerId)
-                );
-    }
-
-    private Article findArticle (Long articleId){
-        return articleRepository.findById(articleId)
-                .orElseThrow(()-> new EntityNotFoundException("Nothing article has been found with ID ="+ articleId));
-    }
-
-    private CustomerOrder findCustomerOrder (Long customerOrderId){
-        return customerOrderRepository.findById(customerOrderId)
-                .orElseThrow(()->new EntityNotFoundException(
-                        "Nothing Customer order has been found with ID ="+ customerOrderId)
-                );
-    }
-
     @Override
     public CustomerOrderDto saveCustomerOrder(CustomerOrderRequest customerOrderRequest) {
         validator.validate(customerOrderRequest);
@@ -182,27 +149,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         return customerOrderMapper.fromCustomerOrder(updateCustomerOrder);
     }
 
-    private void checkOrderId (Long orderId){
-        if(orderId == null) {
-            log.error("customer order ID is null");
-            throw new InvalidOperationException("Unable to edit quantity ordered with null ID");
-        }
-    }
-
-    private void checkOrderLineId (Long orderLineId) {
-        if(orderLineId == null) {
-            log.error("customer order Line ID is null");
-            throw new InvalidOperationException("Unable to edit quantity ordered with null ID order line");
-        }
-    }
-
-    private CustomerOrderDto checkStateOrder(Long orderId){
-        if(getCustomerOrder(orderId).isOrderDelivered())
-            throw new InvalidOperationException("Unable to edit state order with null ID");
-
-        return getCustomerOrder(orderId);
-    }
-
     @Override
     public CustomerOrderDto updateQuantityOrdered(Long orderId, Long orderLineId, BigDecimal quantity) {
         this.checkOrderId(orderId);
@@ -225,7 +171,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public CustomerOrderDto updateStateOrder(Long orderId, StateOrder stateOrder) {
-        this.checkOrderId(orderId);
+//        this.checkOrderId(orderId);
 
         if(!StringUtils.hasLength(String.valueOf(stateOrder))) {
             log.error("customer state order is NULL");
@@ -351,6 +297,60 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         customerOrderLineRepository.deleteById(orderLineId);
 
         return customerOrder;
+    }
+
+    private void checkArticleId (Long idArticle){
+        if(idArticle == null){
+            log.error("ID of new is NULL");
+            throw new InvalidOperationException(EDIT_STATE_ORDER);
+        }
+    }
+
+    private Optional<CustomerOrderLine> findCustomerOrderLine (Long orderLineId){
+        return Optional.ofNullable(customerOrderLineRepository.findById(orderLineId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Nothing customer order line has been found with ID =" + orderLineId)
+                ));
+    }
+
+    private Customer findCustomer (Long customerId){
+        return customerRepository.findById(customerId)
+                .orElseThrow(()->new EntityNotFoundException(
+                        "Nothing customer has been found with ID =" +customerId)
+                );
+    }
+
+    private Article findArticle (Long articleId){
+        return articleRepository.findById(articleId)
+                .orElseThrow(()-> new EntityNotFoundException("Nothing article has been found with ID ="+ articleId));
+    }
+
+    private CustomerOrder findCustomerOrder (Long customerOrderId){
+        return customerOrderRepository.findById(customerOrderId)
+                .orElseThrow(()->new EntityNotFoundException(
+                        "Nothing Customer order has been found with ID ="+ customerOrderId)
+                );
+    }
+
+    private void checkOrderId (Long orderId){
+        if(orderId == null) {
+            log.error("customer order ID is null");
+            throw new InvalidOperationException("Unable to edit quantity ordered with null ID");
+        }
+    }
+
+    private void checkOrderLineId (Long orderLineId) {
+        if(orderLineId == null) {
+            log.error("customer order Line ID is null");
+            throw new InvalidOperationException("Unable to edit quantity ordered with null ID order line");
+        }
+    }
+
+    private CustomerOrderDto checkStateOrder(Long orderId){
+        if(getCustomerOrder(orderId).isOrderDelivered())
+            throw new InvalidOperationException("Unable to edit state order with null ID");
+
+        return getCustomerOrder(orderId);
     }
 
     private void updateStockMovementCustomer (Long orderId){

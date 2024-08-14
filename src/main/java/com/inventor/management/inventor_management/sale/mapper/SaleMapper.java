@@ -7,6 +7,7 @@ import com.inventor.management.inventor_management.sale.dto.SaleRequest;
 import com.inventor.management.inventor_management.sale.entity.Sale;
 import com.inventor.management.inventor_management.sale.dto.SaleDto;
 import com.inventor.management.inventor_management.saleLine.dto.SaleLineDto;
+import com.inventor.management.inventor_management.saleLine.dto.SaleLineRequest;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,13 +47,13 @@ public class SaleMapper {
                 .build();
     }
 
-    public SaleLine fromSaleLineDto (SaleLineDto saleLineDto, Article article, Sale sale) {
-        return SaleLine.builder()
-                .unitPrice(saleLineDto.getUnitPrice())
-                .quantity(saleLineDto.getQuantity())
-                .article(article)
-                .creationTime(Instant.now())
-                .sale(sale)
-                .build();
+    public SaleLine fromSaleLineRequest(SaleLineRequest saleLineRequest, Article article, Sale sale) {
+            return SaleLine.builder()
+                   .unitPrice(saleLineRequest.getUnitPrice())
+                   .quantity(saleLineRequest.getQuantity())
+                   .article(article)
+                   .sale(sale)
+                   .creationTime(Instant.now())
+                   .build();
     }
 }

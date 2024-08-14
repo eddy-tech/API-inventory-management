@@ -1,0 +1,5125 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Open API specification - Koko",
+    "description": "Inventory Management API",
+    "termsOfService": "https://kokocoding.com/terms-of-service",
+    "contact": {
+      "name": "Koko",
+      "url": "https://kokocoding.com",
+      "email": "contact@kokocoding.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8088/api/v1",
+      "description": "Local Env"
+    },
+    {
+      "url": "https://book-network.herokuapp.com/api/v1",
+      "description": "Production Env"
+    }
+  ],
+  "security": [
+    {
+      "bearer token": [
+
+      ]
+    }
+  ],
+  "paths": {
+    "/inventoryManagement/api/v1/users/{id}/send-verify-email": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": " Verify user send mail",
+        "description": "This method allow to verify user send mail",
+        "operationId": "verifyUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User objet has been verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/users/forgot-password": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Forgot user password",
+        "description": "This method allows to change the forgotten user password",
+        "operationId": "forgotPassword",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User password has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/sales/{idSale}": {
+      "put": {
+        "tags": [
+          "SaleDto"
+        ],
+        "summary": "Update Sale",
+        "description": "This method allow to update sale",
+        "operationId": "updateSale",
+        "parameters": [
+          {
+            "name": "idSale",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Sale objet has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sale objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/roles/assign/users/{id}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Assign a role to user",
+        "description": "This method allows to assign a role to a user",
+        "operationId": "assignRole",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roleName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User objet has been assigned a role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providers/{idProvider}": {
+      "put": {
+        "tags": [
+          "ProviderDto"
+        ],
+        "summary": "Update Provider",
+        "description": "This method allow to update provider",
+        "operationId": "updateProvider",
+        "parameters": [
+          {
+            "name": "idProvider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Provider objet has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Provider objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/{idProviderOrder}": {
+      "put": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Update Provider Order",
+        "description": "This method allow to update provider order",
+        "operationId": "updateProviderOrder",
+        "parameters": [
+          {
+            "name": "idProviderOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Provider Order objet has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Provider Order objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/enterprises/{idEnterprise}": {
+      "put": {
+        "tags": [
+          "EnterpriseDto"
+        ],
+        "summary": "Update Enterprise",
+        "description": "This method allow to save an enterprise",
+        "operationId": "updateEnterprise",
+        "parameters": [
+          {
+            "name": "idEnterprise",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterpriseDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Enterprise objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Enterprise objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customers/{idCustomer}": {
+      "put": {
+        "tags": [
+          "CustomerDto"
+        ],
+        "summary": "Update Customer",
+        "description": "This method allow to update customer",
+        "operationId": "updateCustomer",
+        "parameters": [
+          {
+            "name": "idCustomer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Customer objet has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/{idCustomerOrder}": {
+      "put": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Update Customer Order",
+        "description": "This method allow to update customer order",
+        "operationId": "updateCustomerOrder",
+        "parameters": [
+          {
+            "name": "idCustomerOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Customer Order objet has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer Order objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/categories/categories/{idCategory}": {
+      "put": {
+        "tags": [
+          "CategoryDto"
+        ],
+        "summary": "Update Category",
+        "description": "This method allow to update category",
+        "operationId": "updateCategory",
+        "parameters": [
+          {
+            "name": "idCategory",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Category objet has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Catgeory objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/articles/{idArticle}": {
+      "put": {
+        "tags": [
+          "Article"
+        ],
+        "summary": "Update article",
+        "description": "This method allow to update an article",
+        "operationId": "updateArticle",
+        "parameters": [
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Article objet has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Article objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/users": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Save User Keycloak",
+        "description": "This method allow to save user keycloak",
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/stockMovement/exit": {
+      "post": {
+        "tags": [
+          "StockMovement"
+        ],
+        "summary": "Get Real stock article",
+        "description": "This method allow to calculate an article real stock",
+        "operationId": "exitStock",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockMovementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Stock article objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "stock article objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/stockMovement/entrance": {
+      "post": {
+        "tags": [
+          "StockMovement"
+        ],
+        "summary": "Get Real stock article",
+        "description": "This method allow to calculate an article real stock",
+        "operationId": "entranceStock",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockMovementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Stock article objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "stock article objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/stockMovement/correction/positive": {
+      "post": {
+        "tags": [
+          "StockMovement"
+        ],
+        "summary": "Get Real stock article",
+        "description": "This method allow to calculate an article real stock",
+        "operationId": "correctionStockPositive",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockMovementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Stock article objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "stock article objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/stockMovement/correction/negative": {
+      "post": {
+        "tags": [
+          "StockMovement"
+        ],
+        "summary": "Get Real stock article",
+        "description": "This method allow to calculate an article real stock",
+        "operationId": "correctionStockNegative",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockMovementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Stock article objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "stock article objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/sales": {
+      "get": {
+        "tags": [
+          "sale-rest-controller"
+        ],
+        "summary": "Return list of sales",
+        "description": "This method allow to research and return all sales that exist in DB",
+        "operationId": "listSale",
+        "responses": {
+          "200": {
+            "description": "All sales were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SaleDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SaleDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "SaleDto"
+        ],
+        "summary": "Save Sale",
+        "description": "This method allow to save sale",
+        "operationId": "saveSale",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Sale objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sale objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providers": {
+      "get": {
+        "tags": [
+          "provider-rest-controller"
+        ],
+        "summary": "Return list of providers",
+        "description": "This method allow to research and return all providers that exist in DB",
+        "operationId": "listProviders",
+        "responses": {
+          "200": {
+            "description": "All providers were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ProviderDto"
+        ],
+        "summary": "Save provider",
+        "description": "This method allow to save provider",
+        "operationId": "saveProvider",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Provider objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Provider objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder": {
+      "get": {
+        "tags": [
+          "provider-order-rest-controller"
+        ],
+        "summary": "Return list of providers orders",
+        "description": "This method allow to research and return all providers orders that exist in DB",
+        "operationId": "listProviderOrder",
+        "responses": {
+          "200": {
+            "description": "All providers orders were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderOrderDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderOrderDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Save provider order",
+        "description": "This method allow to save provider order",
+        "operationId": "saveProviderOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Provider Order objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Provider Order objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/pictures/inventoryManagement/api/v1/pictures/save/{id}/{title}/{context}": {
+      "post": {
+        "tags": [
+          "picture-rest-controller"
+        ],
+        "summary": "Save picture",
+        "description": "This method allow to save a picture",
+        "operationId": "savePicture",
+        "parameters": [
+          {
+            "name": "context",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Picture objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Picture objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/enterprises": {
+      "post": {
+        "tags": [
+          "EnterpriseDto"
+        ],
+        "summary": "Save Enterprise",
+        "description": "This method allow to save an enterprise",
+        "operationId": "saveEnterprise",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnterpriseDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Enterprise objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Enterprise objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customers": {
+      "post": {
+        "tags": [
+          "CustomerDto"
+        ],
+        "summary": "Save customer",
+        "description": "This method allow to save customer",
+        "operationId": "saveCustomer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Customer objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder": {
+      "post": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Save customer order",
+        "description": "This method allow to save customer order",
+        "operationId": "saveCustomerOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Customer Order objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer Order objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/categories": {
+      "get": {
+        "tags": [
+          "category-rest-controller"
+        ],
+        "summary": "Return list of categories",
+        "description": "This method allow to research and return all categories that exist in DB",
+        "operationId": "listCategory",
+        "responses": {
+          "200": {
+            "description": "All categories were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CategoryDto"
+        ],
+        "summary": "Save Category",
+        "description": "This method allow to save category",
+        "operationId": "saveCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Category objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/articles": {
+      "get": {
+        "tags": [
+          "article-rest-controller"
+        ],
+        "summary": "Return list of articles",
+        "description": "This method allow to research and return all articles that exist in DB",
+        "operationId": "listArticle",
+        "responses": {
+          "200": {
+            "description": "All articles had been found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Article"
+        ],
+        "summary": "Save article",
+        "description": "This method allow to save an article",
+        "operationId": "saveArticle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Article objet has been saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Article objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/update/quantityOrder/{idOrder}/{idOrderLine}": {
+      "patch": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Update State Order",
+        "description": "This method allow to update state order provider",
+        "operationId": "updateQuantityOrdered",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idOrderLine",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "quantity",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State order object has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "state provider order has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/update/provider/{idOrder}/{idProvider}": {
+      "patch": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Update State provider",
+        "description": "This method allow to update state provider",
+        "operationId": "updateProvider_1",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idProvider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State provider object has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "state provider has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/update/article/{idOrder}/{idOrderLine}/{idArticle}": {
+      "patch": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Update State article",
+        "description": "This method allow to update state article",
+        "operationId": "updateArticle_1",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idOrderLine",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State article object has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "state article has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/stateOrder/{idOrder}/{stateOrder}": {
+      "patch": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Updater State Order",
+        "description": "This method allow to update state order provider",
+        "operationId": "updateStateOrder",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "stateOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ON_PROGRESS",
+                "VALIDATE",
+                "DELIVERED",
+                "CANCELED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State order object has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "state provider order has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/update/quantityOrder/{idOrder}/{idOrderLine}/{quantity}": {
+      "patch": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Update State Order",
+        "description": "This method allow to update state order customer",
+        "operationId": "updateQuantityOrdered_1",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idOrderLine",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "quantity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State order object has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "state customer order has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/update/customer/{idOrder}/{idCustomer}": {
+      "patch": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Update State customer",
+        "description": "This method allow to update state customer",
+        "operationId": "updateCustomer_1",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idCustomer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State customer object has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "state customer has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/update/article/{idOrder}/{idOrderLine}/{idArticle}": {
+      "patch": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Update State article",
+        "description": "This method allow to update state article",
+        "operationId": "updateArticle_2",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idOrderLine",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State article object has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "state article has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/stateOrder/{idOrder}/{stateOrder}": {
+      "patch": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Updater State Order",
+        "description": "This method allow to update state order customer",
+        "operationId": "updateStateOrder_1",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "stateOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ON_PROGRESS",
+                "VALIDATE",
+                "DELIVERED",
+                "CANCELED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State order object has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "state customer order has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/users/{id}/roles": {
+      "get": {
+        "tags": [
+          "user-rest-controller"
+        ],
+        "summary": "Return list of user roles",
+        "description": "This method allows to return all user roles",
+        "operationId": "getUserRoles",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All user roles were found in Keycloak DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/stockMovement/realStock/{idArticle}": {
+      "get": {
+        "tags": [
+          "StockMovement"
+        ],
+        "summary": "Get Real stock article",
+        "description": "This method allow to calculate an article real stock",
+        "operationId": "stockRealArticle",
+        "parameters": [
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stock article objet has been found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "stock article objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/stockMovement/filter/article/{idArticle}": {
+      "get": {
+        "tags": [
+          "StockMovement"
+        ],
+        "summary": "Get list of stock movement article",
+        "description": "This method allow to show all article stock",
+        "operationId": "listStockMovementArticle",
+        "parameters": [
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stock article objet has been found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StockMovementDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StockMovementDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "stock article objet has invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StockMovementDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/sales/id/{idSale}": {
+      "get": {
+        "tags": [
+          "SaleDto"
+        ],
+        "summary": "Find out a sale by ID",
+        "description": "This method allow to find out a sale with ID",
+        "operationId": "getSale",
+        "parameters": [
+          {
+            "name": "idSale",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sale was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing sale exist in DB with ID provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "SaleDto"
+        ],
+        "summary": "Delete a sale",
+        "description": "This method allow to delete a sale by ID",
+        "operationId": "deleteSale",
+        "parameters": [
+          {
+            "name": "idSale",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sale has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/sales/filter/{idCodeSale}": {
+      "get": {
+        "tags": [
+          "SaleDto"
+        ],
+        "summary": "Find out a sale by code_category",
+        "description": "This method allow to find out a sale with code_sale",
+        "operationId": "getCodeSale",
+        "parameters": [
+          {
+            "name": "idCodeSale",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sale was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing sale exist in DB with code_sale provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providers/id/{idProvider}": {
+      "get": {
+        "tags": [
+          "ProviderDto"
+        ],
+        "summary": "Find out a provider by ID",
+        "description": "This method allow to find out a provider with ID",
+        "operationId": "getProvider",
+        "parameters": [
+          {
+            "name": "idProvider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing provider exist in DB with ID provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ProviderDto"
+        ],
+        "summary": "Delete a provider",
+        "description": "This method allow to delete a provider by ID",
+        "operationId": "deleteProvider",
+        "parameters": [
+          {
+            "name": "idProvider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/id/{idProviderOrder}": {
+      "get": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Find out a provider order by ID",
+        "description": "This method allow to find out a provider order with ID",
+        "operationId": "getProviderOrder",
+        "parameters": [
+          {
+            "name": "idProviderOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider Order was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing provider order exist in DB with ID provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Delete a provider order",
+        "description": "This method allow to delete a provider order by ID",
+        "operationId": "deleteProviderOrder",
+        "parameters": [
+          {
+            "name": "idProviderOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider Order has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/filter/{codeOrder}": {
+      "get": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Find out a provider order by code_article",
+        "description": "This method allow to find out a provider order order with code_provider_order",
+        "operationId": "getCodeProviderOrder",
+        "parameters": [
+          {
+            "name": "codeOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider Order was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing provider order exist in DB with code_provider_order provider order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/filter/providerOrderLine/{idOrder}": {
+      "get": {
+        "tags": [
+          "provider-order-rest-controller"
+        ],
+        "summary": "Return list of customers orders line with provider order id",
+        "description": "This method allow to research and return all providers orders that exist in DB",
+        "operationId": "findAllProviderOrdersLinesByProviderOrderId",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All providers orders line with provider order id were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderOrderDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderOrderLineDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/enterprises/inventoryManagement/api/v1/enterprises": {
+      "get": {
+        "tags": [
+          "enterprise-rest-controller"
+        ],
+        "summary": "Return list of enterprises",
+        "description": "This method allow to research and return all enterprises that exist in DB",
+        "operationId": "listEnterprise",
+        "responses": {
+          "200": {
+            "description": "All enterprises were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnterpriseDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnterpriseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/enterprises/id/{idEnterprise}": {
+      "get": {
+        "tags": [
+          "EnterpriseDto"
+        ],
+        "summary": "Find out an enterprise by ID",
+        "description": "This method allow to find out an enterprise with ID",
+        "operationId": "getEnterprise",
+        "parameters": [
+          {
+            "name": "idEnterprise",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Enterprise was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing enterprise exist in DB with ID provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EnterpriseDto"
+        ],
+        "summary": "Delete an enterprise",
+        "description": "This method allow to delete an enterprise by ID",
+        "operationId": "deleteEnterprise",
+        "parameters": [
+          {
+            "name": "idEnterprise",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Enterprise has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customers/inventoryManagement/api/v1/customers": {
+      "get": {
+        "tags": [
+          "customer-rest-controller"
+        ],
+        "summary": "Return list of customers",
+        "description": "This method allow to research and return all customers that exist in DB",
+        "operationId": "listCustomer",
+        "responses": {
+          "200": {
+            "description": "All customers were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customers/id/{idCustomer}": {
+      "get": {
+        "tags": [
+          "CustomerDto"
+        ],
+        "summary": "Find out a customer by ID",
+        "description": "This method allow to find out a customer with ID",
+        "operationId": "getCustomer",
+        "parameters": [
+          {
+            "name": "idCustomer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing customer exist in DB with ID provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CustomerDto"
+        ],
+        "summary": "Delete a customer",
+        "description": "This method allow to delete a customer by ID",
+        "operationId": "deleteCustomer",
+        "parameters": [
+          {
+            "name": "idCustomer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/inventoryManagement/api/v1/customerOrder": {
+      "get": {
+        "tags": [
+          "customer-order-rest-controller"
+        ],
+        "summary": "Return list of customers orders",
+        "description": "This method allow to research and return all customers orders that exist in DB",
+        "operationId": "listCustomerOrder",
+        "responses": {
+          "200": {
+            "description": "All customers orders were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerOrderDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerOrderDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/id/{idCustomerOrder}": {
+      "get": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Find out a customer order by ID",
+        "description": "This method allow to find out a customer order with ID",
+        "operationId": "getCustomerOrder",
+        "parameters": [
+          {
+            "name": "idCustomerOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer Order was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing customer order exist in DB with ID provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Delete a customer order",
+        "description": "This method allow to delete a customer order by ID",
+        "operationId": "deleteCustomerOrder",
+        "parameters": [
+          {
+            "name": "idCustomerOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer Order has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/filter/{codeOrder}": {
+      "get": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Find out a customer order by code_article",
+        "description": "This method allow to find out a customer order with code_customer_order",
+        "operationId": "getCodeCustomerOrder",
+        "parameters": [
+          {
+            "name": "codeOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer Order was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing customer order exist in DB with code_customer_order customer order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/filter/customerOrderLine/{idOrder}": {
+      "get": {
+        "tags": [
+          "customer-order-rest-controller"
+        ],
+        "summary": "Return list of customers orders line with customer order id",
+        "description": "This method allow to research and return all customers orders that exist in DB",
+        "operationId": "findAllCustomerOrdersLinesByCustomerOrderId",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All customers orders line with customer order id were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerOrderDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerOrderLineDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/categories/id/{idCategory}": {
+      "get": {
+        "tags": [
+          "CategoryDto"
+        ],
+        "summary": "Find out a category by ID",
+        "description": "This method allow to find out a category with ID",
+        "operationId": "getCategory",
+        "parameters": [
+          {
+            "name": "idCategory",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing category exist in DB with ID provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CategoryDto"
+        ],
+        "summary": "Delete a category",
+        "description": "This method allow to delete a category by ID",
+        "operationId": "deleteCategory",
+        "parameters": [
+          {
+            "name": "idCategory",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/categories/filter/{idCodeCategory}": {
+      "get": {
+        "tags": [
+          "CategoryDto"
+        ],
+        "summary": "Find out a category by code_category",
+        "description": "This method allow to find out a category with code_category",
+        "operationId": "getCodeCategory",
+        "parameters": [
+          {
+            "name": "idCodeCategory",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category was found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing category exist in DB with code_category provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/articles/id/{idArticle}": {
+      "get": {
+        "tags": [
+          "Article"
+        ],
+        "summary": "Find out an article by ID",
+        "description": "This method allow to find out an article with ID",
+        "operationId": "getArticle",
+        "parameters": [
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article has been found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing article exist in DB with ID provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Article"
+        ],
+        "summary": "Delete an article",
+        "description": "This method allow to delete an article by ID",
+        "operationId": "deleteArticle_2",
+        "parameters": [
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/articles/history/sales/{idArticle}": {
+      "get": {
+        "tags": [
+          "article-rest-controller"
+        ],
+        "summary": "Return history of sales",
+        "description": "This method allow to research and return all sales histories of an article that exist in DB",
+        "operationId": "findHistorySales",
+        "parameters": [
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All sales histories had been found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SaleLineDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/articles/history/providerOrder/{idArticle}": {
+      "get": {
+        "tags": [
+          "article-rest-controller"
+        ],
+        "summary": "Return history of provider order",
+        "description": "This method allow to research and return all provider order histories of an article that exist in DB",
+        "operationId": "findHistoryProviderOrder",
+        "parameters": [
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All provider order histories were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderOrderLineDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/articles/history/customerOrder/{idArticle}": {
+      "get": {
+        "tags": [
+          "article-rest-controller"
+        ],
+        "summary": "Return history of customer order",
+        "description": "This method allow to research and return all customer order histories of an article that exist in DB",
+        "operationId": "findHistoryCustomerOrder",
+        "parameters": [
+          {
+            "name": "idArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All customer order histories were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerOrderLineDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/articles/filter/{idCodeArticle}": {
+      "get": {
+        "tags": [
+          "Article"
+        ],
+        "summary": "Find out an article by code_article",
+        "description": "This method allow to find out an article with code_article",
+        "operationId": "getCodeArticle",
+        "parameters": [
+          {
+            "name": "idCodeArticle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Article has been found in DB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing article exist in DB with code_article provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/articles/filter/category/{idCategory}": {
+      "get": {
+        "tags": [
+          "article-rest-controller"
+        ],
+        "summary": "Return history of article by category",
+        "description": "This method allow to research and return all article histories by category that exist in DB",
+        "operationId": "findAllArticleByCategory",
+        "parameters": [
+          {
+            "name": "idCategory",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All articles histories by category were found in DB / Empty list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/users/{id}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete a user",
+        "description": "This method allow to delete a user by ID",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/roles/remove/users/{id}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete a role",
+        "description": "This method allow to delete a role by ID",
+        "operationId": "deleteRoleFromUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roleName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/providerOrder/{idOrder}/{idOrderLine}": {
+      "delete": {
+        "tags": [
+          "ProviderOrderDto"
+        ],
+        "summary": "Delete a provider order article line",
+        "description": "This method allow to delete a provider order article line by ID",
+        "operationId": "deleteArticle",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idOrderLine",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider order article line has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventoryManagement/api/v1/customerOrder/article/{idOrder}/{idOrderLine}": {
+      "delete": {
+        "tags": [
+          "CustomerOrderDto"
+        ],
+        "summary": "Delete a customer order article line",
+        "description": "This method allow to delete a customer order article line by ID",
+        "operationId": "deleteArticle_1",
+        "parameters": [
+          {
+            "name": "idOrder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "idOrderLine",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer order article line has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access for this objet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SaleRequest": {
+        "required": [
+          "dateSale"
+        ],
+        "type": "object",
+        "properties": {
+          "dateSale": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "comments": {
+            "type": "string"
+          },
+          "id_enterprise": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "address1": {
+            "type": "string"
+          },
+          "address2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "codePostal": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "Article": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "codeArticle": {
+            "type": "string"
+          },
+          "designation": {
+            "type": "string"
+          },
+          "unitPriceHt": {
+            "type": "number"
+          },
+          "rateTax": {
+            "type": "number"
+          },
+          "unitPriceTtc": {
+            "type": "number"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "enterprise": {
+            "$ref": "#/components/schemas/Enterprise"
+          },
+          "saleLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SaleLine"
+            }
+          },
+          "providerOrderLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderOrderLine"
+            }
+          },
+          "stockMovements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockMovement"
+            }
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "codeCategory": {
+            "type": "string"
+          },
+          "designation": {
+            "type": "string"
+          },
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Article"
+            }
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "numTel": {
+            "type": "string"
+          },
+          "enterprise": {
+            "$ref": "#/components/schemas/Enterprise"
+          },
+          "customerOrder": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerOrder"
+            }
+          }
+        }
+      },
+      "CustomerOrder": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "codeCustomerOrder": {
+            "type": "string"
+          },
+          "dateOrder": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stateOrder": {
+            "type": "string",
+            "enum": [
+              "ON_PROGRESS",
+              "VALIDATE",
+              "DELIVERED",
+              "CANCELED"
+            ]
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Customer"
+          },
+          "customerOrderLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerOrderLine"
+            }
+          }
+        }
+      },
+      "CustomerOrderLine": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "article": {
+            "$ref": "#/components/schemas/Article"
+          },
+          "customerOrder": {
+            "$ref": "#/components/schemas/CustomerOrder"
+          }
+        }
+      },
+      "Enterprise": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "codeFiscal": {
+            "type": "string"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "numTel": {
+            "type": "string"
+          },
+          "siteWeb": {
+            "type": "string"
+          },
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Article"
+            }
+          },
+          "customers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            }
+          },
+          "providers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Provider"
+            }
+          },
+          "sales": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sale"
+            }
+          }
+        }
+      },
+      "Provider": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "numTel": {
+            "type": "string"
+          },
+          "enterprise": {
+            "$ref": "#/components/schemas/Enterprise"
+          },
+          "providerOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderOrder"
+            }
+          }
+        }
+      },
+      "ProviderOrder": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "codeProviderOrder": {
+            "type": "string"
+          },
+          "dateOrdering": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stateOrder": {
+            "type": "string",
+            "enum": [
+              "ON_PROGRESS",
+              "VALIDATE",
+              "DELIVERED",
+              "CANCELED"
+            ]
+          },
+          "provider": {
+            "$ref": "#/components/schemas/Provider"
+          },
+          "providerOrderLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderOrderLine"
+            }
+          }
+        }
+      },
+      "ProviderOrderLine": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "providerOrder": {
+            "$ref": "#/components/schemas/ProviderOrder"
+          },
+          "article": {
+            "$ref": "#/components/schemas/Article"
+          }
+        }
+      },
+      "Sale": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "codeSale": {
+            "type": "string"
+          },
+          "enterprise": {
+            "$ref": "#/components/schemas/Enterprise"
+          },
+          "dateSale": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "comments": {
+            "type": "string"
+          },
+          "saleLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SaleLine"
+            }
+          }
+        }
+      },
+      "SaleDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "codeSale": {
+            "type": "string"
+          },
+          "dateSale": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "comments": {
+            "type": "string"
+          },
+          "id_enterprise": {
+            "$ref": "#/components/schemas/Enterprise"
+          }
+        }
+      },
+      "SaleLine": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "sale": {
+            "$ref": "#/components/schemas/Sale"
+          },
+          "article": {
+            "$ref": "#/components/schemas/Article"
+          }
+        }
+      },
+      "StockMovement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateMovement": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "typeMoveStock": {
+            "type": "string",
+            "enum": [
+              "ENTRANCE",
+              "EXIT",
+              "CORRECTION_POSITIVE",
+              "CORRECTION_NEGATIVE"
+            ]
+          },
+          "sourceStockMovement": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER_ORDER",
+              "PROVIDER_ORDER",
+              "SALE"
+            ]
+          },
+          "article": {
+            "$ref": "#/components/schemas/Article"
+          }
+        }
+      },
+      "AddressDto": {
+        "required": [
+          "address1",
+          "city",
+          "codePostal",
+          "country"
+        ],
+        "type": "object",
+        "properties": {
+          "address1": {
+            "type": "string"
+          },
+          "address2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "codePostal": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "ProviderRequest": {
+        "required": [
+          "addressDto",
+          "mail",
+          "name",
+          "numTel",
+          "surname"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "addressDto": {
+            "$ref": "#/components/schemas/AddressDto"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "numTel": {
+            "type": "string"
+          },
+          "id_enterprise": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "EnterpriseDto": {
+        "required": [
+          "addressDto",
+          "codeFiscal",
+          "description",
+          "mail",
+          "name",
+          "numTel",
+          "picture",
+          "siteWeb"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "addressDto": {
+            "$ref": "#/components/schemas/AddressDto"
+          },
+          "codeFiscal": {
+            "type": "string"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "numTel": {
+            "type": "string"
+          },
+          "siteWeb": {
+            "type": "string"
+          }
+        }
+      },
+      "ProviderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "addressDto": {
+            "$ref": "#/components/schemas/AddressDto"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "numTel": {
+            "type": "string"
+          },
+          "id_enterprise": {
+            "$ref": "#/components/schemas/EnterpriseDto"
+          }
+        }
+      },
+      "ProviderOrderRequest": {
+        "required": [
+          "dateOrder",
+          "stateOrder"
+        ],
+        "type": "object",
+        "properties": {
+          "dateOrder": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stateOrder": {
+            "type": "string",
+            "enum": [
+              "ON_PROGRESS",
+              "VALIDATE",
+              "DELIVERED",
+              "CANCELED"
+            ]
+          },
+          "providerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderDelivered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProviderOrderDto": {
+        "required": [
+          "dateOrdering",
+          "stateOrder"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "codeProviderOrder": {
+            "type": "string"
+          },
+          "dateOrdering": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stateOrder": {
+            "type": "string",
+            "enum": [
+              "ON_PROGRESS",
+              "VALIDATE",
+              "DELIVERED",
+              "CANCELED"
+            ]
+          },
+          "providerDto": {
+            "$ref": "#/components/schemas/ProviderDto"
+          },
+          "id_enterprise": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderDelivered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CustomerRequest": {
+        "required": [
+          "addressDto",
+          "mail",
+          "name",
+          "numTel",
+          "surname"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "addressDto": {
+            "$ref": "#/components/schemas/AddressDto"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "numTel": {
+            "type": "string"
+          },
+          "id_enterprise": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "CustomerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "addressDto": {
+            "$ref": "#/components/schemas/AddressDto"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "numTel": {
+            "type": "string"
+          },
+          "id_enterprise": {
+            "$ref": "#/components/schemas/EnterpriseDto"
+          }
+        }
+      },
+      "CustomerOrderRequest": {
+        "required": [
+          "dateOrder",
+          "stateOrder"
+        ],
+        "type": "object",
+        "properties": {
+          "dateOrder": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stateOrder": {
+            "type": "string",
+            "enum": [
+              "ON_PROGRESS",
+              "VALIDATE",
+              "DELIVERED",
+              "CANCELED"
+            ]
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderDelivered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CustomerOrderDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "codeOrderCustomer": {
+            "type": "string"
+          },
+          "dateOrder": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stateOrder": {
+            "type": "string",
+            "enum": [
+              "ON_PROGRESS",
+              "VALIDATE",
+              "DELIVERED",
+              "CANCELED"
+            ]
+          },
+          "customerDto": {
+            "$ref": "#/components/schemas/CustomerDto"
+          },
+          "id_enterprise": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderDelivered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CategoryRequest": {
+        "required": [
+          "designation"
+        ],
+        "type": "object",
+        "properties": {
+          "designation": {
+            "type": "string"
+          }
+        }
+      },
+      "CategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "codeCategory": {
+            "type": "string"
+          },
+          "designation": {
+            "type": "string"
+          }
+        }
+      },
+      "ArticleRequest": {
+        "required": [
+          "codeCategory",
+          "designation",
+          "picture",
+          "rateTax",
+          "unitPriceHt",
+          "unitPriceTtc"
+        ],
+        "type": "object",
+        "properties": {
+          "designation": {
+            "type": "string"
+          },
+          "unitPriceHt": {
+            "type": "number"
+          },
+          "rateTax": {
+            "type": "number"
+          },
+          "unitPriceTtc": {
+            "type": "number"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "codeCategory": {
+            "type": "string"
+          }
+        }
+      },
+      "ArticleDto": {
+        "type": "object",
+        "properties": {
+          "codeArticle": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "designation": {
+            "type": "string"
+          },
+          "unitPriceHt": {
+            "type": "number"
+          },
+          "rateTax": {
+            "type": "number"
+          },
+          "unitPriceTtc": {
+            "type": "number"
+          },
+          "picture": {
+            "type": "string"
+          },
+          "categoryDto": {
+            "$ref": "#/components/schemas/CategoryDto"
+          },
+          "enterpriseDto": {
+            "$ref": "#/components/schemas/EnterpriseDto"
+          }
+        }
+      },
+      "User": {
+        "required": [
+          "email",
+          "firstName",
+          "lastName",
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "StockMovementRequest": {
+        "required": [
+          "dateMovement",
+          "quantity",
+          "sourceStockMovement",
+          "typeMoveStock"
+        ],
+        "type": "object",
+        "properties": {
+          "dateMovement": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "typeMoveStock": {
+            "type": "string",
+            "enum": [
+              "ENTRANCE",
+              "EXIT",
+              "CORRECTION_POSITIVE",
+              "CORRECTION_NEGATIVE"
+            ]
+          },
+          "sourceStockMovement": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER_ORDER",
+              "PROVIDER_ORDER",
+              "SALE"
+            ]
+          },
+          "articleId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "StockMovementDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dateMovement": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "typeMoveStock": {
+            "type": "string",
+            "enum": [
+              "ENTRANCE",
+              "EXIT",
+              "CORRECTION_POSITIVE",
+              "CORRECTION_NEGATIVE"
+            ]
+          },
+          "sourceStockMovement": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER_ORDER",
+              "PROVIDER_ORDER",
+              "SALE"
+            ]
+          },
+          "articleDto": {
+            "$ref": "#/components/schemas/ArticleDto"
+          }
+        }
+      },
+      "ProviderOrderLineDto": {
+        "required": [
+          "quantity",
+          "unitPrice"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "providerOrderDto": {
+            "$ref": "#/components/schemas/ProviderOrderDto"
+          },
+          "articleDto": {
+            "$ref": "#/components/schemas/ArticleDto"
+          }
+        }
+      },
+      "CustomerOrderLineDto": {
+        "required": [
+          "quantity",
+          "unitPrice"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "articleDto": {
+            "$ref": "#/components/schemas/ArticleDto"
+          },
+          "customerOrder": {
+            "$ref": "#/components/schemas/CustomerOrderDto"
+          }
+        }
+      },
+      "SaleLineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "saleDto": {
+            "$ref": "#/components/schemas/SaleDto"
+          },
+          "articleDto": {
+            "$ref": "#/components/schemas/ArticleDto"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer token": {
+        "type": "http",
+        "description": "JWT auth description",
+        "in": "header",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

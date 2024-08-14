@@ -8,8 +8,10 @@ import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import com.inventor.management.inventor_management.enterprise.repository.EnterpriseRepository;
 import com.inventor.management.inventor_management.sale.dto.SaleDto;
 import com.inventor.management.inventor_management.sale.dto.SaleRequest;
+import com.inventor.management.inventor_management.sale.entity.Sale;
 import com.inventor.management.inventor_management.sale.mapper.SaleMapper;
 import com.inventor.management.inventor_management.sale.service.SaleService;
+import com.inventor.management.inventor_management.saleLine.dto.SaleLineRequest;
 import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.core.exceptions.InvalidEntityException;
@@ -27,6 +29,7 @@ import org.springframework.util.StringUtils;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -51,32 +54,30 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public SaleDto saveSale(SaleRequest saleRequest) {
         validator.validate(saleRequest);
-        List<String> articleError = new ArrayList<>();
         var enterprise = this.getEnterprise(saleRequest.id_enterprise());
 
-        saleRequest.saleLines().forEach(saleLine -> {
-            Optional<Article> article = articleRepository.findById(saleLine.getArticle().getId());
-            if(article.isEmpty()){
-                articleError.add("Nothing article with ID ="+ saleLine.getArticle().getId() + "was found in database");
-            }
-        });
+        //Fetch all article IDs in one go
+        List<Long> articleIds = saleRequest.saleLines()
+                .stream()
+                .map(SaleLineRequest::getArticleId)
+                .toList();
 
-        if(!articleError.isEmpty()){
-            log.error("One or more articles were not found in the database");
-            throw new InvalidEntityException("One or more articles were not found in database");
+        var articles = articleRepository.findAllById(articleIds)
+                .stream()
+                .collect(Collectors.toMap(Article::getId, article -> article));
+
+        var articleErrors = validateArticles(saleRequest.saleLines(), articles);
+
+        if(!articleErrors.isEmpty()){
+            log.error("One or more articles were not found in database");
+            throw new InvalidEntityException("One or more articles were not found in database", articleErrors);
         }
+
         var sale = saleMapper.fromSaleRequest(saleRequest, enterprise);
         sale.setCodeSale(generateRandomCode(8));
 
         var saveSale = saleRepository.save(sale);
-
-        saleRequest.saleLines().forEach(saleLine -> {
-            var article = articleRepository.findById(saleLine.getArticle().getId()).get();
-            var saleLines = saleMapper.fromSaleLineDto(saleMapper.fromSaleLine(saleLine), article, saveSale);
-            saleLines.setSale(saveSale);
-            saleLineRepository.save(saleLines);
-            updateStockMovementSale(saleLine);
-        });
+        saveSaleLines(saleRequest, articles, saveSale);
 
         return saleMapper.fromSale(saveSale);
     }
@@ -84,21 +85,19 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public SaleDto updateSale(SaleRequest saleRequest, Long id) {
         validator.validate(saleRequest);
-        List<String> articleErrors = new ArrayList<>();
         var enterprise = this.getEnterprise(saleRequest.id_enterprise());
 
-        if(saleRequest.saleLines()!= null){
-            saleRequest.saleLines().forEach(saleLine -> {
-                if(saleLine.getArticle() != null){
-                    Optional<Article> article = articleRepository.findById(saleLine.getArticle().getId());
-                    if(article.isEmpty()){
-                        articleErrors.add("Nothing article with ID ="+ saleLine.getArticle().getId() +
-                                "was found in database"
-                        );
-                    }
-                }
-            });
-        }
+        //Fetch all article IDs in one go
+        List<Long> articleIds = saleRequest.saleLines()
+                .stream()
+                .map(SaleLineRequest::getArticleId)
+                .toList();
+
+        Map<Long, Article> articles = articleRepository.findAllById(articleIds)
+                .stream()
+                .collect(Collectors.toMap(Article::getId, article -> article));
+
+        var articleErrors = validateArticles(saleRequest.saleLines(), articles);
 
         if(!articleErrors.isEmpty()){
             log.error("One or more articles were not found in database");
@@ -106,15 +105,8 @@ public class SaleServiceImpl implements SaleService {
         }
 
         var updatedSale = saleRepository.save(saleMapper.fromSaleRequest(saleRequest, enterprise));
+        saveSaleLines(saleRequest, articles, updatedSale);
 
-        if(saleRequest.saleLines() != null){
-            saleRequest.saleLines().forEach(saleLine -> {
-                var article = articleRepository.findById(saleLine.getArticle().getId()).get();
-                var saveSaleLine = saleMapper.fromSaleLineDto(saleMapper.fromSaleLine(saleLine), article, updatedSale);
-                saveSaleLine.setSale(updatedSale);
-                saleLineRepository.save(saveSaleLine);
-            });
-        }
         return saleMapper.fromSale(updatedSale);
     }
 
@@ -170,13 +162,13 @@ public class SaleServiceImpl implements SaleService {
         saleRepository.deleteById(id);
     }
 
-    private void updateStockMovementSale (SaleLine saleLine){
+    private void updateStockMovementSale (SaleLineRequest saleLineRequest){
             var stock = StockMovementRequest.builder()
-                    .articleId(saleLine.getArticle().getId())
+                    .articleId(saleLineRequest.getArticleId())
                     .typeMoveStock(EXIT)
                     .sourceStockMovement(SALE)
                     .dateMovement(Instant.now())
-                    .quantity(saleLine.getQuantity())
+                    .quantity(saleLineRequest.getQuantity())
                     .build();
 
             stockMovementService.exitStock(stock);
@@ -185,5 +177,26 @@ public class SaleServiceImpl implements SaleService {
     private Enterprise getEnterprise(Long id) {
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Enterprise not found"));
+    }
+
+    private List<String> validateArticles(List<SaleLineRequest> saleLineRequests, Map<Long, Article> articles) {
+        var articleErrors = new ArrayList<String>();
+        saleLineRequests.forEach(saleLineRequest -> {
+            if (!articles.containsKey(saleLineRequest.getArticleId())) {
+                articleErrors.add("Article with ID = " + saleLineRequest.getArticleId() + " not found.");
+            }
+        });
+
+        return articleErrors;
+    }
+
+    private void saveSaleLines (SaleRequest saleRequest, Map<Long, Article> articles, Sale sale) {
+        saleRequest.saleLines().forEach(saleLineRequest -> {
+            var article = articles.get(saleLineRequest.getArticleId());
+            var saleLines = saleMapper.fromSaleLineRequest(saleLineRequest, article, sale);
+            saleLines.setSale(sale);
+            saleLineRepository.save(saleLines);
+            updateStockMovementSale(saleLineRequest);
+        });
     }
 }

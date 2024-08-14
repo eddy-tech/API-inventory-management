@@ -10,5 +10,4 @@ public class CategoryDto {
     private Long id;
     private String codeCategory;
     private String designation;
-    private EnterpriseDto id_enterprise;
 }

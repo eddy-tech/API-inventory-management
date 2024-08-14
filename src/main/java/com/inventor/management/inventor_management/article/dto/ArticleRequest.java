@@ -16,5 +16,7 @@ public record ArticleRequest(
         @NotNull(message = "You have to provide at leas one picture")
         String picture,
         @NotNull(message = "You have to provide a category of article")
-        String codeCategory
+        String codeCategory,
+        @NotNull(message = "You have to provide a enterprise's article")
+        Long enterpriseId
 ) {}

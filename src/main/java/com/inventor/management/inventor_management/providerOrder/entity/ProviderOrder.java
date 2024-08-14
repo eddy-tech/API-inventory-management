@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 import java.time.Instant;
 import java.util.List;
 
+import static jakarta.persistence.EnumType.STRING;
+
 @Entity
 @Getter
 @Setter
@@ -26,6 +28,7 @@ public class ProviderOrder extends AbstractEntity {
     private Instant dateOrdering;
 
     @Column(name = "etat_commande")
+    @Enumerated(STRING)
     private StateOrder stateOrder;
 
     @ManyToOne

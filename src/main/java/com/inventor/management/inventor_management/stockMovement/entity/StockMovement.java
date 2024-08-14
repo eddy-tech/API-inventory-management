@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import static jakarta.persistence.EnumType.STRING;
+
 @Entity
 @Getter
 @Setter
@@ -26,9 +28,11 @@ public class StockMovement extends AbstractEntity {
     private BigDecimal quantity;
 
     @Column(name = "type_move_stock")
+    @Enumerated(STRING)
     private TypeMoveStock typeMoveStock;
 
     @Column(name = "source_move_stock")
+    @Enumerated(STRING)
     private SourceStockMovement sourceStockMovement;
 
     @ManyToOne

@@ -24,10 +24,6 @@ public class Category extends AbstractEntity {
     @Column(name = "designation")
     private String designation;
 
-    @ManyToOne
-    @JoinColumn(name = "id_enterprise")
-    private Enterprise enterprise;
-
     @OneToMany(mappedBy = "category")
     private List<Article> articles;
 }

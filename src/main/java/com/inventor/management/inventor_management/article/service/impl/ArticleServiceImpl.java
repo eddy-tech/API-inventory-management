@@ -12,6 +12,7 @@ import com.inventor.management.inventor_management.article.repository.ArticleRep
 import com.inventor.management.inventor_management.article.service.ArticleService;
 import com.inventor.management.inventor_management.customerOrderLine.dto.CustomerOrderLineDto;
 import com.inventor.management.inventor_management.customerOrderLine.mapper.CustomerOrderLineMapper;
+import com.inventor.management.inventor_management.enterprise.service.EnterpriseService;
 import com.inventor.management.inventor_management.provider.mapper.ProviderMapper;
 import com.inventor.management.inventor_management.providerOrderLine.dto.ProviderOrderLineDto;
 import com.inventor.management.inventor_management.sale.mapper.SaleMapper;
@@ -47,6 +48,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final CustomerOrderLineRepository customerOrderLineRepository;
     private final ProviderOrderLineRepository providerOrderLineRepository;
     private final SaleLineRepository saleLineRepository;
+    private final EnterpriseService enterpriseService;
     private final ArticleMapper articleMapper;
     private final SaleMapper saleMapper;
     private final CustomerOrderLineMapper customerOrderLineMapper;
@@ -59,8 +61,11 @@ public class ArticleServiceImpl implements ArticleService {
         validator.validate(articleRequest);
 
         var category = this.getCategory(articleRequest.codeCategory());
-        var article = articleMapper.fromArticle(articleRequest, category);
+        var enterprise = enterpriseService.findById(articleRequest.enterpriseId());
+        var article = articleMapper.fromArticle(articleRequest, category, enterprise);
         article.setCodeArticle(generateRandomCode(8));
+
+        log.info("Article gonna be save with successfully");
 
         return articleMapper.fromArticleDto(articleRepository.save(article));
     }

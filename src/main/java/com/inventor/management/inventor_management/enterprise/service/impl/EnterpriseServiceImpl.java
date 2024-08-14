@@ -3,6 +3,7 @@ package com.inventor.management.inventor_management.enterprise.service.impl;
 import com.inventor.management.core.validator.ObjectValidator;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.inventor_management.enterprise.dto.EnterpriseDto;
+import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import com.inventor.management.inventor_management.enterprise.mapper.EnterpriseMapper;
 import com.inventor.management.inventor_management.enterprise.repository.EnterpriseRepository;
 import com.inventor.management.inventor_management.enterprise.service.EnterpriseService;
@@ -57,12 +58,17 @@ public class EnterpriseServiceImpl implements EnterpriseService {
             log.error("Enterprise ID is null");
             return null;
         }
-        var enterprise = enterpriseRepository.findById(id)
+        var enterprise = this.findById(id);
+
+        return enterpriseMapper.fromEnterprise(enterprise);
+    }
+
+    @Override
+    public Enterprise findById(Long id) {
+        return enterpriseRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Nothing Enterprise with ID ="+ id + "was found in DataBase"
                         )
                 );
-
-        return enterpriseMapper.fromEnterprise(enterprise);
     }
 
     @Override
