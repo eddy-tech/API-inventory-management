@@ -1,12 +1,12 @@
 ######################## PostgreSQL Database Config #############################
 spring:
   datasource:
-    url: ${INVENTORY.DATABASE.POSTGRESQL}
-    username: ${INVENTORY.DATABASE.USERNAME}
-    password: ${INVENTORY.DATABASE.PASSWORD}
+    url: ${INVENTORY_DATABASE_POSTGRESQL}
+    username: ${INVENTORY_DATABASE_USERNAME}
+    password: ${INVENTORY_DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
-      schema: inventory
+      schema: ${INVENTORY_KEYCLOAK_REALM}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -27,7 +27,7 @@ spring:
     url: ${spring.datasource.url}
     locations: classpath:db/migration/structure, classpath:db/migration/prodData
     validate-on-migrate: true
-    default-schema: inventory
+    default-schema: ${INVENTORY_KEYCLOAK_REALM}
 
   ########################## Security Config with Keycloak ########################
 
@@ -39,18 +39,18 @@ spring:
 
 app:
   keycloak:
-    realm: ${INVENTORY.KEYCLOAK.REALM}
-    serverUrl: ${INVENTORY.KEYCLOAK.SERVER_URL}
+    realm: ${INVENTORY_KEYCLOAK_REALM}
+    serverUrl: ${INVENTORY_KEYCLOAK_SERVER_URL}
   admin:
-    clientId: ${INVENTORY.KEYCLOAK.CLIENT_ID}
-    clientSecret: ${INVENTORY.KEYCLOAK.CLIENT_SECRET}
+    clientId: ${INVENTORY_KEYCLOAK_CLIENT_ID}
+    clientSecret: ${INVENTORY_KEYCLOAK_CLIENT_SECRET}
 
 server:
   port: 8081
 
 
 flickr:
-  apiKey: 95362056e8ece9e2f8899e9d5f88192e
-  apiSecret: 7689372e2653c903
-  appKey: 72157720847629347-c584f0411627be1b
-  appSecret: 8e2081bcba21c5db
+  apiKey:
+  apiSecret:
+  appKey:
+  appSecret:
