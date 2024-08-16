@@ -1,0 +1,40 @@
+package com.inventor.management.inventor_management.customerOrder.entity;
+
+import com.inventor.management.inventor_management.customer.entity.Customer;
+import com.inventor.management.inventor_management.customerOrderLine.entity.CustomerOrderLine;
+import com.inventor.management.inventor_management.core.enums.StateOrder;
+import com.inventor.management.inventor_management.core.domains.AbstractEntity;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import java.time.Instant;
+import java.util.List;
+
+import static jakarta.persistence.EnumType.STRING;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "commandeClients")
+@SuperBuilder
+public class CustomerOrder extends AbstractEntity {
+    @Column(name = "code_commande_client")
+    private String codeCustomerOrder;
+
+    @Column(name = "date_commande")
+    private Instant dateOrder;
+
+    @Column(name = "etat_commande")
+    @Enumerated(STRING)
+    private StateOrder stateOrder;
+
+    @ManyToOne
+    @JoinColumn(name = "id_client")
+    private Customer customer;
+
+    @OneToMany(mappedBy = "customerOrder")
+    private  List<CustomerOrderLine> customerOrderLines;
+}

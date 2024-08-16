@@ -1,0 +1,53 @@
+package com.inventor.management.inventor_management.flickr.strategy;
+
+import com.flickr4java.flickr.FlickrException;
+import com.inventor.management.inventor_management.article.service.strategy.SaveArticlePicture;
+import com.inventor.management.core.exceptions.InvalidOperationException;
+import com.inventor.management.inventor_management.customer.service.strategy.SaveCustomerPicture;
+import com.inventor.management.inventor_management.enterprise.service.strategy.SaveEnterprisePicture;
+import com.inventor.management.inventor_management.provider.service.strategy.SaveProviderPicture;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.InputStream;
+
+@Service
+@AllArgsConstructor
+public class StrategyPictureContext {
+    private Strategy strategy;
+    private final BeanFactory beanFactory;
+
+    @Autowired
+    public StrategyPictureContext(BeanFactory beanFactory){
+        this.beanFactory = beanFactory;
+    }
+
+    public Object savePicture (String context, Long id, InputStream picture, String title) throws FlickrException {
+        determinateContext(context);
+        return strategy.savePicture(id,picture,title);
+    }
+
+    private void determinateContext (String context) {
+        final String beanName = context + "Strategy";
+        switch (context) {
+            case "article":
+                beanFactory.getBean(beanName, SaveArticlePicture.class);
+                break;
+            case "enterprise":
+                beanFactory.getBean(beanName, SaveEnterprisePicture.class);
+                break;
+            case "customer":
+                beanFactory.getBean(beanName, SaveCustomerPicture.class);
+                break;
+            case "provider":
+                beanFactory.getBean(beanName, SaveProviderPicture.class);
+                break;
+            default: throw new InvalidOperationException("unknown context for saving picture");
+        }
+    }
+
+
+}
