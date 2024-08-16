@@ -1,8 +1,9 @@
 package com.inventor.management.inventor_management.core.roots;
 
-import com.inventor.management.inventor_management.core.utils.Constants;
+import static com.inventor.management.inventor_management.core.utils.Constants.API_ROOT;
 
 public interface PictureEndPoint {
-    String PICTURE_ENDPOINT = Constants.API_ROOT + "/pictures";
-    String SAVE_PICTURE = PICTURE_ENDPOINT + "/save/{id}/{title}/{context}";
+    String PICTURE_ENDPOINT = API_ROOT + "/picture";
+    String SAVE_PICTURE = "/save/{id}";
+    String SAVE_PICTURE_USER = "/user/save/{id}";
 }

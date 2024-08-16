@@ -1,33 +1,36 @@
 package com.inventor.management.inventor_management.enterprise.service.strategy;
 
-import com.flickr4java.flickr.FlickrException;
+import com.inventor.management.core.exceptions.ImageErrorException;
 import com.inventor.management.inventor_management.enterprise.dto.EnterpriseDto;
-import com.inventor.management.core.exceptions.InvalidOperationException;
+import com.inventor.management.inventor_management.enterprise.mapper.EnterpriseMapper;
+import com.inventor.management.inventor_management.enterprise.repository.EnterpriseRepository;
 import com.inventor.management.inventor_management.enterprise.service.EnterpriseService;
-import com.inventor.management.inventor_management.flickr.service.FlickrService;
-import com.inventor.management.inventor_management.flickr.strategy.Strategy;
+import com.inventor.management.inventor_management.cloudinary.service.CloudinaryService;
+import com.inventor.management.inventor_management.cloudinary.strategy.Strategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 
 @Service("enterpriseStrategy")
 @Slf4j
 @RequiredArgsConstructor
 public class SaveEnterprisePicture implements Strategy<EnterpriseDto> {
     private final EnterpriseService enterpriseService;
-    private final FlickrService flickrService;
+    private final EnterpriseRepository enterpriseRepository;
+    private final CloudinaryService cloudinaryService;
+    private final EnterpriseMapper enterpriseMapper;
 
     @Override
-    public EnterpriseDto savePicture(Long id,InputStream picture, String title) throws FlickrException {
-        var enterprise = enterpriseService.getEnterprise(id);
-        String urlPicture = flickrService.savePicture(picture,title);
+    public EnterpriseDto saveImage(Long id, MultipartFile file) throws ImageErrorException {
+        var enterprise = enterpriseService.findById(id);
+        var urlPicture = cloudinaryService.uploadPicture(file);
         if(!StringUtils.hasLength(urlPicture))
-            throw new InvalidOperationException("Error saving picture of enterprise");
-        enterprise.setPicture(urlPicture);
+            throw new ImageErrorException("Error saving picture of enterprise");
 
-        return enterpriseService.saveEnterprise(enterprise);
+        enterprise.setPicture(urlPicture);
+        return enterpriseMapper.fromEnterprise(enterpriseRepository.save(enterprise));
     }
 }

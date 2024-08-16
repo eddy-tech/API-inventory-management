@@ -33,7 +33,8 @@ public class ProviderServiceImpl implements ProviderService {
     private final EnterpriseMapper enterpriseMapper;
     private final ObjectValidator validator;
 
-    private Provider findProvider(Long providerId){
+    @Override
+    public Provider findById(Long providerId){
         return providerRepository.findById(providerId)
                 .orElseThrow(()-> new EntityNotFoundException(
                         "Nothing Provider with ID ="+ providerId + "was found in DataBase")
@@ -80,7 +81,7 @@ public class ProviderServiceImpl implements ProviderService {
             return null;
         }
 
-        return providerMapper.fromProvider(findProvider(id));
+        return providerMapper.fromProvider(findById(id));
     }
 
     @Override
