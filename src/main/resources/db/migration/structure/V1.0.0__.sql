@@ -161,7 +161,6 @@ CREATE TABLE ventes
     creation_date      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     last_modified_date TIMESTAMP WITHOUT TIME ZONE,
     code_vente         VARCHAR(255),
-    id_enterprise      BIGINT,
     date_vente         TIMESTAMP WITHOUT TIME ZONE,
     commentaires       VARCHAR(255),
     CONSTRAINT pk_ventes PRIMARY KEY (id)
@@ -205,6 +204,3 @@ ALTER TABLE ligne_ventes
 
 ALTER TABLE mouvement_stock
     ADD CONSTRAINT FK_MOUVEMENTSTOCK_ON_ID_ARTICLE FOREIGN KEY (id_article) REFERENCES articles (id);
-
-ALTER TABLE ventes
-    ADD CONSTRAINT FK_VENTES_ON_ID_ENTERPRISE FOREIGN KEY (id_enterprise) REFERENCES entreprises (id);

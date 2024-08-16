@@ -1,6 +1,5 @@
 package com.inventor.management.core.security;
 
-import jakarta.validation.constraints.NotNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +21,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
     private final String ROLE_ = "ROLE_";
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
     @Override
-    public AbstractAuthenticationToken convert(@NotNull Jwt jwt) {
+    public AbstractAuthenticationToken convert(Jwt jwt) {
         var authorities = Stream.concat(
                 jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
                 extractResourceRoles(jwt).stream()).collect(Collectors.toSet());

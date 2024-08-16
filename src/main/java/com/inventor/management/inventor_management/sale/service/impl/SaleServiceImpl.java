@@ -54,7 +54,6 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public SaleDto saveSale(SaleRequest saleRequest) {
         validator.validate(saleRequest);
-        var enterprise = this.getEnterprise(saleRequest.id_enterprise());
 
         //Fetch all article IDs in one go
         List<Long> articleIds = saleRequest.saleLines()
@@ -73,7 +72,7 @@ public class SaleServiceImpl implements SaleService {
             throw new InvalidEntityException("One or more articles were not found in database", articleErrors);
         }
 
-        var sale = saleMapper.fromSaleRequest(saleRequest, enterprise);
+        var sale = saleMapper.fromSaleRequest(saleRequest);
         sale.setCodeSale(generateRandomCode(8));
 
         var saveSale = saleRepository.save(sale);
@@ -85,8 +84,6 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public SaleDto updateSale(SaleRequest saleRequest, Long id) {
         validator.validate(saleRequest);
-        var enterprise = this.getEnterprise(saleRequest.id_enterprise());
-
         //Fetch all article IDs in one go
         List<Long> articleIds = saleRequest.saleLines()
                 .stream()
@@ -104,7 +101,7 @@ public class SaleServiceImpl implements SaleService {
             throw new InvalidEntityException("One or more articles were not found in database", articleErrors);
         }
 
-        var updatedSale = saleRepository.save(saleMapper.fromSaleRequest(saleRequest, enterprise));
+        var updatedSale = saleRepository.save(saleMapper.fromSaleRequest(saleRequest));
         saveSaleLines(saleRequest, articles, updatedSale);
 
         return saleMapper.fromSale(updatedSale);

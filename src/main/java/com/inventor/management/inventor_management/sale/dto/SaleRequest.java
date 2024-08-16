@@ -12,7 +12,6 @@ public record SaleRequest(
         @NotNull(message = "date sale is required and must not be null")
         Instant dateSale,
         String comments,
-        Long id_enterprise,
         @NotNull(message = "Sale lines must not be null or empty")
         List<SaleLineRequest> saleLines
 ) {}

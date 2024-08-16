@@ -13,7 +13,9 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.keycloak.representations.idm.CredentialRepresentation.PASSWORD;
@@ -38,9 +40,9 @@ public class UserServiceImpl implements UserService {
         }
         log.info("User created successfully");
 
-        var usersList = usersResource.searchByUsername(user.username(), true);
-        var userRepresentation = usersList.getFirst();
-        sendVerificationEmail(userRepresentation.getId());
+//        var usersList = usersResource.searchByUsername(user.username(), true);
+//        var userRepresentation = usersList.getFirst();
+//        sendVerificationEmail(userRepresentation.getId());
     }
 
     @Override
@@ -78,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
     private static UserRepresentation getUserRepresentation(User user) {
         var representation = new UserRepresentation();
-        representation.setEnabled(false);
+        representation.setEnabled(true);
         representation.setUsername(user.username());
         representation.setFirstName(user.firstName());
         representation.setLastName(user.lastName());
@@ -90,6 +92,15 @@ public class UserServiceImpl implements UserService {
         credential.setType(PASSWORD);
 
         representation.setCredentials(List.of(credential));
+
+        Map<String, List<String>> attributes = new HashMap<>();
+        attributes.put("Address", List.of(user.address()));
+        attributes.put("birthdate", List.of(user.birthDate().toString()));
+        attributes.put("picture", List.of(user.picture()));
+        attributes.put("id_enterprise", List.of(user.idEnterprise().toString()));
+
+        representation.setAttributes(attributes);
+
         return representation;
     }
 

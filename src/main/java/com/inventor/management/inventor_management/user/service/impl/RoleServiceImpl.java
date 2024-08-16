@@ -24,24 +24,24 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void assignRole(String userId, String roleName) {
         var user = userService.getUser(userId);
-        user.roles().realmLevel().add(
-                Collections.singletonList(this.getRole(roleName))
-        );
+        var representation = this.getRole(roleName);
+        log.info("Assigning role has been requested with successfully");
+
+        user.roles().realmLevel().add(Collections.singletonList(representation));
     }
 
     @Override
     public void deleteRoleFromUser(String userId, String roleName) {
         var user = userService.getUser(userId);
-        user.roles().realmLevel().remove(
-                Collections.singletonList(this.getRole(roleName))
-        );
+        var representation = this.getRole(roleName);
+        log.info("Removing role has been requested with successfully");
+
+        user.roles().realmLevel().remove(Collections.singletonList(representation));
     }
 
     private RoleRepresentation getRole(String roleName) {
         return this.getRolesResource().get(roleName).toRepresentation();
     }
 
-    private RolesResource getRolesResource() {
-        return keycloak.realm(realm).roles();
-    }
+    private RolesResource getRolesResource() { return keycloak.realm(realm).roles(); }
 }

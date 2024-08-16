@@ -31,13 +31,13 @@ public interface RoleApi {
 
     @DeleteMapping(DELETE_ROLE_USER_ENDPOINT)
     @Operation(
-            summary = "Delete a role",
+            summary = "Delete a role assigned",
             description = "This method allow to delete a role by ID",
             tags = {"User"}
     )
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200",description = "Role has been deleted"),
+                    @ApiResponse(responseCode = "204",description = "Role has been deleted"),
                     @ApiResponse(responseCode = "403", description = "Unauthorized access for this objet")
             })
     ResponseEntity<?> deleteRoleFromUser(

@@ -18,11 +18,10 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class SaleMapper {
     private final ArticleMapper articleMapper;
-        public Sale fromSaleRequest (SaleRequest saleRequest, Enterprise enterprise){
+        public Sale fromSaleRequest (SaleRequest saleRequest){
         return Sale.builder()
                 .dateSale(saleRequest.dateSale())
                 .comments(saleRequest.comments())
-                .enterprise(enterprise)
                 .creationTime(Instant.now())
                 .build();
     }
@@ -33,7 +32,6 @@ public class SaleMapper {
                 .codeSale(sale.getCodeSale())
                 .dateSale(sale.getDateSale())
                 .comments(sale.getComments())
-                .id_enterprise(sale.getEnterprise())
                 .build();
     }
 

@@ -17,8 +17,6 @@ public class SaleDto {
     private String codeSale;
     private Instant dateSale;
     private String comments;
-//    private Enterprise id_enterprise;
-
     @JsonIgnore
     private List<SaleLineDto> saleLines;
 }
