@@ -1,6 +1,5 @@
 package com.inventor.management.core.handlers;
 
-import com.flickr4java.flickr.FlickrException;
 import com.inventor.management.core.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -46,11 +45,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(NOT_FOUND).body(representation);
     }
 
-    @ExceptionHandler(FlickrException.class)
-    public ResponseEntity<ExceptionRepresentation> handleFlickrException (FlickrException exception){
+    @ExceptionHandler(ImageErrorException.class)
+    public ResponseEntity<ExceptionRepresentation> handleFlickrException (ImageErrorException exception){
         var representation = ExceptionRepresentation.builder()
                 .errorMessage(exception.getMessage())
-                .errorSource(exception.getErrorCode())
                 .build();
 
         return ResponseEntity.status(NOT_FOUND).body(representation);

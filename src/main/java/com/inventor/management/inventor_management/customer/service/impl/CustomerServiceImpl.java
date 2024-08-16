@@ -6,6 +6,7 @@ import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.inventor_management.customer.dto.CustomerDto;
 import com.inventor.management.core.exceptions.InvalidOperationException;
 import com.inventor.management.inventor_management.customer.dto.CustomerRequest;
+import com.inventor.management.inventor_management.customer.entity.Customer;
 import com.inventor.management.inventor_management.customer.mapper.CustomerMapper;
 import com.inventor.management.inventor_management.customerOrder.repository.CustomerOrderRepository;
 import com.inventor.management.inventor_management.customer.repository.CustomerRepository;
@@ -55,8 +56,8 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer.setName(customerRequest.name());
         customer.setMail(customerRequest.mail());
-        customer.setPicture(customerRequest.picture());
         customer.setNumTel(customerRequest.numTel());
+        customer.setPicture(customerRequest.picture());
         customer.setSurname(customerRequest.surname());
         customer.setAddressDto(customerRequest.addressDto());
         customer.setId_enterprise(enterpriseMapper.fromEnterprise(enterprise));
@@ -75,11 +76,7 @@ public class CustomerServiceImpl implements CustomerService {
             return null;
         }
 
-        var customer = customerRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException(
-                        "Nothing Client with ="+id+"was found in DataBase")
-                );
-        return customerMapper.fromCustomer(customer);
+        return customerMapper.fromCustomer(this.findById(id));
     }
 
     @Override
@@ -87,6 +84,14 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll().stream()
                 .map((customerMapper::fromCustomer))
                   .toList();
+    }
+
+    @Override
+    public Customer findById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException(
+                        "Nothing Client with ="+id+"was found in DataBase")
+                );
     }
 
     @Override
