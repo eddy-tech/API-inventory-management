@@ -66,7 +66,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Test and Launch app with prod profile
-        uses: actions/checkout@v3
         env:
           INVENTORY_KEYCLOAK_CLIENT_ID: ${{ vars.INVENTORY_KEYCLOAK_CLIENT_ID}}
           INVENTORY_KEYCLOAK_CLIENT_SECRET: ${{ secrets.INVENTORY_KEYCLOAK_CLIENT_SECRET }}
