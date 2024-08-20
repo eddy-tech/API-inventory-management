@@ -58,8 +58,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.7
-      - uses: docker://redgate/flyway:10
+      - uses: docker://redgate/flyway:latest
         with:
           url: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
           user: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
