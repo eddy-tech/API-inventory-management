@@ -55,16 +55,21 @@ jobs:
 
       - name: Flyway Migration
         uses: docker://flyway/flyway:latest
-        with:
-          args: >-
-            migrate
-            -workingDirectory="/github/workspace/"
-            -url="${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-            -user="${{ vars.INVENTORY_DATABASE_USERNAME }}"
-            -password="${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
         env:
           FLYWAY_EMAIL: "${{ vars.FLYWAY_EMAIL }}"
           FLYWAY_TOKEN: "${{ secrets.FLYWAY_TOKEN }}"
+          FLYWAY_URL: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+          FLYWAY_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+          FLYWAY_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+          FLYWAY_VALIDATE_MIGRATION_NAMING: true
+#        with:
+#          args: >-
+#            migrate
+#            -workingDirectory="/github/workspace/"
+#            -url="${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+#            -user="${{ vars.INVENTORY_DATABASE_USERNAME }}"
+#            -password="${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+
 
       - name: Checkout Test and Launch app with prod profile
         env:
