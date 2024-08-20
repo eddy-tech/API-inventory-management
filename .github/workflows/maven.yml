@@ -49,25 +49,31 @@ jobs:
           sudo apt-get update
           sudo apt-get install postgresql-client-14
         env:
-          POSTGRES_DB: ${{ vars.INVENTORY_DATABASE_POSTGRESQL }}
-          POSTGRES_USER: ${{ vars.INVENTORY_DATABASE_USERNAME }}
-          POSTGRES_PASSWORD: ${{ secrets.INVENTORY_DATABASE_PASSWORD }}
+          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
       - name: Flyway Migration
-        run: |
-          mvn flyway:migrate \
-          -Dflyway.url=${{ vars.INVENTORY_DATABASE_POSTGRESQL }} \
-          -Dflyway.user=${{ vars.INVENTORY_DATABASE_USERNAME }} \
-          -Dflyway.password=${{ secrets.INVENTORY_DATABASE_PASSWORD }}
+        uses: docker://redgate/flyway:10
+        with:
+          args: >-
+            migrate
+            -workingDirectory="/github/workspace/"
+            -url="${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+            -user="${{ vars.INVENTORY_DATABASE_USERNAME }}"
+            -password="${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+        env:
+          FLYWAY_EMAIL: "${{ vars.FLYWAY_EMAIL }}"
+          FLYWAY_TOKEN: "${{ secrets.FLYWAY_TOKEN }}"
 
       - name: Checkout Test and Launch app with prod profile
         env:
-          INVENTORY_KEYCLOAK_CLIENT_ID: ${{ vars.INVENTORY_KEYCLOAK_CLIENT_ID}}
-          INVENTORY_KEYCLOAK_CLIENT_SECRET: ${{ secrets.INVENTORY_KEYCLOAK_CLIENT_SECRET }}
-          INVENTORY_KEYCLOAK_SERVER_URL: ${{ vars.INVENTORY_KEYCLOAK_SERVER_URL }}
-          CLOUDINARY_NAME: ${{ vars.CLOUDINARY_NAME }}
-          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          INVENTORY_KEYCLOAK_CLIENT_ID: "${{ vars.INVENTORY_KEYCLOAK_CLIENT_ID}}"
+          INVENTORY_KEYCLOAK_CLIENT_SECRET: "${{ secrets.INVENTORY_KEYCLOAK_CLIENT_SECRET }}"
+          INVENTORY_KEYCLOAK_SERVER_URL: "${{ vars.INVENTORY_KEYCLOAK_SERVER_URL }}"
+          CLOUDINARY_NAME: "${{ vars.CLOUDINARY_NAME }}"
+          CLOUDINARY_API_KEY: "${{ secrets.CLOUDINARY_API_KEY }}"
+          CLOUDINARY_API_SECRET: "${{ secrets.CLOUDINARY_API_SECRET }}"
         run: |
           mvn -B verify --file pom.xml
           java -jar target/management-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
@@ -83,8 +89,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          username: "${{ secrets.DOCKER_HUB_USERNAME }}"
+          password: "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}"
 
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
