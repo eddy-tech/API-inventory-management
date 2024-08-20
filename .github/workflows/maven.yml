@@ -48,9 +48,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install postgresql-client-14
+        env:
+          POSTGRES_DB: ${{ vars.INVENTORY_DATABASE_POSTGRESQL }}
+          POSTGRES_USER: ${{ vars.INVENTORY_DATABASE_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.INVENTORY_DATABASE_PASSWORD }}
 
-      - name: Deploy Database Schema with Flyway
-        uses: docker://redgate/flyway:10
+      - name: Flyway Migration
+        uses: joshuaavalon/flyway-action@v3.0.0
         with:
           args: >-
             migrate
@@ -59,12 +63,8 @@ jobs:
             -user=${{ vars.INVENTORY_DATABASE_USERNAME }}
             -password=${{ secrets.INVENTORY_DATABASE_PASSWORD }}
         env:
-          INVENTORY_KEYCLOAK_REALM: ${{ vars.INVENTORY_KEYCLOAK_REALM }}
+          FLYWAY_VALIDATE_MIGRATION_NAMING: true
 
-  test:
-    name: Run tests
-    runs-on: ubuntu-latest
-    steps:
       - name: Checkout Test and Launch app with prod profile
         env:
           INVENTORY_KEYCLOAK_CLIENT_ID: ${{ vars.INVENTORY_KEYCLOAK_CLIENT_ID}}
@@ -77,10 +77,6 @@ jobs:
           mvn -B verify --file pom.xml
           java -jar target/management-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 
-  deploy:
-    name: Deploy to AWS
-    runs-on: ubuntu-latest
-    steps:
       - name: Build Docker
         uses: docker/build-push-action@v3
         with:
