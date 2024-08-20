@@ -29,8 +29,8 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4.2.2
         with:
-          java-version: 21
-          distribution: 'corretto'
+          java-version: '21'
+          distribution: 'temurin'
 
       - name: Cache Maven packages
         uses: actions/cache@v3.3.1
@@ -54,7 +54,7 @@ jobs:
           POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
       - name: Flyway Migration
-        uses: docker://redgate/flyway:10
+        uses: docker://flyway/flyway:latest
         with:
           args: >-
             migrate
