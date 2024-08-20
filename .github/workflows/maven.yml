@@ -58,7 +58,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.7
       - uses: joshuaavalon/flyway-action@v3.0.0
         with:
           url: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
@@ -69,6 +69,8 @@ jobs:
     name: Checkout Test and Launch app with prod profile
     needs: [build, migration]
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
     env:
       INVENTORY_KEYCLOAK_CLIENT_ID: "${{ vars.INVENTORY_KEYCLOAK_CLIENT_ID}}"
       INVENTORY_KEYCLOAK_CLIENT_SECRET: "${{ secrets.INVENTORY_KEYCLOAK_CLIENT_SECRET }}"
