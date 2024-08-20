@@ -1,7 +1,7 @@
 ######################## PostgreSQL Database Config #############################
 spring:
   datasource:
-    url: ${INVENTORY_DATABASE_POSTGRESQL}
+    url: ${INVENTORY_DATABASE_URL}
     username: ${INVENTORY_DATABASE_USERNAME}
     password: ${INVENTORY_DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -45,12 +45,12 @@ app:
     clientId: ${INVENTORY_KEYCLOAK_CLIENT_ID}
     clientSecret: ${INVENTORY_KEYCLOAK_CLIENT_SECRET}
 
+
+cloudinary:
+  cloudName: ${CLOUDINARY_NAME}
+  apiKey: ${CLOUDINARY_API_KEY}
+  apiSecret: ${CLOUDINARY_API_SECRET}
+
 server:
   port: 8081
 
-
-flickr:
-  apiKey:
-  apiSecret:
-  appKey:
-  appSecret:
