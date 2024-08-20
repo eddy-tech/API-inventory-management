@@ -20,7 +20,7 @@ on:
 
 jobs:
   build:
-    name: Build and Deploy
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -50,17 +50,23 @@ jobs:
           sudo apt-get install postgresql-client-14
 
       - name: Deploy Database Schema with Flyway
+        uses: docker://redgate/flyway:10
+        with:
+          args: >-
+            migrate
+            -workingDirectory="/github/workspace/"
+            -url=${{ vars.INVENTORY_DATABASE_POSTGRESQL }}
+            -user=${{ vars.INVENTORY_DATABASE_USERNAME }}
+            -password=${{ secrets.INVENTORY_DATABASE_PASSWORD }}
         env:
-          INVENTORY_DATABASE_URL: ${{ vars.INVENTORY_DATABASE_POSTGRESQL }}
-          INVENTORY_DATABASE_USERNAME: ${{ vars.INVENTORY_DATABASE_USERNAME }}
-          INVENTORY_DATABASE_PASSWORD: ${{ secrets.INVENTORY_DATABASE_PASSWORD }}
           INVENTORY_KEYCLOAK_REALM: ${{ vars.INVENTORY_KEYCLOAK_REALM }}
-        run: |
-          mvn flyway:migrate -Dflyway.url=${{ vars.INVENTORY_DATABASE_POSTGRESQL }} \
-                             -Dflyway.user=${{ vars.INVENTORY_DATABASE_USERNAME }} \
-                             -Dflyway.password=${{ secrets.INVENTORY_DATABASE_PASSWORD }}
 
-      - name: Run tests
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Test and Launch app with prod profile
+        uses: actions/checkout@v3
         env:
           INVENTORY_KEYCLOAK_CLIENT_ID: ${{ vars.INVENTORY_KEYCLOAK_CLIENT_ID}}
           INVENTORY_KEYCLOAK_CLIENT_SECRET: ${{ secrets.INVENTORY_KEYCLOAK_CLIENT_SECRET }}
@@ -72,6 +78,10 @@ jobs:
           mvn -B verify --file pom.xml
           java -jar target/management-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    steps:
       - name: Build Docker
         uses: docker/build-push-action@v3
         with:
