@@ -58,12 +58,17 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: docker://redgate/flyway:latest
+      - name: Checkout code
+        uses: actions/checkout@v4.1.7
+
+      - name: Run Flyway Migration
+        uses: docker://redgate/flyway:latest
         with:
-          url: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-          user: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          password: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-        run: migrate
+          args: migrate
+        env:
+          FLYWAY_URL: ${{ vars.INVENTORY_DATABASE_POSTGRESQL }}
+          FLYWAY_USER: ${{ vars.INVENTORY_DATABASE_USERNAME }}
+          FLYWAY_PASSWORD: ${{ secrets.INVENTORY_DATABASE_PASSWORD }}
 
   test:
     name: Checkout Test and Launch app with prod profile
