@@ -64,11 +64,17 @@ jobs:
       - name: Run Flyway Migration
         uses: docker://redgate/flyway:latest
         with:
-          args: migrate
+          entrypoint: /flyway
+          args: >-
+            -workingDirectory="/github/workspace/"
+            -url="${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+            -user="${{ vars.INVENTORY_DATABASE_USERNAME }}"
+            -password="${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+            migrate
         env:
-          FLYWAY_URL: ${{ vars.INVENTORY_DATABASE_POSTGRESQL }}
-          FLYWAY_USER: ${{ vars.INVENTORY_DATABASE_USERNAME }}
-          FLYWAY_PASSWORD: ${{ secrets.INVENTORY_DATABASE_PASSWORD }}
+          FLYWAY_URL: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+          FLYWAY_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+          FLYWAY_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
   test:
     name: Checkout Test and Launch app with prod profile
