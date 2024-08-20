@@ -59,11 +59,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.7
-      - uses: joshuaavalon/flyway-action@v3.0.0
+      - uses: docker://redgate/flyway:10
         with:
-          url: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-          user: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          password: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+          args: >-
+            migrate
+            -url: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+            -user: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+            -password: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
   test:
     name: Checkout Test and Launch app with prod profile
