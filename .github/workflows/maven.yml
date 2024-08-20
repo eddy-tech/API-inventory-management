@@ -56,7 +56,9 @@ jobs:
           INVENTORY_DATABASE_PASSWORD: ${{ secrets.INVENTORY_DATABASE_PASSWORD }}
           INVENTORY_KEYCLOAK_REALM: ${{ vars.INVENTORY_KEYCLOAK_REALM }}
         run: |
-          mvn flyway:migrate
+          mvn flyway:migrate -Dflyway.url=${{ vars.INVENTORY_DATABASE_POSTGRESQL }} \
+                             -Dflyway.user=${{ vars.INVENTORY_DATABASE_USERNAME }} \
+                             -Dflyway.password=${{ secrets.INVENTORY_DATABASE_PASSWORD }}
 
       - name: Run tests
         env:
