@@ -57,11 +57,12 @@ jobs:
         uses: joshuaavalon/flyway-action@v3.0.0
         with:
           args: >-
-            migrate
-            -workingDirectory="/github/workspace/"
-            -url=${{ vars.INVENTORY_DATABASE_POSTGRESQL }}
-            -user=${{ vars.INVENTORY_DATABASE_USERNAME }}
+            docker run --rm -v ${{ github.workspace }}:/flyway/sql flyway/flyway:10 \
+            -workingDirectory="/github/workspace/" \
+            -url=${{ vars.INVENTORY_DATABASE_POSTGRESQL }} \
+            -user=${{ vars.INVENTORY_DATABASE_USERNAME }} \
             -password=${{ secrets.INVENTORY_DATABASE_PASSWORD }}
+            migrate
         env:
           FLYWAY_VALIDATE_MIGRATION_NAMING: true
 
