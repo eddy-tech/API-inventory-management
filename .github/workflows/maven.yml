@@ -158,7 +158,7 @@ jobs:
          uses: docker/build-push-action@v2
          with:
           context: .
-          file: ./docker/Dockerfile
+          dockerfile: Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/inventory-management:latest
 
