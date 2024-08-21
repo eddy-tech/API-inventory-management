@@ -83,6 +83,9 @@ jobs:
           POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
           PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
+      - name: Check PostgreSQL Logs
+        run: docker logs inventory-db
+
   migration:
     name: Flyway Migration
     environment: PROD
@@ -91,9 +94,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.7
-
-      - name: Check PostgreSQL Logs
-        run: docker logs inventory-db
 
       - name: Run Flyway Migration
         uses: docker://redgate/flyway:latest
