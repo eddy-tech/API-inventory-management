@@ -13,6 +13,10 @@ on:
     branches:
       - develop
       - master
+    paths:
+      - .github/workflows/*-maven.yml
+      - docker/**
+      - 'docker-compose.yml'
   pull_request:
     branches:
       - develop
@@ -26,6 +30,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4.2.2
@@ -94,6 +100,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0
 
       - name: Run Flyway Migration
         uses: docker://redgate/flyway:latest
@@ -128,18 +136,17 @@ jobs:
          mvn -B verify --file pom.xml
           java -jar target/management-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 
-  deploy:
-     name: Build Docker and Deploy to AWS
+  build-image:
+     name: Build Docker Image
      needs: [build, migration, test]
      runs-on: ubuntu-latest
      steps:
-       - name: Build Image App
-         uses: docker/build-push-action@v3
+       - uses: actions/checkout@v4
          with:
-          context: .
-          dockerfile: ./Dockerfile
-          push: false
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/management:latest
+           fetch-depth: 0
+
+       - name: Build Docker Image
+         run: docker build -f docker/Dockerfile . --tag ${{ secrets.DOCKER_HUB_USERNAME }}/inventory-management:latest
 
        - name: Login to Docker Hub
          uses: docker/login-action@v1
@@ -147,13 +154,13 @@ jobs:
           username: "${{ secrets.DOCKER_HUB_USERNAME }}"
           password: "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}"
 
-       - name: Push to Docker Hub
+       - name:  Build and Push Docker Image
          uses: docker/build-push-action@v2
          with:
           context: .
-          dockerfile: Dockerfile
+          file: ./docker/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/management:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/inventory-management:latest
 
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
