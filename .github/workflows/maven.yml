@@ -75,7 +75,6 @@ jobs:
 
   migration:
     name: Flyway Migration
-    environment: PROD
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -99,7 +98,6 @@ jobs:
 
   test:
     name: Checkout Test and Launch app with prod profile
-    environment: PROD
     needs: [build, migration]
     runs-on: ubuntu-latest
     steps:
@@ -117,7 +115,6 @@ jobs:
 
   deploy:
      name: Build Docker and Deploy to AWS
-     environment: PROD
      needs: [build, migration, test]
      runs-on: ubuntu-latest
      steps:
