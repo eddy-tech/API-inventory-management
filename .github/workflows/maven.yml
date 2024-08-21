@@ -137,7 +137,7 @@ jobs:
          uses: docker/build-push-action@v3
          with:
           context: .
-          dockerfile: Dockerfile
+          dockerfile: ./Dockerfile
           push: false
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/management:latest
 
@@ -153,7 +153,7 @@ jobs:
           context: .
           dockerfile: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/inventory-management:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/management:latest
 
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
