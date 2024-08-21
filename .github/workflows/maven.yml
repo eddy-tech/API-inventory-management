@@ -74,6 +74,15 @@ jobs:
           POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
           PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
+      - name: Test PostgreSQL Connection
+        run: |
+          docker exec inventory-db psql -U $POSTGRES_USER -d $POSTGRES_DB -c "\l"
+        env:
+          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+
   migration:
     name: Flyway Migration
     environment: PROD
@@ -89,12 +98,13 @@ jobs:
           entrypoint: ""
           args: >-
             -workingDirectory="/github/workspace/"
-            -url=jdbc:postgresql://localhost:5432/$FLYWAY_DB
-            -user=$FLYWAY_USER
-            -password=$FLYWAY_PASSWORD
+            -url="jdbc:postgresql://localhost:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+            -user="${{ vars.INVENTORY_DATABASE_USERNAME }}"
+            -password="${{ secrets.INVENTORY_DATABASE_PASSWORD }}
+            -locations=filesystem:/path/to/sql/files"
             migrate
         env:
-          FLYWAY_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+          FLYWAY_URL: "jdbc:postgresql://localhost:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
           FLYWAY_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
           FLYWAY_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
