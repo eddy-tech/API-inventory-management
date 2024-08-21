@@ -20,7 +20,8 @@ on:
 
 jobs:
   build:
-    name: Buil
+    name: Build
+    environment: PROD
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -51,7 +52,7 @@ jobs:
 
       - name: Start PostgreSQL container
         run: |
-          until docker exec inventory-db -e POSTGRES_USER=$POSTGRES_USER \
+          docker run --name inventory-db -e POSTGRES_USER=$POSTGRES_USER \
           -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
           -e POSTGRES_DB=$POSTGRES_DB \
           -p 5432:5432 -d postgres:14
@@ -63,7 +64,7 @@ jobs:
 
       - name: Wait for PostgreSQL to be ready
         run: |
-          until docker exec inventory-db pg_isready -U  $POSTGRES_USER -d $POSTGRES_DB; do
+          until docker exec inventory-db pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do
           echo "Waiting PostgreSQL to be ready ..."
           sleep 5
           done
@@ -74,7 +75,8 @@ jobs:
           PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
   migration:
-    name: Flyway Migratio
+    name: Flyway Migration
+    environment: PROD
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -97,7 +99,8 @@ jobs:
           FLYWAY_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
   test:
-    name: Checkout Test and Launch app with prod profil
+    name: Checkout Test and Launch app with prod profile
+    environment: PROD
     needs: [build, migration]
     runs-on: ubuntu-latest
     steps:
@@ -115,6 +118,7 @@ jobs:
 
   deploy:
      name: Build Docker and Deploy to AWS
+     environment: PROD
      needs: [build, migration, test]
      runs-on: ubuntu-latest
      steps:
