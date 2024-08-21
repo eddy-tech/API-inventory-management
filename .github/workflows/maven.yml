@@ -160,10 +160,10 @@ jobs:
           password: "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}"
 
        - name:  Build and Push Docker Image
-         uses: docker/build-push-action@v3
+         uses:  mr-smithers-excellent/docker-build-push@v4
          with:
-          context: .
-          dockerfile: Dockerfile
+          image: ${{ secrets.DOCKER_HUB_USERNAME }}/inventory-management
+          registry: docker.io
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/inventory-management:latest
 
