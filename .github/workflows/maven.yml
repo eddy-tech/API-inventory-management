@@ -21,7 +21,6 @@ on:
 jobs:
   build:
     name: Build
-    environment: PROD
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
