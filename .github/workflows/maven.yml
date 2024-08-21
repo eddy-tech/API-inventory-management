@@ -66,7 +66,7 @@ jobs:
         run: |
           until docker exec inventory-db pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do
           echo "Waiting PostgreSQL to be ready ..."
-          sleep 5
+          sleep 2
           done
         env:
           POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
@@ -92,19 +92,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.1.7
 
+      - name: Check PostgreSQL Logs
+        run: docker logs inventory-db
+
       - name: Run Flyway Migration
         uses: docker://redgate/flyway:latest
         with:
           entrypoint: ""
           args: >-
             -workingDirectory="/github/workspace/"
-            -url="jdbc:postgresql://localhost:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+            -url="jdbc:postgresql://inventory-db:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
             -user="${{ vars.INVENTORY_DATABASE_USERNAME }}"
             -password="${{ secrets.INVENTORY_DATABASE_PASSWORD }}
-            -locations=filesystem:/path/to/sql/files"
             migrate
         env:
-          FLYWAY_URL: "jdbc:postgresql://localhost:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+          FLYWAY_URL: "jdbc:postgresql://inventory-db:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
           FLYWAY_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
           FLYWAY_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
@@ -128,7 +130,6 @@ jobs:
 
   deploy:
      name: Build Docker and Deploy to AWS
-     environment: PROD
      needs: [build, migration, test]
      runs-on: ubuntu-latest
      steps:
