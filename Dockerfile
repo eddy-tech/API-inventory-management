@@ -1,7 +1,6 @@
 FROM openjdk:21-jdk
 LABEL authors="eddykoko"
-COPY ./target/management-0.0.1-SNAPSHOT.jar  /usrs/app/
-WORKDIR /usr/app/
+ADD target/inventory-management.jar inventory-management.jar
 EXPOSE 8081
 
-CMD ["java", "-jar", "management-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod"]
+CMD ["java", "-jar", "/inventory-management.jar", "--spring.profiles.active=prod"]
