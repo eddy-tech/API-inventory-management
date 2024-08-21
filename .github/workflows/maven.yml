@@ -49,10 +49,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install postgresql-client-14
+
+      - name: Create PostgreSQL Database
+        run: |
+          psql -h localhost -U $POSTGRES_USER -c "CREATE DATABASE $POSTGRES_DB;"
         env:
           POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
           POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
   migration:
     name: Flyway Migration

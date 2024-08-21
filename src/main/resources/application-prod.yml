@@ -1,9 +1,9 @@
 ######################## PostgreSQL Database Config #############################
 spring:
   datasource:
-    url: ${POSTGRES_DB}
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    password: ${PGPASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       schema: ${INVENTORY_KEYCLOAK_REALM}
