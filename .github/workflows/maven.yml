@@ -50,29 +50,29 @@ jobs:
           sudo apt-get update
           sudo apt-get install postgresql-client-14
 
-      - name: Start PostgreSQL container
-        run: |
-          until docker exec inventory-db -e POSTGRES_USER=$POSTGRES_USER \ 
-          -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
-          -e POSTGRES_DB=$POSTGRES_DB \
-          -p 5432:5432 -d postgres:14
-        env:
-          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          until docker exec inventory-db pg_isready -U  $POSTGRES_USER -d $POSTGRES_DB; do
-          echo "Waiting PostgreSQL to be ready ..."
-          sleep 5
-          done
-        env:
-          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#      - name: Start PostgreSQL container
+#        run: |
+#          until docker exec inventory-db -e POSTGRES_USER=$POSTGRES_USER \
+#          -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+#          -e POSTGRES_DB=$POSTGRES_DB \
+#          -p 5432:5432 -d postgres:14
+#        env:
+#          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+#          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+#          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#
+#      - name: Wait for PostgreSQL to be ready
+#        run: |
+#          until docker exec inventory-db pg_isready -U  $POSTGRES_USER -d $POSTGRES_DB; do
+#          echo "Waiting PostgreSQL to be ready ..."
+#          sleep 5
+#          done
+#        env:
+#          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+#          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+#          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
   migration:
     name: Flyway Migration
