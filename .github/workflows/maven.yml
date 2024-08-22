@@ -11,16 +11,10 @@ name: inventory-management cicd workflow
 on:
   push:
     branches:
-      - develop
       - master
     paths:
-      - .github/workflows/*-maven.yml
-      - docker/**
+      - .github/workflows/maven.yml
       - 'docker-compose.yml'
-  pull_request:
-    branches:
-      - develop
-      - master
 
 jobs:
   build:
