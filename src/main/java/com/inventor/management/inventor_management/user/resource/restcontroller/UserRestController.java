@@ -4,8 +4,6 @@ import com.inventor.management.inventor_management.user.dto.User;
 import com.inventor.management.inventor_management.user.resource.api.UserApi;
 import com.inventor.management.inventor_management.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.keycloak.admin.client.resource.UserProfileResource;
-import org.keycloak.admin.client.resource.UserResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

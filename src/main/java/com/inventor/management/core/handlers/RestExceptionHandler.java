@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-
-import static com.inventor.management.inventor_management.core.utils.Constants.OBJECT_EXCEPTION;
-import static com.inventor.management.inventor_management.core.utils.Constants.USER_EXITS_EXCEPTION;
+import static com.inventor.management.inventor_management.core.utils.Constants.*;
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice

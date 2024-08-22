@@ -12,7 +12,6 @@ import com.inventor.management.inventor_management.sale.entity.Sale;
 import com.inventor.management.inventor_management.sale.mapper.SaleMapper;
 import com.inventor.management.inventor_management.sale.service.SaleService;
 import com.inventor.management.inventor_management.saleLine.dto.SaleLineRequest;
-import com.inventor.management.inventor_management.saleLine.entity.SaleLine;
 import com.inventor.management.core.exceptions.EntityNotFoundException;
 import com.inventor.management.core.exceptions.InvalidEntityException;
 import com.inventor.management.core.exceptions.InvalidOperationException;
@@ -30,7 +29,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.inventor.management.inventor_management.core.enums.SourceStockMovement.SALE;

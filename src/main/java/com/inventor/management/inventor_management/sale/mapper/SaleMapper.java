@@ -2,7 +2,6 @@ package com.inventor.management.inventor_management.sale.mapper;
 
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
-import com.inventor.management.inventor_management.enterprise.entity.Enterprise;
 import com.inventor.management.inventor_management.sale.dto.SaleRequest;
 import com.inventor.management.inventor_management.sale.entity.Sale;
 import com.inventor.management.inventor_management.sale.dto.SaleDto;

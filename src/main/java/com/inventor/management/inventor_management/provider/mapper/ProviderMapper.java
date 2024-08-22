@@ -1,6 +1,5 @@
 package com.inventor.management.inventor_management.provider.mapper;
 
-import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.article.entity.Article;
 import com.inventor.management.inventor_management.article.mapper.ArticleMapper;
 import com.inventor.management.inventor_management.core.mapper.AddressMapper;

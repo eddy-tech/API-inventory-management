@@ -1,4 +1,5 @@
 package com.inventor.management.inventor_management.customerOrderLine.dto;
+
 import com.inventor.management.inventor_management.article.dto.ArticleDto;
 import com.inventor.management.inventor_management.customerOrder.dto.CustomerOrderDto;
 import jakarta.validation.constraints.NotNull;

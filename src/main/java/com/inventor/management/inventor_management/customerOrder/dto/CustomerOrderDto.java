@@ -18,7 +18,6 @@ public class CustomerOrderDto {
 
     private Long id_enterprise;
 
-    // METHOD TO CHECK IF ORDER STATE HAS BEEN DELIVERED OR NO
     public boolean isOrderDelivered() {
         return StateOrder.DELIVERED.equals(this.stateOrder);
     }

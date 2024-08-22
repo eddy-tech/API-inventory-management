@@ -2,7 +2,6 @@ package com.inventor.management.inventor_management.stockMovement.dto;
 
 import com.inventor.management.inventor_management.core.enums.SourceStockMovement;
 import com.inventor.management.inventor_management.core.enums.TypeMoveStock;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
