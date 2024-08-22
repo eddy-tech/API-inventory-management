@@ -1,6 +1,15 @@
-FROM openjdk:21-jdk
-LABEL authors="eddyk"
-COPY target/management-0.0.1-SNAPSHOT.jar /app/management-0.0.1-SNAPSHOT.jar
+FROM jelastic/maven:3.9.5-openjdk-21 AS build
+WORKDIR /build
+LABEL authors="eddykoko"
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn clean package
+
+FROM amazoncorretto:21
+
+WORKDIR /app
+COPY --from=build /build/target/inventory-management-*.jar /app/
 EXPOSE 8081
 
-CMD ["java", "-jar", "management-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/inventory-management.jar", "--spring.profiles.active=prod"]
