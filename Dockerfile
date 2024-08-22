@@ -1,4 +1,4 @@
-FROM maven:3.9.8-openjdk:21-jdk AS build
+FROM jelastic/maven:3.9.5-openjdk-21 AS build
 WORKDIR /build
 LABEL authors="eddykoko"
 COPY pom.xml .
