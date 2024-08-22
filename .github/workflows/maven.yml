@@ -22,143 +22,137 @@ on:
       - develop
       - master
 
-jobs:
-  build:
-    name: Build
-    environment: PROD
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4.1.7
-        with:
-          fetch-depth: 0
+#jobs:
+#  build:
+#    name: Build
+#    environment: PROD
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v4.1.7
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Set up JDK 21
+#        uses: actions/setup-java@v4.2.2
+#        with:
+#          java-version: '21'
+#          distribution: 'corretto'
+#
+#      - name: Cache Maven packages
+#        uses: actions/cache@v3.3.1
+#        with:
+#          path: ~/.m2/repository
+#          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#          restore-keys: ${{ runner.os }}-maven
+#
+#      - name: Build Project
+#        run: |
+#          mvn clean install -DskipTests
+#          mvn -B package --file pom.xml
+#
+#      - name: Install PostgreSQL client
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install postgresql-client-14
+#
+#      - name: Start PostgreSQL container
+#        run: |
+#          docker run --name inventory-db -e POSTGRES_USER=$POSTGRES_USER \
+#          -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+#          -e POSTGRES_DB=$POSTGRES_DB \
+#          -p 5432:5432 -d postgres:14
+#        env:
+#          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+#          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+#          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#
+#      - name: Wait for PostgreSQL to be ready
+#        run: |
+#          until docker exec inventory-db pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do
+#          echo "Waiting PostgreSQL to be ready ..."
+#          sleep 2
+#          done
+#        env:
+#          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+#          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+#          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#
+#      - name: Test PostgreSQL Connection
+#        run: |
+#          docker exec inventory-db psql -U $POSTGRES_USER -d $POSTGRES_DB -c "\l"
+#        env:
+#          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+#          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+#          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
+#
+#      - name: Check PostgreSQL Logs
+#        run: docker logs inventory-db
+#
+#  migration:
+#    name: Flyway Migration
+#    environment: PROD
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4.1.7
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Run Flyway Migration
+#        uses: docker://redgate/flyway:latest
+#        with:
+#          entrypoint: ""
+#          args: >-
+#            -workingDirectory="/github/workspace/"
+#            -url="jdbc:postgresql://inventory-db:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+#            -user="${{ vars.INVENTORY_DATABASE_USERNAME }}"
+#            -password="${{ secrets.INVENTORY_DATABASE_PASSWORD }}
+#            migrate
+#        env:
+#          FLYWAY_URL: "jdbc:postgresql://inventory-db:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
+#          FLYWAY_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
+#          FLYWAY_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4.2.2
-        with:
-          java-version: '21'
-          distribution: 'corretto'
+#  test:
+#    name: Checkout Test and Launch app with prod profile
+#    environment: PROD
+#    needs: [build, migration]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4.1.7
+#    env:
+#      INVENTORY_KEYCLOAK_CLIENT_ID: "${{ vars.INVENTORY_KEYCLOAK_CLIENT_ID}}"
+#      INVENTORY_KEYCLOAK_CLIENT_SECRET: "${{ secrets.INVENTORY_KEYCLOAK_CLIENT_SECRET }}"
+#      INVENTORY_KEYCLOAK_SERVER_URL: "${{ vars.INVENTORY_KEYCLOAK_SERVER_URL }}"
+#      CLOUDINARY_NAME: "${{ vars.CLOUDINARY_NAME }}"
+#      CLOUDINARY_API_KEY: "${{ secrets.CLOUDINARY_API_KEY }}"
+#      CLOUDINARY_API_SECRET: "${{ secrets.CLOUDINARY_API_SECRET }}"
+#      run: |
+#         mvn -B verify --file pom.xml
+#          java -jar target/management-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 
-      - name: Cache Maven packages
-        uses: actions/cache@v3.3.1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven
-
-      - name: Build Project
-        run: |
-          mvn clean install -DskipTests
-          mvn -B package --file pom.xml
-
-      - name: Install PostgreSQL client
-        run: |
-          sudo apt-get update
-          sudo apt-get install postgresql-client-14
-
-      - name: Start PostgreSQL container
-        run: |
-          docker run --name inventory-db -e POSTGRES_USER=$POSTGRES_USER \
-          -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
-          -e POSTGRES_DB=$POSTGRES_DB \
-          -p 5432:5432 -d postgres:14
-        env:
-          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          until docker exec inventory-db pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do
-          echo "Waiting PostgreSQL to be ready ..."
-          sleep 2
-          done
-        env:
-          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-
-      - name: Test PostgreSQL Connection
-        run: |
-          docker exec inventory-db psql -U $POSTGRES_USER -d $POSTGRES_DB -c "\l"
-        env:
-          POSTGRES_DB: "${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-          POSTGRES_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          POSTGRES_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-          PGPASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-
-      - name: Check PostgreSQL Logs
-        run: docker logs inventory-db
-
-  migration:
-    name: Flyway Migration
-    environment: PROD
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.7
-        with:
-          fetch-depth: 0
-
-      - name: Run Flyway Migration
-        uses: docker://redgate/flyway:latest
-        with:
-          entrypoint: ""
-          args: >-
-            -workingDirectory="/github/workspace/"
-            -url="jdbc:postgresql://inventory-db:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-            -user="${{ vars.INVENTORY_DATABASE_USERNAME }}"
-            -password="${{ secrets.INVENTORY_DATABASE_PASSWORD }}
-            migrate
-        env:
-          FLYWAY_URL: "jdbc:postgresql://inventory-db:5432/${{ vars.INVENTORY_DATABASE_POSTGRESQL }}"
-          FLYWAY_USER: "${{ vars.INVENTORY_DATABASE_USERNAME }}"
-          FLYWAY_PASSWORD: "${{ secrets.INVENTORY_DATABASE_PASSWORD }}"
-
-  test:
-    name: Checkout Test and Launch app with prod profile
-    environment: PROD
-    needs: [build, migration]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.1.7
-    env:
-      INVENTORY_KEYCLOAK_CLIENT_ID: "${{ vars.INVENTORY_KEYCLOAK_CLIENT_ID}}"
-      INVENTORY_KEYCLOAK_CLIENT_SECRET: "${{ secrets.INVENTORY_KEYCLOAK_CLIENT_SECRET }}"
-      INVENTORY_KEYCLOAK_SERVER_URL: "${{ vars.INVENTORY_KEYCLOAK_SERVER_URL }}"
-      CLOUDINARY_NAME: "${{ vars.CLOUDINARY_NAME }}"
-      CLOUDINARY_API_KEY: "${{ secrets.CLOUDINARY_API_KEY }}"
-      CLOUDINARY_API_SECRET: "${{ secrets.CLOUDINARY_API_SECRET }}"
-      run: |
-         mvn -B verify --file pom.xml
-          java -jar target/management-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
-
-  build-image:
-     name: Build Docker Image
-     needs: [build, migration, test]
-     runs-on: ubuntu-latest
-     steps:
-       - uses: actions/checkout@v3
-         name: check out code
-
-#       - name: Login to Docker Hub
-#         uses: docker/login-action@v2
+#  build-image:
+#     name: Build Docker Image
+#     needs: [build, migration, test]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#         name: check out code
+#
+#       - name:  Build and Push Docker Image
+#         uses:  mr-smithers-excellent/docker-build-push@v6
 #         with:
-#          username: "${{ secrets.DOCKER_HUB_USERNAME }}"
-#          password: "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}"
-
-       - name:  Build and Push Docker Image
-         uses:  mr-smithers-excellent/docker-build-push@v6
-         with:
-          image: ${{ secrets.DOCKER_HUB_USERNAME }}/inventory-management
-          tags: latest
-          registry: docker.io
-          dockerfile: Dockerfile
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+#          image: ${{ secrets.DOCKER_HUB_USERNAME }}/inventory-management
+#          tags: latest
+#          registry: docker.io
+#          dockerfile: Dockerfile
+#          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+#          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
