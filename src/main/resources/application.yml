@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: prod
+  servlet:
+    multipart:
+      max-file-size: 50MB
+  jpa:
+    open-in-view: false
+
+springdoc:
+  default-produces-media-type: application/json
+
