@@ -1,0 +1,56 @@
+######################## PostgreSQL Database Config #############################
+spring:
+  datasource:
+    url: jdbc:postgresql://inventory-db:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      schema: ${INVENTORY_KEYCLOAK_REALM}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: postgresql
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  ########################## Flyway Database Config ###############################
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+    baseline-description: "init"
+    baseline-version: 1.0.0
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    url: ${spring.datasource.url}
+    locations: classpath:db/migration/structure, classpath:db/migration/prodData
+    validate-on-migrate: true
+    default-schema: ${INVENTORY_KEYCLOAK_REALM}
+
+  ########################## Security Config with Keycloak ########################
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${app.keycloak.serverUrl}/realms/${app.keycloak.realm}
+
+app:
+  keycloak:
+    realm: ${INVENTORY_KEYCLOAK_REALM}
+    serverUrl: ${INVENTORY_KEYCLOAK_SERVER_URL}
+  admin:
+    clientId: ${INVENTORY_KEYCLOAK_CLIENT_ID}
+    clientSecret: ${INVENTORY_KEYCLOAK_CLIENT_SECRET}
+
+
+cloudinary:
+  cloudName: ${CLOUDINARY_NAME}
+  apiKey: ${CLOUDINARY_API_KEY}
+  apiSecret: ${CLOUDINARY_API_SECRET}
+
+server:
+  port: 8081
+
