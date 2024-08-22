@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk AS build
+FROM maven:3.9.8-openjdk:21-jdk AS build
 WORKDIR /build
 LABEL authors="eddykoko"
 COPY pom.xml .
